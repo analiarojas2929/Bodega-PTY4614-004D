@@ -1,0 +1,45 @@
+{% extends 'base/base.html' %}
+
+{% load static %}
+
+{% block title %}Inicio{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Bienvenido a la Página de Inicio</h1>
+    <div class="card-container">
+        <div class="card">
+            <img src="{% static 'images/inventory.jpg' %}" alt="Inventario" class="card-image">
+            <div class="card-content">
+                <h3>Inventario</h3>
+                <p>Consulta y gestiona el inventario de materiales.</p>
+                <a href="{% url 'inventory' %}" class="card-link">Ir a Inventario</a>
+            </div>
+        </div>
+        <div class="card">
+            <img src="{% static 'images/add_material.jpg' %}" alt="Agregar Material" class="card-image">
+            <div class="card-content">
+                <h3>Agregar Material</h3>
+                <p>Agrega nuevos materiales al inventario.</p>
+                <a href="{% url 'add_material' %}" class="card-link">Agregar Material</a>
+            </div>
+        </div>
+        <div class="card">
+            <img src="{% static 'images/update_material.jpg' %}" alt="Actualizar Material" class="card-image">
+            <div class="card-content">
+                <h3>Actualizar Material</h3>
+                <p>Actualiza la información de los materiales existentes.</p>
+                <a href="{% url 'update_material' %}" class="card-link">Actualizar Material</a>
+            </div>
+        </div>
+        <div class="card">
+            <img src="{% static 'images/delete_material.jpg' %}" alt="Eliminar Material" class="card-image">
+            <div class="card-content">
+                <h3>Eliminar Material</h3>
+                <p>Elimina materiales del inventario.</p>
+                <a href="{% url 'delete_material' %}" class="card-link">Eliminar Material</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
