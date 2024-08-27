@@ -288,22 +288,46 @@ body.dark {
 #sidebarOpen {
     display: none;
 }
-
+/* Media query for screens with a maximum width of 768px */
 @media screen and (max-width: 768px) {
+    /* Hides the sidebar by default */
+    .sidebar {
+        display: none;
+        left: -260px;
+    }
+
+    /* Shows the sidebar toggle button */
     #sidebarOpen {
-        font-size: 25px;
         display: block;
-        margin-right: 10px;
-        cursor: pointer;
-        color: var(--grey-color);
     }
-    .sidebar.close {
-        left: -100%;
+
+    /* Shows the sidebar when the toggle button is clicked */
+    #sidebarOpen:checked + .sidebar {
+        display: block;
+        left: 0;
     }
+
+    /* Hides the search bar when the screen is smaller than 768px */
     .search_bar {
         display: none;
     }
+
+    /* Hides the bottom content of the sidebar when it is in the closed state */
     .sidebar.close .bottom_content {
-        left: -100%;
+        display: none;
+    }
+}
+
+/* Media query for screens with a minimum width of 769px */
+@media screen and (min-width: 769px) {
+    /* Displays the sidebar when the screen is larger than 769px */
+    .sidebar {
+        display: block;
+        left: 0;
+    }
+
+    /* Hides the sidebar toggle button */
+    #sidebarOpen {
+        display: none;
     }
 }
