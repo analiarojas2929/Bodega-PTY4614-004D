@@ -6,10 +6,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const sidebarOpen = document.querySelector("#sidebarOpen");
     const sidebarClose = document.querySelector(".collapse_sidebar");
     const sidebarExpand = document.querySelector(".expand_sidebar");
-    const bellIcon = document.querySelector(".bx-bell");
-    const modal = document.getElementById("notificationModal");
-    const closeButton = document.querySelector(".close_button");
-
     // Manejar apertura y cierre del sidebar
     function handleSidebarToggle() {
         if (window.innerWidth < 768) {
@@ -65,45 +61,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     item2.classList.remove("show_submenu");
                 }
             });
-        });
-    });
-
-    // Abrir y cerrar ventana de notificaciones
-    bellIcon.addEventListener("click", (event) => {
-        event.stopPropagation();
-        notificationTab.classList.toggle("open");
-    });
-
-    // Cerrar ventana de notificaciones al hacer clic fuera de ella
-    document.addEventListener("click", (event) => {
-        if (!notificationTab.contains(event.target)) {
-            notificationTab.classList.remove("open");
-        }
-    });
-
-    // Manejar clic en notificaciones
-    bellIcon.addEventListener("click", () => {
-        modal.style.display = "block";
-    });
-
-    // Cerrar modal cuando se hace clic en la "X"
-    closeButton.addEventListener("click", () => {
-        modal.style.display = "none";
-    });
-
-    // Cerrar modal cuando se hace clic fuera del contenido del modal
-    window.addEventListener("click", (event) => {
-        if (event.target === modal) {
-            modal.style.display = "none";
-        }
-    });
-
-    // Manejar clic en notificaciones dentro del modal
-    const notifications = document.querySelectorAll(".modal_notifications .notification");
-    notifications.forEach((notification) => {
-        notification.addEventListener("click", () => {
-            console.log("Notification clicked:", notification.textContent);
-            notification.remove(); // Eliminar notificación clicada
         });
     });
 });

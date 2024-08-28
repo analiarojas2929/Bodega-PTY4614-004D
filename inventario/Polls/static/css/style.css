@@ -1,10 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900');
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
-}
+
 
 :root {
     --light-gray: #c6c6c9; /* Color claro para el fondo de la página */
@@ -19,10 +14,12 @@
 
 body {
     font-family: Arial, sans-serif;
-    margin: 0;
+    margin: 20px;  /* Ajusta el valor según la cantidad de espacio que desees */
     padding: 0;
     background-color: var(--light-gray);
 }
+
+
 
 .container1 {
     padding: 20px;
@@ -33,7 +30,17 @@ body {
     justify-content: center;
     width: 70%;
     margin-left: 20%;
+    height: 100vh;
 }
+
+
+.container1 h1 {
+    color: #333; /* Change the text color as needed */
+    font-size: 24px; /* Change the font size as needed */
+    margin-bottom: 20px; /* Add some margin below the heading */
+}
+
+
 
 .card-container {
     display: flex;
@@ -152,53 +159,58 @@ body {
     }
 }
 
-/* Modal General */
-.modal {
-    display: none; /* Oculto por defecto */
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.5); /* Fondo semi-transparente */
-}
-
-/* Modal Content */
-.modal_content {
-    background-color: #fff;
-    margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 600px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    border-radius: 10px;
-}
-
-/* Close Button */
-.close_button {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.close_button:hover,
-.close_button:focus {
-    color: #000;
-    text-decoration: none;
+.notification_tab {
+    position: relative;
     cursor: pointer;
 }
 
-/* Estilos para las notificaciones dentro del modal */
-.modal_notifications .notification {
+.notification_bell {
+    position: relative;
+}
+
+.notification_bell i {
+    font-size: 24px;
+    color: var(--black);
+}
+
+.notification_count {
+    position: absolute;
+    top: -5px;
+    right: -10px;
+    background-color: var(--red);
+    color: var(--silver);
+    font-size: 12px;
+    border-radius: 50%;
+    padding: 2px 6px;
+}
+
+.notification_dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: var(--silver);
+    width: 250px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+}
+
+.notification_dropdown .notification_title {
     padding: 10px;
-    border-bottom: 1px solid #ddd;
-    cursor: pointer;
+    background-color: var(--light-gray);
+    border-bottom: 1px solid var(--gray);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 8px 8px 0 0;
 }
 
-.modal_notifications .notification:hover {
-    background-color: #f1f1f1;
+.notification_dropdown .notification_content {
+    padding: 10px;
+    text-align: center;
+    color: var(--gray);
+}
+
+.notification_tab:hover .notification_dropdown {
+    display: block;
 }
