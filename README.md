@@ -18,7 +18,7 @@
 
 - **Frontend**: HTML5, CSS3, JavaScript
 - **Backend**: Django (Python)
-- **Base de Datos**: [Tu base de datos preferida, por ejemplo, PostgreSQL, SQLite]
+- **Base de Datos**: MySql
 - **Control de Versiones**: Git & GitHub
 
 ## 🔧 Instalación y Configuración
