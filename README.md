@@ -1,4 +1,3 @@
-# Bodega-PTY4614-004D
 
 # 📦 Plataforma de Gestión de Inventario para Empresa Constructora
 
