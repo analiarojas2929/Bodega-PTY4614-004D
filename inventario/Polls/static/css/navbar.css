@@ -1,6 +1,6 @@
-/* Import Google font - Poppins */
-
+/* General styles */
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
+
 * {
     margin: 0;
     padding: 0;
@@ -14,24 +14,19 @@
     --grey-color-light: #aaa;
 }
 
-
 body.dark {
     background-color: #333;
-}
-
-body.dark {
     --white-color: #333;
     --blue-color: #fff;
     --grey-color: #f2f2f2;
     --grey-color-light: #aaa;
 }
 
-body.dark h1{
+body.dark h1 {
     color: #fff;
 }
 
-/* navbar */
-
+/* Navbar styles */
 .nav_bar {
     position: fixed;
     top: 0;
@@ -90,9 +85,7 @@ body.dark h1{
     color: var(--grey-color);
 }
 
-
-/* sidebar */
-
+/* Sidebar styles */
 .sidebar {
     background-color: var(--white-color);
     width: 260px;
@@ -102,7 +95,7 @@ body.dark h1{
     height: 100%;
     padding: 80px 20px;
     z-index: 100;
-    overflow-y: scroll;
+    overflow-y: auto;
     box-shadow: 0 0 1px var(--grey-color-light);
     transition: all 0.5s ease;
 }
@@ -110,10 +103,6 @@ body.dark h1{
 .sidebar.close {
     padding: 60px 0;
     width: 80px;
-}
-
-.sidebar::-webkit-scrollbar {
-    display: none;
 }
 
 .menu_content {
@@ -135,7 +124,7 @@ body.dark h1{
     white-space: nowrap;
 }
 
-.menu_dahsboard::before {
+.menu_dashboard::before {
     content: "Dashboard";
 }
 
@@ -144,7 +133,7 @@ body.dark h1{
 }
 
 .menu_setting::before {
-    content: "Setting";
+    content: "Ajuste";
 }
 
 .sidebar.close .menu_title::before {
@@ -282,56 +271,37 @@ body.dark h1{
     display: none;
 }
 
-#sidebarOpen {
+#sidebarToggle {
     display: none;
 }
 /* Media query for screens with a maximum width of 768px */
 @media screen and (max-width: 768px) {
-    /* Hides the sidebar by default */
     .sidebar {
-        display: none;
-        left: -260px;
+        display: none; /* Oculta el sidebar */
+        position: fixed;
+        top: 0;
+        left: -260px; /* Ajusta el ancho de la barra lateral */
+        transition: left 0.3s ease;
     }
 
-    /* Shows the sidebar toggle button */
+    .sidebar.open {
+        display: block;
+        left: 0; /* Muestra el sidebar cuando está abierto */
+    }
+
     #sidebarOpen {
-        display: block;
+        display: block; /* Muestra el botón hamburguesa */
     }
 
-    /* Shows the sidebar when the toggle button is clicked */
-    #sidebarOpen:checked + .sidebar {
-        display: block;
-        left: 0;
-    }
-
-    /* Hides the search bar when the screen is smaller than 768px */
     .search_bar {
-        display: none;
+        display: none; /* Oculta la barra de búsqueda en pantallas pequeñas */
     }
 
-    /* Hides the bottom content of the sidebar when it is in the closed state */
-    .sidebar.close .bottom_content {
-        display: none;
-    }
-}
-
-/* Media query for screens with a minimum width of 769px */
-@media screen and (min-width: 769px) {
-    /* Displays the sidebar when the screen is larger than 769px */
-    .sidebar {
-        display: block;
-        left: 0;
+    .navbar_content {
+        display: none; /* Oculta el contenido adicional de la navbar en pantallas pequeñas */
     }
 
-    /* Hides the sidebar toggle button */
-    #sidebarOpen {
-        display: none;
+    .bottom_content {
+        display: none; /* Oculta el contenido inferior de la sidebar en pantallas pequeñas */
     }
 }
-
-.profile {
-    font-size: 24px; /* Adjust size */
-    color: var(--black); /* Adjust color */
-    margin-left: 10px; /* Space between icons */
-  }
-  
