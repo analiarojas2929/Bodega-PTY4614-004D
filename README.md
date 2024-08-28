@@ -36,8 +36,8 @@ Sigue estos pasos para obtener una copia local del proyecto y ponerlo en funcion
 
 1. **Clona el Repositorio**
    ```bash
-   git clone https://github.com/tuusuario/plataforma-gestion-inventario.git
-   cd plataforma-gestion-inventario
+   git clone https://github.com/analiarojas2900/Bodega-PTY4614-004D.git
+   cd inventario
    
 ## 🎨 Diseño UI/UX
 
