@@ -8,6 +8,10 @@ def home_view(request):
 def inventory_view(request):
     return render(request, 'InventoryView/inventory.html')
 
+def lista_view(request):
+    return render(request, 'InventoryView/lista.html')
+
+
 #perfiles
 def profile_view(request):
     return render(request, 'ProfileView/profile.html')

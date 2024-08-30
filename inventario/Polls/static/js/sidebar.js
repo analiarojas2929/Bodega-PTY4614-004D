@@ -1,42 +1,23 @@
 document.addEventListener("DOMContentLoaded", () => {
+    const sidebarToggle = document.getElementById("sidebarToggle");
+    const sidebarDropdown = document.getElementById("sidebarDropdown");
     const body = document.querySelector("body");
     const darkLight = document.querySelector("#darkLight");
-    const sidebar = document.querySelector(".sidebar");
-    const sidebarOpen = document.querySelector("#sidebarOpen");
-    const sidebarClose = document.querySelector(".collapse_sidebar");
-    const sidebarExpand = document.querySelector(".expand_sidebar");
 
-    // Manejar apertura y cierre del sidebar
-    function handleSidebarToggle() {
-        if (window.innerWidth < 768) {
-            sidebar.classList.add("close");
-            sidebar.classList.remove("open");
-            sidebarOpen.style.display = "block"; // Muestra el botón hamburguesa
-        } else {
-            sidebar.classList.remove("close");
-            sidebar.classList.remove("open");
-            sidebarOpen.style.display = "none"; // Oculta el botón hamburguesa
-        }
+
+    // Verifica si los elementos existen en el DOM
+    if (sidebarToggle && sidebarDropdown) {
+        sidebarToggle.addEventListener("click", () => {
+            // Alterna la visibilidad del menú desplegable
+            if (sidebarDropdown.style.display === "block") {
+                sidebarDropdown.style.display = "none";
+            } else {
+                sidebarDropdown.style.display = "block";
+            }
+        });
+    } else {
+        console.error("sidebarToggle o sidebarDropdown no se encuentran en el DOM.");
     }
-
-    window.addEventListener("resize", handleSidebarToggle);
-    handleSidebarToggle(); // Inicializa el estado correcto
-
-    sidebarOpen.addEventListener("click", () => {
-        sidebar.classList.toggle("open");
-        sidebar.classList.toggle("close");
-    });
-
-    sidebarClose.addEventListener("click", () => {
-        sidebar.classList.add("close");
-        sidebar.classList.remove("open");
-    });
-
-    sidebarExpand.addEventListener("click", () => {
-        sidebar.classList.remove("close");
-        sidebar.classList.add("open");
-    });
-
     darkLight.addEventListener("click", () => {
         body.classList.toggle("dark");
         if (body.classList.contains("dark")) {
@@ -44,18 +25,5 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
             darkLight.classList.replace("bx-moon", "bx-sun");
         }
-    });
-
-    // Manejo del submenú
-    const submenuItems = document.querySelectorAll(".submenu_item");
-    submenuItems.forEach((item) => {
-        item.addEventListener("click", () => {
-            item.classList.toggle("show_submenu");
-            submenuItems.forEach((item2) => {
-                if (item !== item2) {
-                    item2.classList.remove("show_submenu");
-                }
-            });
-        });
     });
 });

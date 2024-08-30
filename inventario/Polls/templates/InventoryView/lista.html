@@ -1,0 +1,57 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Gestión de Inventario{% endblock %}
+
+{% block content %}
+<div class="inventory-container">
+    <h1>Gestión de Inventario</h1>
+
+    <!-- Formulario para Agregar Material -->
+    <div class="add-material-form">
+        <h2>Agregar Nuevo Material</h2>
+        <form id="addMaterialForm">
+            <div class="form-group">
+                <label for="materialName">Nombre del Material:</label>
+                <input type="text" id="materialName" name="materialName" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="materialQuantity">Cantidad:</label>
+                <input type="number" id="materialQuantity" name="materialQuantity" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="materialDescription">Descripción:</label>
+                <textarea id="materialDescription" name="materialDescription" class="form-control"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Agregar Material</button>
+        </form>
+    </div>
+
+    <!-- Tabla de Inventario -->
+    <div class="inventory-table">
+        <h2>Materiales en Inventario</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre del Material</th>
+                    <th>Cantidad</th>
+                    <th>Descripción</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Ejemplo de datos -->
+                <tr>
+                    <td>Cemento</td>
+                    <td>50</td>
+                    <td>Cemento Portland Tipo I</td>
+                    <td>
+                        <button class="btn btn-warning btn-edit">Editar</button>
+                        <button class="btn btn-danger btn-delete">Eliminar</button>
+                    </td>
+                </tr>
+                <!-- Datos dinámicos se cargarían aquí -->
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

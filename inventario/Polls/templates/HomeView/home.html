@@ -1,45 +1,88 @@
-{% extends 'base/base.html' %}
-
-{% load static %}
-
-{% block title %}Inicio{% endblock %}
-
+{% extends 'base/base.html' %} 
+{% block title %}Panel de Control de Bodega{% endblock %} 
 {% block content %}
-<div class="container1">
-    <h1>Bienvenido a la Página de Inicio</h1>
-    <div class="card-container">
-        <div class="card">
-            <div class="card-content">
-                <i class="fas fa-warehouse fa-3x"></i> <!-- Ícono de inventario -->
-                <h3>Inventario</h3>
-                <p>Consulta y gestiona el inventario de materiales.</p>
-                <a href="{% url 'inventory' %}" class="card-link">Ir a Inventario</a>
-            </div>
-        </div>    
-        <div class="card">
-            <div class="card-content">
-                <i class="fas fa-plus fa-3x"></i>
-                <h3>Agregar Material</h3>
-                <p>Agrega nuevos materiales al inventario.</p>
-                <a href="{% url 'add_material' %}" class="card-link">Agregar Material</a>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-content">
-                <i class="fas fa-edit fa-3x"></i>
-                <h3>Actualizar Material</h3>
-                <p>Actualiza la información de los materiales existentes.</p>
-                <a href="{% url 'update_material' %}" class="card-link">Actualizar Material</a>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-content">
-                <i class="fas fa-trash fa-3x"></i>
-                <h3>Eliminar Material</h3>
-                <p>Elimina materiales del inventario.</p>
-                <a href="{% url 'delete_material' %}" class="card-link">Eliminar Material</a>
-            </div>
-        </div>
+<div
+  class="dashboard-container"
+  style="
+    background-size: cover;
+  "
+>
+  <h1>Panel de Control de Bodega</h1>
+
+  <!-- Visión General del Inventario -->
+  <div class="overview">
+    <div class="overview-item">
+      <h2>Total de Materiales</h2>
+      <p>1500</p>
+      <!-- Este valor sería dinámico -->
     </div>
+    <div class="overview-item">
+      <h2>Materiales Disponibles</h2>
+      <p>1350</p>
+    </div>
+    <div class="overview-item">
+      <h2>Materiales en Movimiento</h2>
+      <p>150</p>
+    </div>
+  </div>
+
+  <!-- Movimientos Recientes -->
+  <div class="recent-movements">
+    <h2>Movimientos Recientes</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Material</th>
+          <th>Cantidad</th>
+          <th>Tipo de Movimiento</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Datos de ejemplo -->
+        <tr>
+          <td>2024-08-29</td>
+          <td>Cemento</td>
+          <td>50</td>
+          <td>Entrada</td>
+        </tr>
+        <tr>
+          <td>2024-08-28</td>
+          <td>Grava</td>
+          <td>100</td>
+          <td>Salida</td>
+        </tr>
+        <!-- Datos dinámicos se cargarían aquí -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Alertas de Stock Bajo -->
+  <div class="stock-alerts">
+    <h2>Alertas de Stock Bajo</h2>
+    <ul>
+      <li>Cemento - 20 unidades restantes</li>
+      <li>Arena - 15 unidades restantes</li>
+      <!-- Datos dinámicos se cargarían aquí -->
+    </ul>
+  </div>
+
+  <!-- Solicitudes de Materiales -->
+  <div class="material-requests">
+    <h2>Solicitudes de Materiales</h2>
+    <ul>
+      <li>Solicitud #123 - Pendiente</li>
+      <li>Solicitud #124 - Aprobada</li>
+      <!-- Datos dinámicos se cargarían aquí -->
+    </ul>
+  </div>
+
+  <!-- Reportes Rápidos -->
+  <div class="quick-reports">
+    <h2>Generar Reportes Rápidos</h2>
+    <a href="#" class="report-link">Reporte de Stock</a>
+    <a href="#" class="report-link">Reporte de Movimientos</a>
+    <a href="#" class="report-link">Reporte de Alertas</a>
+  </div>
 </div>
 {% endblock %}
