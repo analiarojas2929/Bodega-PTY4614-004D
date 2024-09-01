@@ -15,5 +15,6 @@ urlpatterns = [
     path('settings/', views.settings_view, name='settings'),
     path('notifications/', views.notifications_view, name='notifications'),
     path('filters/', views.filters_view, name='filters'),
+    path('crear_ticket/', views.crear_ticket, name='crear_ticket'),
 ]
 

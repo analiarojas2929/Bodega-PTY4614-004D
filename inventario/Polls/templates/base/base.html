@@ -16,43 +16,89 @@
 
 <body>
     <div class="container-fluid">
-            <!-- Sidebar -->
-            <nav class="col-md-2 d-none d-md-block bg-dark sidebar">
-                <div class="sidebar-sticky">
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="{% url 'home' %}">
-                                <i class="fas fa-home"></i>
-                                Inicio
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'inventory' %}">
-                                <i class="fas fa-boxes"></i>
-                                Inventario
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'reports' %}">
-                                <i class="fas fa-chart-line"></i>
-                                Reportes
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'settings' %}">
-                                <i class="fas fa-cogs"></i>
-                                Ajustes
-                            </a>
-                        </li>
-                    </ul>
-            </nav>
-                <section class="content">
-                    {% block content %}
-                    {% endblock %}
-                </section>
-            </main>
-        </div>
+        <!-- Sidebar -->
+        <nav class="col-md-2 d-none d-md-block bg-dark sidebar">
+            <button id="sidebarToggle" class="btn-outline-light">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="sidebar-sticky">
+                <ul class="nav flex-column">
+                    <!-- Inicio -->
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'home' %}">
+                            <i class="fas fa-home"></i>
+                            <span>Inicio</span>
+                        </a>
+                    </li>
+    
+                    <!-- Inventario -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'inventory' %}" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                            <i class="fas fa-boxes"></i>
+                            <span>Inventario</span>
+                        </a>
+                        <ul class="collapse list-unstyled" id="inventorySubMenu">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'inventory' %}">
+                                    <i class="fas fa-list"></i>
+                                    <span>Desplegar Inventario</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'add_material' %}">
+                                    <i class="fas fa-plus"></i>
+                                    <span>Agregar Material</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'update_material' %}">
+                                    <i class="fas fa-edit"></i>
+                                    <span>Actualizar Material</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'delete_material' %}">
+                                    <i class="fas fa-trash"></i>
+                                    <span>Eliminar Material</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+    
+                    <!-- Reportes -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'reports' %}">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Reportes</span>
+                        </a>
+                    </li>
+    
+                    <!-- Retiro de Material -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'crear_ticket' %}">
+                            <i class="fas fa-file-alt"></i>
+                            <span>Solicitar Retiro</span>
+                        </a>
+                    </li>
+    
+                    <!-- Ajustes -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'settings' %}">
+                            <i class="fas fa-cogs"></i>
+                            <span>Ajustes</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    
+        <!-- Content -->
+        <section class="content col-md-9 ml-sm-auto col-lg-10 px-4">
+            {% block content %}
+            {% endblock %}
+        </section>
     </div>
+    
 
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
