@@ -1,8 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
     const sidebar = document.querySelector(".sidebar");
     const toggleButton = document.querySelector("#sidebarToggle");
+    const logoImage = sidebar.querySelector("img"); // Seleccionamos la imagen del logo
 
-    if (sidebar && toggleButton) {
+    if (sidebar && toggleButton && logoImage) {
         toggleButton.addEventListener("click", () => {
             sidebar.classList.toggle("collapsed");
 
@@ -16,14 +17,16 @@ document.addEventListener("DOMContentLoaded", () => {
                     // Ocultar el texto y centrar el ícono
                     if (text) text.style.display = "none";
                     if (icon) icon.style.marginRight = "0";
+                    logoImage.style.width = "50px"; // Cambiar tamaño del logo
                 } else {
                     // Mostrar el texto y restablecer el margen del ícono
                     if (text) text.style.display = "inline";
                     if (icon) icon.style.marginRight = "10px";
+                    logoImage.style.width = "120px"; // Restaurar tamaño del logo
                 }
             });
         });
     } else {
-        console.error("El sidebar o el botón toggle no se encontraron.");
+        console.error("El sidebar, el botón toggle o la imagen del logo no se encontraron.");
     }
 });

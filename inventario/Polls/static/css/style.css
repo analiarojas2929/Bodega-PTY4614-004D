@@ -213,6 +213,21 @@ body.dark .nav_bar {
     z-index: 1100;
 }
 
+/* Estilo por defecto para el logo */
+.sidebar img {
+    width: 120px; /* Tamaño normal del logo */
+    height: auto;
+    margin: 0 auto;
+    display: block;
+    transition: width 0.3s ease; /* Transición suave */
+}
+
+/* Estilo cuando la barra lateral está colapsada */
+.sidebar.collapsed img {
+    width: 50px; /* Tamaño del logo cuando el menú está colapsado */
+    transition: width 0.3s ease;
+}
+
 
 
 
