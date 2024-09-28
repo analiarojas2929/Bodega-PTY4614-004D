@@ -1,57 +1,35 @@
-{% extends 'base/base.html' %}
-
-{% block title %}Gestión de Inventario{% endblock %}
-
+{% extends 'base.html' %}
 {% block content %}
-<div class="inventory-container">
-    <h1>Gestión de Inventario</h1>
-
-    <!-- Formulario para Agregar Material -->
-    <div class="add-material-form">
-        <h2>Agregar Nuevo Material</h2>
-        <form id="addMaterialForm">
-            <div class="form-group">
-                <label for="materialName">Nombre del Material:</label>
-                <input type="text" id="materialName" name="materialName" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label for="materialQuantity">Cantidad:</label>
-                <input type="number" id="materialQuantity" name="materialQuantity" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label for="materialDescription">Descripción:</label>
-                <textarea id="materialDescription" name="materialDescription" class="form-control"></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Agregar Material</button>
-        </form>
+<div class="container my-5">
+    <h2 class="text-center mb-4">Lista de Tickets</h2>
+    <div class="d-flex justify-content-end mb-3">
+        <a href="{% url 'crear_ticket' %}" class="btn btn-primary">Crear Ticket</a>
     </div>
-
-    <!-- Tabla de Inventario -->
-    <div class="inventory-table">
-        <h2>Materiales en Inventario</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Nombre del Material</th>
-                    <th>Cantidad</th>
-                    <th>Descripción</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Ejemplo de datos -->
-                <tr>
-                    <td>Cemento</td>
-                    <td>50</td>
-                    <td>Cemento Portland Tipo I</td>
-                    <td>
-                        <button class="btn btn-warning btn-edit">Editar</button>
-                        <button class="btn btn-danger btn-delete">Eliminar</button>
-                    </td>
-                </tr>
-                <!-- Datos dinámicos se cargarían aquí -->
-            </tbody>
-        </table>
-    </div>
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Fecha</th>
+                <th>Usuario</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ticket in tickets %}
+            <tr>
+                <td>{{ ticket.id }}</td>
+                <td>{{ ticket.fecha }}</td>
+                <td>{{ ticket.usuario }}</td>
+                <td>{{ ticket.estado }}</td>
+                <td>
+                    <a href="{% url 'ver_ticket' ticket.id %}" class="btn btn-info btn-sm">Ver</a>
+                    <a href="{% url 'editar_ticket' ticket.id %}" class="btn btn-warning btn-sm">Editar</a>
+                    <a href="{% url 'eliminar_ticket' ticket.id %}" class="btn btn-danger btn-sm">Eliminar</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}

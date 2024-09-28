@@ -1,15 +1,15 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="container my-5">
-    <h2 class="text-center mb-4">Agregar Nuevo Material</h2>
+    <h2 class="text-center mb-4">Crear Nuevo Ticket</h2>
     <div class="row justify-content-center">
         <div class="col-md-8">
             <form method="post">
                 {% csrf_token %}
                 {{ form.as_p }}
                 <div class="d-flex justify-content-between mt-3">
-                    <a href="{% url 'lista_materiales' %}" class="btn btn-secondary">Volver</a>
-                    <button type="submit" class="btn btn-success">Agregar Material</button>
+                    <a href="{% url 'lista_tickets' %}" class="btn btn-secondary">Volver</a>
+                    <button type="submit" class="btn btn-success">Crear Ticket</button>
                 </div>
             </form>
         </div>

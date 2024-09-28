@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="container my-5">
-    <h2 class="text-center mb-4">Agregar Nuevo Material</h2>
+    <h2 class="text-center mb-4">Editar Material</h2>
     <div class="row justify-content-center">
         <div class="col-md-8">
             <form method="post">
@@ -9,7 +9,7 @@
                 {{ form.as_p }}
                 <div class="d-flex justify-content-between mt-3">
                     <a href="{% url 'lista_materiales' %}" class="btn btn-secondary">Volver</a>
-                    <button type="submit" class="btn btn-success">Agregar Material</button>
+                    <button type="submit" class="btn btn-primary">Actualizar Material</button>
                 </div>
             </form>
         </div>

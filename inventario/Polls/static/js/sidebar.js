@@ -7,6 +7,16 @@ document.addEventListener("DOMContentLoaded", () => {
         toggleButton.addEventListener("click", () => {
             sidebar.classList.toggle("collapsed");
 
+            // Cambiar el icono del botón toggle según el estado del sidebar
+            const toggleIcon = toggleButton.querySelector("i");
+            if (sidebar.classList.contains("collapsed")) {
+                toggleIcon.classList.remove("fa-bars");
+                toggleIcon.classList.add("fa-times"); // Cambia el icono a "X"
+            } else {
+                toggleIcon.classList.remove("fa-times");
+                toggleIcon.classList.add("fa-bars"); // Cambia el icono de nuevo a "hamburguesa"
+            }
+
             // Iterar sobre todos los elementos de los enlaces de la barra lateral
             const navLinks = document.querySelectorAll(".nav-link");
             navLinks.forEach(link => {
