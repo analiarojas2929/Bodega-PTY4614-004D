@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     const sidebar = document.querySelector(".sidebar");
     const toggleButton = document.querySelector("#sidebarToggle");
-    const logoImage = sidebar.querySelector("img"); // Seleccionamos la imagen del logo
+    const logoImage = sidebar.querySelector("img");
 
     if (sidebar && toggleButton && logoImage) {
         toggleButton.addEventListener("click", () => {

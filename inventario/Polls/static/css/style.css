@@ -203,6 +203,7 @@ body.dark .nav_bar {
     margin: 0 auto;
     display: block;
     transition: width 0.3s ease; /* Transición suave */
+    margin-top: 50px;
 }
 
 /* Estilo cuando la barra lateral está colapsada */
@@ -276,16 +277,7 @@ body.dark .nav_bar {
     cursor: pointer;
 }
 
-.navbar-collapse {
-    display: none; /* Ocultar el contenido del menú al inicio */
-    flex-direction: column;
-    background-color: var(--black);
-    position: absolute;
-    top: 50px;
-    left: 0;
-    width: 100%;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
+
 
 .navbar-collapse .nav-link {
     padding: 15px;
@@ -299,16 +291,6 @@ body.dark .nav_bar {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
-/* Responsividad */
-@media (max-width: 768px) {
-    .sidebar {
-        display: none; /* Ocultar el sidebar en pantallas pequeñas */
-    }
-
-    .mobile-navbar {
-        display: flex; /* Mostrar la navbar en pantallas pequeñas */
-    }
-}
 
 
 .menu_content {
@@ -441,7 +423,6 @@ body.dark .nav_bar {
     width: 100%;
     margin: 0 auto;
     min-height: 100vh;
-    background-color: #f5f5f5;
 }
 
 .container1 h1 {
@@ -584,88 +565,70 @@ body.dark .nav_bar {
 
 /* Media Queries */
 
+/* Media Queries */
+
 /* Ajustes para pantallas menores a 768px */
 @media (max-width: 768px) {
-    .container1 {
-        padding: 10px;
-        width: 95%;
-        min-height: auto;
-    }
-
-    .card-container {
-        flex-direction: column;
-        align-items: center;
-        gap: 15px;
-    }
-
-    .card {
-        width: 90%;
-        max-width: 350px;
-    }
-
-    .main_content,
-    .content {
-        margin-left: 0;
+    .container-fluid {
+        padding-left: 15px;  /* Ajusta los paddings */
+        padding-right: 15px;
     }
 
     .sidebar {
-        display: none;
+        display: none; /* Ocultar el sidebar en pantallas pequeñas */
     }
 
-    #sidebarToggle {
-        display: block;
+    .mobile-navbar {
+        display: flex; /* Mostrar la navbar en pantallas pequeñas */
+        background-color: var(--black);
+        padding: 10px;
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 1000;
     }
 
-    .inventory-table {
-        overflow-x: auto;
+    .content {
+        margin-left: 0; /* Eliminar el margen en pantallas pequeñas */
+        width: 100%; /* Asegurar que el contenido use todo el ancho */
+    }
+
+    .dashboard-container {
+        margin: 0; /* Eliminar márgenes en pantallas pequeñas */
+        padding: 10px; /* Ajustar el padding */
+    }
+
+    /* Estilo para las tarjetas de la visión general */
+    .overview {
+        flex-direction: column; /* Cambiar a columna en pantallas pequeñas */
     }
 }
 
 /* Ajustes para pantallas menores a 480px */
 @media (max-width: 480px) {
-    .card-content h3 {
-        font-size: 1rem;
+    .card {
+        width: 100%; /* Hacer las tarjetas de ancho completo */
     }
 
-    .card-content p {
-        font-size: 0.75rem;
-    }
-
-    .card-link {
-        font-size: 0.75rem;
-        padding: 6px 12px;
-    }
-
-    .card i {
-        font-size: 40px;
-    }
-
-    .notification_dropdown {
-        width: 200px;
-        right: 10px;
-    }
-
-    .card-container {
-        margin: 5px;
-    }
-
-    h1, h2, h3 {
-        font-size: 1.2rem;
-    }
-
-    .container1 {
-        padding: 10px;
-        margin: 0;
+    .overview-item {
+        margin-bottom: 20px; /* Ajustar márgenes */
+        width: 100%; /* Asegurar que usen el ancho completo */
     }
 
     .request-container {
-        padding: 15px;
+        padding: 15px; /* Reducir padding en contenedores */
     }
 
-    table th,
-    table td {
-        padding: 10px;
-        font-size: 0.9rem;
+    .request-container h2 {
+        font-size: 1.5rem; /* Ajustar tamaño de fuente */
+    }
+
+    .btn {
+        padding: 8px 15px; /* Reducir padding de botones */
+    }
+
+    h1, h2 {
+        font-size: 1.5rem; /* Ajustar tamaños de encabezado */
     }
 }
 
