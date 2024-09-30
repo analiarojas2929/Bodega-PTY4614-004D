@@ -102,3 +102,11 @@ document.addEventListener('DOMContentLoaded', function () {
     console.error("Tabla no encontrada para inicializar DataTables.");
   }
 });
+
+$(document).ready(function() {
+  $('#ticketTable').DataTable({
+      "paging": true,
+      "searching": true,
+      "ordering": true
+  });
+});

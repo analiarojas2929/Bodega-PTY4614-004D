@@ -6,7 +6,7 @@ from django.views.generic import TemplateView
 urlpatterns = [
     path('', views.home_view, name='home'),
     path('inventory/', views.inventory_view, name='inventory'),
-    path('lista_inventory/', views.lista_view, name='lista_inventory'),
+    path('lista_view/', views.lista_view, name='lista_view'),
     path('add_material/', views.add_material_view, name='add_material'),
     path('update_material/', views.update_material_view, name='update_material'),
     path('delete_material/', views.delete_material_view, name='delete_material'),
