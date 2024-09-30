@@ -45,4 +45,4 @@ def delete_material_view(request):
 
 
 def crear_ticket(request):
-    return render(request, 'InventoryView/retiro_material.html')
+    return render(request, 'tickets/ver.html')
