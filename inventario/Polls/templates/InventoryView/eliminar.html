@@ -1,0 +1,16 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Eliminar Material{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="text-center mb-4">Eliminar Material</h2>
+    <p>¿Estás seguro de que deseas eliminar el material "{{ material.nombre }}"?</p>
+    
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Eliminar</button>
+        <a href="{% url 'lista_view' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

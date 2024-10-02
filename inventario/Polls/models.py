@@ -1,4 +1,6 @@
 from django.db import models
+from django.utils import timezone
+
 
 class Rol(models.Model):
     tipo_rol = models.CharField(max_length=50)
@@ -45,17 +47,23 @@ class EstadoTicket(models.Model):
         return self.descripcion
 
 
+
+
 class Ticket(models.Model):
-    codigo_ticket = models.CharField(max_length=50)
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    material = models.ForeignKey(Material, on_delete=models.CASCADE)
-    cantidad_solicitada = models.DecimalField(max_digits=10, decimal_places=2)
-    fecha_solicitud = models.DateField()
-    estado = models.ForeignKey(EstadoTicket, on_delete=models.CASCADE)
+    ESTADO_CHOICES = [
+        ('pendiente', 'Pendiente'),
+        ('aprobado', 'Aprobado'),
+        ('rechazado', 'Rechazado'),
+    ]
+
+    fecha = models.DateTimeField(default=timezone.now)  # Establecer un valor predeterminado
+    usuario = models.CharField(max_length=100)
+    estado = models.CharField(max_length=10, choices=ESTADO_CHOICES, default='pendiente')
+    material_solicitado = models.CharField(max_length=255, null=True, blank=True)
+    cantidad = models.IntegerField(default=0)
 
     def __str__(self):
-        return self.codigo_ticket
-
+        return f'Ticket #{self.id} - {self.estado}'
 
 class Proveedor(models.Model):
     nombre = models.CharField(max_length=100)

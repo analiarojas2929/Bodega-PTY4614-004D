@@ -1,18 +1,33 @@
-{% extends 'base.html' %}
+{% extends 'base/base.html' %}
+
+{% block title %}Agregar Material{% endblock %}
+
 {% block content %}
-<div class="container my-5">
-    <h2 class="text-center mb-4">Agregar Nuevo Material</h2>
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <form method="post">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <div class="d-flex justify-content-between mt-3">
-                    <a href="{% url 'lista_materiales' %}" class="btn btn-secondary">Volver</a>
-                    <button type="submit" class="btn btn-success">Agregar Material</button>
-                </div>
-            </form>
+<div class="container-add-material">
+    <h2 class="text-center">Agregar Material</h2>
+    <form method="POST" action="{% url 'add_material' material.id %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="nombre">Nombre</label>
+            <input type="text" name="nombre" id="nombre" class="form-control" required>
         </div>
-    </div>
+        <div class="form-group">
+            <label for="descripcion">Descripción</label>
+            <textarea name="descripcion" id="descripcion" class="form-control"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="unidad_medida">Unidad de Medida</label>
+            <input type="text" name="unidad_medida" id="unidad_medida" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="cantidad_disponible">Cantidad Disponible</label>
+            <input type="number" name="cantidad_disponible" id="cantidad_disponible" class="form-control" step="0.01" required>
+        </div>
+        <div class="form-group">
+            <label for="stock_minimo">Stock Mínimo</label>
+            <input type="number" name="stock_minimo" id="stock_minimo" class="form-control" step="0.01" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Agregar Material</button>
+    </form>
 </div>
 {% endblock %}

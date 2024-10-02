@@ -82,26 +82,35 @@ body {
     margin-left: 17%;
 }
 
-.table-container {
-    padding: 15px;
-    background-color: white;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.menu{
+    margin-top: 20px;
 }
 
-.table thead th {
-    background-color: var(--dark-bg-color);
-    color: white;
+table {
+    width: 100%; /* Asegúrate de que la tabla ocupe todo el ancho disponible */
+    border-collapse: collapse; /* Elimina el espacio entre bordes */
 }
 
-table tbody tr:nth-child(even) {
-    background-color: var(--light-gray);
+th {
+    background-color: #007bff; /* Color de fondo para el encabezado */
+    color: white; /* Color del texto */
+    padding: 10px; /* Espaciado interno */
+    text-align: left; /* Alinear texto a la izquierda */
 }
 
-table tbody tr:hover {
-    background-color: var(--dark-blue);
-    color: var(--white-color);
+td {
+    padding: 10px; /* Espaciado interno para las celdas */
+    border: 1px solid #ddd; /* Color de los bordes de las celdas */
 }
+
+tr:nth-child(even) {
+    background-color: #f2f2f2; /* Color de fondo para las filas pares */
+}
+
+tr:hover {
+    background-color: #ddd; /* Color de fondo al pasar el mouse sobre la fila */
+}
+
 
 /* Dark Mode */
 body.dark {
@@ -774,13 +783,15 @@ table th {
 }
 
 .btn-primary {
-    background-color: var(--blue-color);
-    color: var(--white-color);
-    border: none;
+    background-color: #4070f4;
 }
 
 .btn-primary:hover {
-    background-color: var(--dark-blue);
+    background-color: #305cbf;
+}
+
+#reportContent canvas {
+    margin-top: 20px;
 }
 
 .btn-success {
@@ -862,32 +873,84 @@ table th {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
 
-table th,
-table td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid var(--grey-color-light);
-}
-
-table th {
-    background-color: var(--light-gray);
-    color: var(--black);
-}
-
-table td {
-    color: var(--grey-color);
-}
 
 .btn-edit,
 .btn-delete {
     margin-right: 5px;
 }
+
+
+form {
+    margin-bottom: 20px;
+}
+
+.report{
+    padding: 20px;
+}
+
+canvas {
+    margin-top: 20px;
+}
+
+
+.material-container {
+    max-width: 600px; /* Ancho máximo del contenedor */
+    margin: 0 auto; /* Centra el contenedor horizontalmente */
+    padding: 20px; /* Espaciado interno */
+    background-color: #f9f9f9; /* Color de fondo claro */
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+}
+
+.material-container h1 {
+    text-align: center; /* Centra el título */
+    color: #333; /* Color del texto */
+    margin-bottom: 20px; /* Espacio debajo del título */
+}
+
+.form-group {
+    margin-bottom: 15px; /* Espacio entre grupos de formulario */
+}
+
+.form-group label {
+    display: block; /* Hace que las etiquetas se muestren en bloque */
+    margin-bottom: 5px; /* Espacio debajo de las etiquetas */
+    font-weight: bold; /* Negrita para las etiquetas */
+    color: #555; /* Color del texto de las etiquetas */
+}
+
+.form-group input,
+.form-group select {
+    width: 100%; /* Ancho completo para entradas */
+    padding: 10px; /* Espaciado interno */
+    border: 1px solid #ccc; /* Bordes de entrada */
+    border-radius: 4px; /* Bordes redondeados */
+    box-sizing: border-box; /* Incluye padding en el ancho total */
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #007bff; /* Color del borde al enfocar */
+    outline: none; /* Quita el contorno predeterminado */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Sombra al enfocar */
+}
+
+.btn {
+    background-color: #007bff; /* Color de fondo del botón */
+    color: white; /* Color del texto del botón */
+    padding: 10px 20px; /* Espaciado interno del botón */
+    border: none; /* Sin borde */
+    border-radius: 4px; /* Bordes redondeados para el botón */
+    cursor: pointer; /* Cambia el cursor al pasar por encima */
+    font-size: 16px; /* Tamaño de fuente del botón */
+    transition: background-color 0.3s; /* Transición suave para el color de fondo */
+}
+
+.btn:hover {
+    background-color: #0056b3; /* Color de fondo al pasar el ratón */
+}
+
 
 .request-container {
     max-width: 600px;

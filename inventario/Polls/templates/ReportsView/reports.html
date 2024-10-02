@@ -1,52 +1,60 @@
 {% extends 'base/base.html' %}
-{% block title %}Panel de Reportes{% endblock %}
-
 {% block content %}
-<div class="reports-container">
-    <h1>Panel de Reportes</h1>
+<div class="container my-5">
+    <h2 class="text-center mb-4">Panel de Reportes</h2>
+    <a href="{% url 'stock_alerts' %}" class="btn btn-warning">Ver Alertas de Stock Bajo</a>
 
-    <!-- Formulario para generar reportes -->
-    <div class="report-generation">
-        <h2>Generar Reporte</h2>
-        <form id="reportForm" method="POST">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="reportType">Tipo de Reporte:</label>
-                <select id="reportType" name="reportType" class="form-control">
-                    <option value="inventory">Inventario Actual</option>
-                    <option value="movements">Movimientos de Stock</option>
-                    <option value="lowStock">Alertas de Stock Bajo</option>
-                </select>
+    <div class="row justify-content-center">
+        <!-- Formulario de Generación de Reportes -->
+        <div class="col-md-6">
+            <div class="report shadow">
+                <div class="report-body">
+                    <h4 class="card-title text-center mb-4">Generar Reporte</h4>
+                    <form id="reportForm">
+                        <div class="form-group mb-3">
+                            <label for="reportType">Tipo de Reporte</label>
+                            <select id="reportType" name="reportType" class="form-control">
+                                <option value="Inventorio">Inventario Actual</option>
+                                <option value="Movimienitos de stock">Movimientos de Stock</option>
+                                <option value="Alertas de Stock bajo">Alertas de Stock Bajo</option>
+                            </select>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="startDate">Fecha de Inicio</label>
+                            <input type="date" id="startDate" name="startDate" class="form-control">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="endDate">Fecha de Fin</label>
+                            <input type="date" id="endDate" name="endDate" class="form-control">
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Generar Reporte</button>
+                    </form>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="startDate">Fecha de Inicio:</label>
-                <input type="date" id="startDate" name="startDate" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label for="endDate">Fecha de Fin:</label>
-                <input type="date" id="endDate" name="endDate" class="form-control" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Generar Reporte</button>
-        </form>
-    </div>
-
-    <!-- Visualización de Reportes -->
-    <div class="report-view">
-        <h2>Vista Previa del Reporte</h2>
-        <div id="reportContent">
-            <!-- Mensaje inicial -->
-            <p>Seleccione un tipo de reporte y un rango de fechas para visualizar los datos.</p>
-
-            <!-- Aquí se inserta el gráfico de Chart.js -->
-            <canvas id="inventoryChart" width="400" height="200"></canvas>
         </div>
     </div>
 
-    <!-- Exportación de Reportes -->
-    <div class="report-export">
-        <h2>Exportar Reporte</h2>
-        <button class="btn btn-success">Exportar a PDF</button>
-        <button class="btn btn-info">Exportar a Excel</button>
+    <!-- Vista Previa del Reporte -->
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-8">
+            <div class="report shadow">
+                <div class="card-body">
+                    <h4 class="card-title text-center mb-4">Vista Previa del Reporte</h4>
+                    <div id="reportContent" class="text-center">
+                        <p class="text-muted">Selecciona un tipo de reporte y un rango de fechas para visualizar los datos.</p>
+                        <!-- Aquí se insertará el gráfico de Chart.js -->
+                        <canvas id="inventoryChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Exportar Reporte -->
+    <div class="text-center mt-4">
+        <button class="btn btn-success mx-2">Exportar a PDF</button>
+        <button class="btn btn-info mx-2">Exportar a Excel</button>
     </div>
 </div>
+
 {% endblock %}

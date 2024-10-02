@@ -1,27 +1,18 @@
 {% extends 'base/base.html' %}
-{% block title %}Panel de ticket{% endblock %}
-{% block content %}
-    <div class="withdrawal-container">
-        <h1 class="title">Solicitar Retiro de Material</h1>
-        <form method="POST" class="withdrawal-form">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="material">Material:</label>
-                <select name="material" id="material" class="form-control" required>
-                    {% for material in materials %}
-                    <option value="{{ material.id }}">{{ material.nombre }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="quantity">Cantidad:</label>
-                <input type="number" name="quantity" id="quantity" class="form-control" required min="1" />
-            </div>
-            <button type="submit" class="btn btn-primary">Solicitar Retiro</button>
-        </form>
 
-        {% if message %}
-        <div class="alert alert-success mt-3">{{ message }}</div>
-        {% endif %}
+{% block content %}
+<div class="container my-5">
+    <h2 class="text-center mb-4">Detalles del Ticket</h2>
+    <div class="card">
+        <div class="card-body">
+            <h5>ID: {{ ticket.id }}</h5>
+            <p><strong>Fecha:</strong> {{ ticket.fecha }}</p>
+            <p><strong>Usuario:</strong> {{ ticket.usuario }}</p>
+            <p><strong>Estado:</strong> {{ ticket.estado }}</p>
+            <p><strong>Material Solicitado:</strong> {{ ticket.material_solicitado }}</p>
+            <p><strong>Cantidad:</strong> {{ ticket.cantidad }}</p>
+        </div>
     </div>
+    <a href="{% url 'lista_tickets' %}" class="btn btn-secondary mt-3">Volver a la Lista</a>
+</div>
 {% endblock %}
