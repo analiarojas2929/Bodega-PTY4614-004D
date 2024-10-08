@@ -1,5 +1,14 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import *
+from rest_framework import viewsets
+from .serializers import MaterialSerializer
+from rest_framework.response import Response
+from rest_framework.decorators import action
+from django.contrib.auth.decorators import login_required
+from .forms import CustomUserCreationForm
+from .models import CustomUser
+from django.http import HttpResponseForbidden
+
 
 def home_view(request):
     return render(request, 'HomeView/home.html')
@@ -8,8 +17,20 @@ def inventory_view(request):
     return render(request, 'InventoryView/inventory.html')
 
 def lista_view(request):
-    materiales = Material.objects.all()  # Obtener todos los materiales desde la base de datos
-    return render(request, 'InventoryView/lista.html', {'materiales': materiales})
+    materiales_activos = Material.objects.filter(activo=True)  # Solo materiales activos
+    materiales_inactivos = Material.objects.filter(activo=False)  # Solo materiales inactivos
+    return render(request, 'InventoryView/lista.html', {
+        'materiales': materiales_activos,
+        'inactivos': materiales_inactivos
+    })
+
+def restore_material_view(request, id):
+    material = get_object_or_404(Material, id=id)
+    if request.method == 'POST':
+        material.activo = True  # Cambia el estado del material a activo
+        material.save()
+        return redirect('lista_view')  # Redirige a la lista de materiales
+    return render(request, 'InventoryView/restaurar.html', {'material': material})
 
 def add_material_view(request):
     if request.method == 'POST':
@@ -46,9 +67,31 @@ def update_material_view(request, id):
 def delete_material_view(request, id):
     material = get_object_or_404(Material, id=id)
     if request.method == 'POST':
-        material.delete()  # Elimina el material
-        return redirect('lista_view')  # Redirige a la lista de materiales después de eliminar
+        # En lugar de eliminar, marcamos el material como inactivo
+        material.activo = False
+        material.save()
+        return redirect('lista_view')  # Redirige a la lista después de marcarlo como inactivo
     return render(request, 'InventoryView/eliminar.html', {'material': material})
+
+class MaterialViewSet(viewsets.ModelViewSet):
+    queryset = Material.objects.all()
+    serializer_class = MaterialSerializer
+
+    # Acción personalizada para eliminar lógicamente
+    @action(detail=True, methods=['post'])
+    def eliminar(self, request, pk=None):
+        material = self.get_object()
+        material.activo = False
+        material.save()
+        return Response({'status': 'Material eliminado lógicamente'})
+
+    # Acción personalizada para restaurar el material
+    @action(detail=True, methods=['post'])
+    def restaurar(self, request, pk=None):
+        material = self.get_object()
+        material.activo = True
+        material.save()
+        return Response({'status': 'Material restaurado'})
 
 def stock_alerts_view(request):
     alertas_stock = Material.objects.filter(cantidad_disponible__lt=models.F('stock_minimo'))
@@ -97,3 +140,42 @@ def eliminar_ticket(request, ticket_id):
     ticket = Ticket.objects.get(id=ticket_id)
     ticket.delete()
     return redirect('lista_tickets')
+
+
+@login_required
+def create_user_view(request):
+    # Verifica si el usuario tiene los roles adecuados
+    if not request.user.roles.filter(name__in=['Administrador de Sistema', 'Administrador de Obra']).exists():
+        return HttpResponseForbidden('No tienes permiso para crear usuarios.')
+    
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.set_password(form.cleaned_data['password1'])  # Configura la contraseña
+            user.save()  # Guarda el usuario primero para poder asociar roles
+            form.save_m2m()  # Guarda las relaciones ManyToMany (roles)
+            return redirect('home')  # Redirige a la página principal después de crear
+    else:
+        form = CustomUserCreationForm()
+
+    return render(request, 'create_user.html', {'form': form})
+
+
+@login_required
+def some_view(request):
+    # Comprobamos si el usuario tiene el rol de 'Administrador de Obra'
+    if not request.user.roles.filter(name='Administrador de Obra').exists():
+        return HttpResponseForbidden('No tienes acceso a esta sección.')
+
+    # Lógica de la vista si el usuario tiene el rol adecuado
+    # Aquí se muestra solo una plantilla de ejemplo
+    context = {
+        'mensaje': 'Bienvenido a la vista restringida para el Administrador de Obra'
+    }
+    
+    return render(request, 'restricted_view.html', context)
+
+@login_required
+def login(request):
+    return render(request, 'usuarios/login.html')

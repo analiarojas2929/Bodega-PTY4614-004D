@@ -28,18 +28,33 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+AUTH_USER_MODEL = 'Polls.CustomUser'
 
 # Application definition
 
 INSTALLED_APPS = [
+    'Polls',
+    'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'Polls',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',  # Google provider
 ]
+
+SITE_ID = 1
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',  # Agrega esto
+)
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -49,6 +64,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',  # Agrega esta línea
 ]
 
 ROOT_URLCONF = 'inventario.urls'
@@ -75,6 +91,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'inventario.wsgi.application'
 
+LOGIN_URL = 'login'  # Esto asegura que los usuarios sean redirigidos al login si no están autenticados
+LOGIN_REDIRECT_URL = '/'  # Redirecciona a la página principal después del login
+LOGOUT_REDIRECT_URL = 'login'  # Redirecciona al login después del logout
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
@@ -86,6 +105,10 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
+
+
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -120,7 +143,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
-STATIC_URL = 'static/'
+STATIC_URL = 'Polls/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 # Default primary key field type

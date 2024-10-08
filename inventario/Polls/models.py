@@ -1,24 +1,6 @@
 from django.db import models
 from django.utils import timezone
-
-
-class Rol(models.Model):
-    tipo_rol = models.CharField(max_length=50)
-
-    def __str__(self):
-        return self.tipo_rol
-
-class Usuario(models.Model):
-    nombre = models.CharField(max_length=100)
-    apellido = models.CharField(max_length=100)
-    nombre_usuario = models.CharField(max_length=50)
-    email = models.EmailField(max_length=100)
-    contrasena = models.CharField(max_length=255)
-    rol = models.ForeignKey(Rol, on_delete=models.CASCADE)
-    fecha_creacion = models.DateField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.nombre} {self.apellido}"
+from django.contrib.auth.models import AbstractUser
 
 class Material(models.Model):
     nombre = models.CharField(max_length=100)
@@ -26,6 +8,7 @@ class Material(models.Model):
     unidad_medida = models.CharField(max_length=50)
     cantidad_disponible = models.DecimalField(max_digits=10, decimal_places=2)
     stock_minimo = models.DecimalField(max_digits=10, decimal_places=2)
+    activo = models.BooleanField(default=True)  # Nuevo campo para eliminación lógica
 
     def __str__(self):
         return self.nombre
@@ -47,8 +30,6 @@ class EstadoTicket(models.Model):
         return self.descripcion
 
 
-
-
 class Ticket(models.Model):
     ESTADO_CHOICES = [
         ('pendiente', 'Pendiente'),
@@ -56,7 +37,7 @@ class Ticket(models.Model):
         ('rechazado', 'Rechazado'),
     ]
 
-    fecha = models.DateTimeField(default=timezone.now)  # Establecer un valor predeterminado
+    fecha = models.DateTimeField(default=timezone.now)
     usuario = models.CharField(max_length=100)
     estado = models.CharField(max_length=10, choices=ESTADO_CHOICES, default='pendiente')
     material_solicitado = models.CharField(max_length=255, null=True, blank=True)
@@ -64,6 +45,7 @@ class Ticket(models.Model):
 
     def __str__(self):
         return f'Ticket #{self.id} - {self.estado}'
+
 
 class Proveedor(models.Model):
     nombre = models.CharField(max_length=100)
@@ -94,14 +76,16 @@ class Pedido(models.Model):
     def __str__(self):
         return f"Pedido {self.id} - {self.proveedor.nombre}"
 
+
 class TipoReporte(models.Model):
     descripcion = models.TextField()
 
     def __str__(self):
         return self.descripcion
 
+
 class Reporte(models.Model):
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    usuario = models.ForeignKey('CustomUser', on_delete=models.CASCADE)  # Cambié la referencia de 'Usuario' a 'CustomUser'
     tipo_reporte = models.ForeignKey(TipoReporte, on_delete=models.CASCADE)
     fecha_inicio = models.DateField()
     fecha_fin = models.DateField()
@@ -109,3 +93,13 @@ class Reporte(models.Model):
 
     def __str__(self):
         return f"Reporte {self.id} - {self.tipo_reporte.descripcion}"
+
+
+class Role(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+class CustomUser(AbstractUser):
+    roles = models.ManyToManyField(Role, related_name='users')
