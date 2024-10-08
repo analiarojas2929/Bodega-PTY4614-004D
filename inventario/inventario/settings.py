@@ -31,6 +31,22 @@ ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = 'Polls.CustomUser'
 
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        },
+        'OAUTH_PKCE_ENABLED': True,  # Asegúrate de tener esta opción si es necesaria
+    }
+}
+
+
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -42,11 +58,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.sites',
+    'django.contrib.sites',  # Necesario para django-allauth
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',  # Google provider
+    'allauth.socialaccount.providers.google', 
 ]
 
 SITE_ID = 1
@@ -94,7 +110,7 @@ WSGI_APPLICATION = 'inventario.wsgi.application'
 
 LOGIN_URL = 'login'  # Esto asegura que los usuarios sean redirigidos al login si no están autenticados
 LOGIN_REDIRECT_URL = '/'  # Redirecciona a la página principal después del login
-LOGOUT_REDIRECT_URL = 'login'  # Redirecciona al login después del logout
+LOGOUT_REDIRECT_URL = '/'  # Redirecciona al login después del logout
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases

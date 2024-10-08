@@ -1,4 +1,6 @@
 {% load static %}
+{% load socialaccount %} <!-- Esto carga las etiquetas necesarias para social login -->
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -76,11 +78,10 @@
         </form>
 
         <div class="social-login">
-            <a href="{% url 'socialaccount_login' provider='google' %}" class="btn btn-google">Iniciar sesión con Google</a>
-              <i class="fab fa-google"></i> Iniciar sesión con Google
-            </a>
-          </div>
-          
+          <a href="{% provider_login_url 'google' %}" class="btn btn-google">
+            <i class="fab fa-google"></i> Iniciar sesión con Google
+          </a>
+        </div>
       </div>
     </div>
   </body>
