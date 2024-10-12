@@ -8,6 +8,9 @@ from django.contrib.auth.decorators import login_required
 from .forms import CustomUserCreationForm
 from .models import CustomUser
 from django.http import HttpResponseForbidden
+from allauth.socialaccount.helpers import complete_social_login
+from allauth.socialaccount.models import SocialApp
+from allauth.socialaccount.providers.google.provider import GoogleProvider
 
 
 def home_view(request):
@@ -179,3 +182,11 @@ def some_view(request):
 @login_required
 def login(request):
     return render(request, 'usuarios/login.html')
+
+def google_login_direct(request):
+    # Obtener el proveedor de Google
+    provider = GoogleProvider.id
+    # Obtenemos la configuración de la aplicación de Google
+    app = SocialApp.objects.get(provider=provider)
+    # Redirigir a la URL de autenticación de Google
+    return redirect(f"https://accounts.google.com/o/oauth2/auth?client_id={app.client_id}&redirect_uri=http://127.0.0.1:8000/accounts/google/login/callback/&scope=openid%20email%20profile&response_type=code")

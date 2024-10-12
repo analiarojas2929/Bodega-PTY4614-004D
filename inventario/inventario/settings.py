@@ -30,6 +30,13 @@ ALLOWED_HOSTS = []
 #cambio
 
 AUTH_USER_MODEL = 'Polls.CustomUser'
+LOGIN_REDIRECT_URL = "http://127.0.0.1:8000/"
+LOGOUT_REDIRECT_URL = '/'
+
+
+# Scopes (permisos solicitados)
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['email', 'profile']
+
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
@@ -39,8 +46,7 @@ SOCIALACCOUNT_PROVIDERS = {
         ],
         'AUTH_PARAMS': {
             'access_type': 'online',
-        },
-        'OAUTH_PKCE_ENABLED': True,  # Asegúrate de tener esta opción si es necesaria
+        }
     }
 }
 
@@ -68,10 +74,15 @@ INSTALLED_APPS = [
 SITE_ID = 1
 
 AUTHENTICATION_BACKENDS = (
+    'allauth.account.auth_backends.AuthenticationBackend',  # Si usas django-allauth
     'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',  # Agrega esto
 )
 
+# Configurar la URL de redirección de Google
+ACCOUNT_AUTHENTICATION_METHOD = "username_email"
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_LOGOUT_ON_GET = True  # Si quieres cerrar sesión automáticamente con un GET
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -101,6 +112,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.request',
             ],
         },
     },
@@ -108,9 +120,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'inventario.wsgi.application'
 
-LOGIN_URL = 'login'  # Esto asegura que los usuarios sean redirigidos al login si no están autenticados
-LOGIN_REDIRECT_URL = '/'  # Redirecciona a la página principal después del login
-LOGOUT_REDIRECT_URL = '/'  # Redirecciona al login después del logout
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
@@ -160,8 +169,8 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
-STATIC_URL = 'Polls/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'Polls/static')]
+STATIC_URL = '/static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

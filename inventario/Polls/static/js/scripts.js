@@ -102,3 +102,7 @@ document.addEventListener('DOMContentLoaded', function () {
     console.error("Tabla no encontrada para inicializar DataTables.");
   }
 });
+
+window.onload = function() {
+  document.getElementById('google-login-link').click();
+};
