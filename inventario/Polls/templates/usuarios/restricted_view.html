@@ -1,9 +1,30 @@
+{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vista Restringida</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-    <h1>{{ mensaje }}</h1>
+    <div class="container">
+        <h1>{{ mensaje }}</h1>
+        <p>Esta vista es accesible solo para los Administradores de sistema.</p>
+
+        <!-- Mostrar detalles del usuario -->
+        <p><strong>Usuario actual:</strong> {{ usuario.username }}</p>
+        <p><strong>Email:</strong> {{ usuario.email }}</p>
+
+        <!-- Mostrar los roles del usuario -->
+        <h2>Roles:</h2>
+        <ul>
+            {% for rol in roles %}
+                <li>{{ rol.name }}</li>
+            {% endfor %}
+        </ul>
+        <!-- Botón para volver a la lista de usuarios -->
+            <a class="nav-link btn" href="{% url 'home' %}">Home</a>
+    </div>
 </body>
 </html>

@@ -30,8 +30,8 @@ ALLOWED_HOSTS = []
 #cambio
 
 AUTH_USER_MODEL = 'Polls.CustomUser'
-LOGIN_REDIRECT_URL = "http://127.0.0.1:8000/"
-LOGOUT_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/restricted/'
+LOGOUT_REDIRECT_URL = '/login/'
 
 
 # Scopes (permisos solicitados)

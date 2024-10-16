@@ -37,7 +37,7 @@
                     <!-- Botón para eliminación lógica -->
                     <form method="POST" action="{% url 'delete_material' material.id %}" style="display:inline-block;">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                        <button type="submit" class="btn btn-danger btn-sm">Inactivar</button>
                     </form>
                 </td>
             </tr>
@@ -72,7 +72,7 @@
                 <td>{{ material.stock_minimo }}</td>
                 <td>
                     <!-- Botón para restaurar -->
-                    <a href="{% url 'restore_material' material.id %}" class="btn btn-info btn-sm">Restaurar</a>
+                    <a href="{% url 'restore_material' material.id %}" class="btn btn-info btn-sm">Activar</a>
                 </td>
             </tr>
             {% empty %}

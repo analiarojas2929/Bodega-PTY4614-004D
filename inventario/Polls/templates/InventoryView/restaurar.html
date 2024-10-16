@@ -6,12 +6,12 @@
 <div class="container my-5">
     <h2 class="text-center mb-4">Restaurar Material</h2>
     <div class="alert alert-warning text-center">
-        <p>¿Estás seguro de que deseas restaurar el material <strong>{{ material.nombre }}</strong>?</p>
+        <p>¿Estás seguro de que deseas ReActivar el material <strong>{{ material.nombre }}</strong> nuevamente?</p>
     </div>
     <div class="d-flex justify-content-center">
         <form method="POST" action="{% url 'restore_material' material.id %}">
             {% csrf_token %}
-            <button type="submit" class="btn btn-success">Restaurar</button>
+            <button type="submit" class="btn btn-success">Activar</button>
         </form>
         <a href="{% url 'lista_view' %}" class="btn btn-secondary ml-3">Cancelar</a>
     </div>
