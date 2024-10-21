@@ -6,8 +6,9 @@ from django.contrib.auth import views as auth_views
 
 # Definir las rutas
 urlpatterns = [
-    path('', auth_views.LoginView.as_view(template_name='usuarios/login.html'), name='login'),
+    path('login/', auth_views.LoginView.as_view(template_name='Modulo_usuario/usuarios/login.html'), name='login'),
     path('home', views.home_view, name='home'),
+    path('admin_login/', auth_views.LoginView.as_view(template_name='Modulo_administrador/usuarios/login.html'), name='admin_login'),
     path('inventory/', views.inventory, name='inventory'),
     path('lista_view/', views.lista_view, name='lista_view'),
     path('add_material/', views.add_material_view, name='add_material'),
@@ -21,9 +22,10 @@ urlpatterns = [
     path('ver_ticket/<int:ticket_id>/', views.ver_ticket, name='ver_ticket'),
     path('eliminar_ticket/<int:ticket_id>/', views.eliminar_ticket, name='eliminar_ticket'),
     path('create_user/', views.create_user, name='create_user'),
-    path('restricted/', views.some_view, name='restricted_view'),  # Vista restringida, solo una vez
+    path('restricted/', views.redirect_home_administrador, name='restricted_view'),  # Vista restringida, solo una vez
     path('login/', auth_views.LoginView.as_view(template_name='usuarios/login.html'), name='login'),
     path('accounts/', include('allauth.urls')),  # Para el login de terceros (Google, etc.)
     path('access_denied/', views.access_denied_view, name='access_denied'),  # Vista para acceso denegado
     path('logout/', views.custom_logout_view, name='logout'),
+
 ]

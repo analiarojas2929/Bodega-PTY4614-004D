@@ -12,19 +12,23 @@
                         {% csrf_token %}
                         <div class="form-group">
                             <label for="username">Usuario</label>
-                            <input type="text" name="username" class="form-control" required>
+                            {{ form.username }}  <!-- Campo de username -->
                         </div>
                         <div class="form-group">
                             <label for="email">Email</label>
-                            <input type="email" name="email" class="form-control" required>
+                            {{ form.email }}  <!-- Campo de email -->
                         </div>
                         <div class="form-group">
                             <label for="password1">Contraseña</label>
-                            <input type="password" name="password1" class="form-control" required>
+                            {{ form.password1 }}  <!-- Campo de contraseña -->
                         </div>
                         <div class="form-group">
                             <label for="password2">Confirmar Contraseña</label>
-                            <input type="password" name="password2" class="form-control" required>
+                            {{ form.password2 }}  <!-- Campo de confirmación de contraseña -->
+                        </div>
+                        <div class="form-group">
+                            <label for="roles">Selecciona un rol</label>
+                            {{ form.roles }}  <!-- Campo de selección de rol -->
                         </div>
                         <button type="submit" class="btn btn-primary btn-block mt-3">Registrarse</button>
                     </form>

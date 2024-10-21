@@ -4,8 +4,8 @@ from .models import CustomUser, Role
 
 class CustomUserCreationForm(UserCreationForm):
     roles = forms.ModelChoiceField(
-        queryset=Role.objects.all(),  # Cargar todos los roles desde la base de datos
-        widget=forms.Select,  # Usar Select para permitir una sola selección
+        queryset=Role.objects.all(),
+        widget=forms.Select,
         required=True,
         label="Selecciona un rol",
     )
@@ -21,8 +21,10 @@ class CustomUserCreationForm(UserCreationForm):
         return email
 
     def save(self, commit=True):
-        user = super().save(commit=False)  # Guardar el usuario sin los roles aún
+        user = super().save(commit=False)
         if commit:
-            user.save()
-        user.roles.set([self.cleaned_data['roles']])  # Asignar el rol seleccionado como una lista
+            user.save()  # Guardar el usuario primero para que tengamos una instancia válida
+        user.roles.set([self.cleaned_data['roles']])  # Asignar el rol seleccionado
+        if commit:
+            user.save()  # Guardar de nuevo con el rol asignado
         return user
