@@ -6,9 +6,9 @@ from django.contrib.auth.models import AbstractUser
 class Material(models.Model):
     nombre = models.CharField(max_length=100)
     descripcion = models.TextField(blank=True, null=True)
-    unidad_medida = models.CharField(max_length=50)
-    cantidad_disponible = models.DecimalField(max_digits=10, decimal_places=2)
-    stock_minimo = models.DecimalField(max_digits=10, decimal_places=2)
+    unidad_medida = models.ForeignKey('UnidadMedida', on_delete=models.CASCADE, default=1)
+    cantidad_disponible = models.IntegerField()
+    stock_minimo = models.IntegerField()
     activo = models.BooleanField(default=True)  # Campo para eliminación lógica
 
     def __str__(self):
@@ -40,12 +40,12 @@ class Ticket(models.Model):
 
     fecha = models.DateTimeField(default=timezone.now)
     usuario = models.CharField(max_length=100)
-    estado = models.CharField(max_length=10, choices=ESTADO_CHOICES, default='pendiente')
+    estado_ticket = models.CharField(max_length=10, choices=ESTADO_CHOICES, default='pendiente')
     material_solicitado = models.CharField(max_length=255, null=True, blank=True)
     cantidad = models.IntegerField(default=0)
 
     def __str__(self):
-        return f'Ticket #{self.id} - {self.estado}'
+        return f'Ticket #{self.id} - {self.estado_ticket}'
 
 # Modelo para los Proveedores
 class Proveedor(models.Model):
@@ -86,7 +86,7 @@ class TipoReporte(models.Model):
 
 # Modelo para los Reportes
 class Reporte(models.Model):
-    usuario = models.ForeignKey('CustomUser', on_delete=models.CASCADE)  # Referencia a 'CustomUser'
+    usuario = models.ForeignKey('CustomUser', on_delete=models.CASCADE)  # Referencia directa a CustomUser
     tipo_reporte = models.ForeignKey(TipoReporte, on_delete=models.CASCADE)
     fecha_inicio = models.DateField()
     fecha_fin = models.DateField()
@@ -95,7 +95,6 @@ class Reporte(models.Model):
     def __str__(self):
         return f"Reporte {self.id} - {self.tipo_reporte.descripcion}"
 
-
 class Role(models.Model):
     name = models.CharField(max_length=100, unique=True)
 
@@ -103,7 +102,6 @@ class Role(models.Model):
         return f"{self.id} - {self.name}"
 
 class CustomUser(AbstractUser):
-    # Relación Many-to-Many con roles
     roles = models.ManyToManyField(Role)
 
     def __str__(self):
