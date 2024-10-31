@@ -30,7 +30,7 @@ ALLOWED_HOSTS = []
 #cambio
 
 AUTH_USER_MODEL = 'Polls.CustomUser'
-LOGIN_REDIRECT_URL = '/restricted/'
+LOGIN_REDIRECT_URL = '/home'
 LOGOUT_REDIRECT_URL = '/login/'
 
 
@@ -111,6 +111,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.request',
+                'Polls.context_processors.role_context',
             ],
         },
     },

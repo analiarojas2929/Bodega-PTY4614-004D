@@ -7,6 +7,8 @@ from django.contrib import messages
 from django.contrib.auth import logout,authenticate, login
 from .roles import ADMINISTRADOR_SISTEMA, ADMINISTRADOR_OBRA, JEFE_OBRA, CAPATAZ, JEFE_BODEGA
 from .models import Role
+from .roles import ADMINISTRADOR_OBRA, JEFE_BODEGA, JEFE_OBRA
+
 import pdb
 from django.contrib.auth.forms import AuthenticationForm
 
@@ -15,19 +17,31 @@ def has_role_id(user, role_id):
     return user.roles.filter(id=role_id).exists()
 # Vista principal
 def home_view(request):
-    return render(request, 'Modulo_usuario/HomeView/home.html')
+    context = get_role_context(request.user)
+    return render(request, 'Modulo_usuario/HomeView/home.html', context)
+
+def get_role_context(user):
+    return {
+        'is_jefe_bodega': user.roles.filter(id=JEFE_BODEGA).exists(),
+        'is_jefe_obra': user.roles.filter(id=JEFE_OBRA).exists(),
+        'can_access_ticket': user.roles.filter(id=JEFE_BODEGA).exists() or user.roles.filter(id=JEFE_OBRA).exists(),
+        'can_access_inventario': user.roles.filter(id=JEFE_BODEGA).exists() or user.roles.filter(id=JEFE_OBRA).exists(),
+        'can_access_reportes': user.roles.filter(id=ADMINISTRADOR_OBRA).exists(),
+        'is_administrador_obra': user.roles.filter(id=ADMINISTRADOR_OBRA).exists(),
+    }
 
 
 # Vista de inventario (solo accesible por Jefe de Bodega, Role ID = 5)
 @login_required
-@user_passes_test(lambda u: has_role_id(u, JEFE_BODEGA), login_url='/access_denied/')
+@user_passes_test(lambda u: has_role_id(u, JEFE_BODEGA) or has_role_id(u, JEFE_OBRA), login_url='/access_denied/')
 def inventory(request):
-    return render(request, 'Modulo_usuario/InventoryView/inventory.html')
+    context = get_role_context(request.user)
+    return render(request, 'Modulo_usuario/InventoryView/inventory.html', context)
 
 
 # Lista de materiales activos e inactivos (solo accesible por Jefe de Bodega)
 @login_required
-@user_passes_test(lambda u: has_role_id(u, JEFE_BODEGA), login_url='/access_denied/')
+@user_passes_test(lambda u: has_role_id(u, JEFE_BODEGA) or has_role_id(u, JEFE_OBRA), login_url='/access_denied/')
 def lista_view(request):
     materiales_activos = Material.objects.filter(activo=True)
     materiales_inactivos = Material.objects.filter(activo=False)
@@ -39,8 +53,17 @@ def lista_view(request):
 
 @login_required(login_url='/admin_login/')
 def restricted_view(request):
-    # Lógica para la vista restringida
-    return render(request, 'Modulo_administrador/usuarios/restricted_view.html')
+    usuario = request.user
+    roles = usuario.roles.all()  # Obtener los roles del usuario
+
+    context = {
+        'usuario': usuario,
+        'roles': roles,
+        'is_administrador_obra': has_role_id(usuario, ADMINISTRADOR_OBRA),
+        'is_jefe_bodega': has_role_id(usuario, JEFE_BODEGA),
+        'is_jefe_obra': has_role_id(usuario, JEFE_OBRA),
+    }
+    return render(request, 'Modulo_administrador/usuarios/restricted_view.html', context)
 
 @login_required(login_url='/admin_login/')
 @user_passes_test(lambda u: has_role_id(u, ADMINISTRADOR_SISTEMA), login_url='/access_denied/')

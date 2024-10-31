@@ -18,7 +18,7 @@
                 <a href="{% url 'lista_view' %}" class="card-link">Ver Lista de Materiales</a>
             </div>
         </div>
-        
+        {% if is_jefe_bodega %}
         <div class="card">
             <div class="card-content">
                 <i class="fas fa-plus fa-3x"></i>
@@ -27,7 +27,9 @@
                 <a href="{% url 'add_material' %}" class="card-link">Agregar Material</a>
             </div>
         </div>
-
+        {% endif %}
+        {% if is_jefe_obra %}
+        {% endif %}
        
         <div class="card">
             <div class="card-content">
