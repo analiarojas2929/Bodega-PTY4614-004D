@@ -8,6 +8,8 @@ from django.contrib.auth import logout,authenticate, login
 from .roles import ADMINISTRADOR_SISTEMA, ADMINISTRADOR_OBRA, JEFE_OBRA, CAPATAZ, JEFE_BODEGA
 from .models import Role
 from .roles import ADMINISTRADOR_OBRA, JEFE_BODEGA, JEFE_OBRA
+from django.contrib.auth.models import User
+
 
 import pdb
 from django.contrib.auth.forms import AuthenticationForm
@@ -259,3 +261,14 @@ def create_roles(request):
         Role.objects.get_or_create(id=role_data['id'], defaults={'name': role_data['name']})
     
     return redirect('home')
+
+
+# Vista para listar usuarios con sus roles en el menú de administrador
+@login_required
+@user_passes_test(lambda u: has_role_id(u, ADMINISTRADOR_SISTEMA), login_url='/access_denied/')
+def admin_user_list(request):
+    users = CustomUser.objects.prefetch_related('roles').all()  # Carga los roles relacionados con cada usuario
+    context = {
+        'users': users
+    }
+    return render(request, 'Modulo_administrador/menu_administrador/menu_admin.html', context)

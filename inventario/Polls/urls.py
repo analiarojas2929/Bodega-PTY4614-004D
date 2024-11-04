@@ -23,9 +23,9 @@ urlpatterns = [
     path('eliminar_ticket/<int:ticket_id>/', views.eliminar_ticket, name='eliminar_ticket'),
     path('create_user/', views.create_user, name='create_user'),
     path('restricted/', views.redirect_home_administrador, name='restricted_view'),  # Vista restringida, solo una vez
-    path('login/', auth_views.LoginView.as_view(template_name='usuarios/login.html'), name='login'),
     path('accounts/', include('allauth.urls')),  # Para el login de terceros (Google, etc.)
     path('access_denied/', views.access_denied_view, name='access_denied'),  # Vista para acceso denegado
     path('logout/', views.custom_logout_view, name='logout'),
+    path('admin-user-list/', views.admin_user_list, name='admin_user_list'),
 
 ]
