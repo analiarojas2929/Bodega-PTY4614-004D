@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db import models
 from .models import Material, Ticket, CustomUser
-from .forms import CustomUserCreationForm
+from .forms import CustomUserForm
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.contrib.auth import logout,authenticate, login
@@ -52,10 +52,6 @@ def lista_view(request):
         'inactivos': materiales_inactivos
     })
 
-@login_required
-def menu_admin(request):
-    # Lógica para el menú del administrador
-    return render(request, 'Modulo_administrador/menu_administrador/menu_admin.html')
 
 @login_required(login_url='/admin_login/')
 @user_passes_test(lambda u: has_role_id(u, ADMINISTRADOR_SISTEMA), login_url='/access_denied/')
@@ -106,7 +102,7 @@ def custom_login_view(request):
             user = form.get_user()
             login(request, user)
             if has_role_id(user, ADMINISTRADOR_SISTEMA):  # Verifica si tiene rol de administrador de sistema
-                return redirect('menu_admin')  # Redirige al menú de administrador
+                return redirect('admin_user_list')  # Redirige al menú de administrador
             else:
                 return redirect('home_admin')  # Redirige a la página de inicio si no es administrador
     else:
@@ -228,14 +224,15 @@ def reports_view(request):
 # En views.py del administrador de sistema
 def create_user(request):
     if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
+        form = CustomUserForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            messages.success(request, 'Usuario creado exitosamente.')
-            # Redirigir al home específico del administrador
-            return redirect('login_admin')
-
-
+            form.save()
+            messages.success(request, "Usuario creado con éxito.")
+            return redirect('nombre_de_la_vista_donde_redirigir')  # Cambia esto por el nombre de la vista a la que deseas redirigir
+    else:
+        form = CustomUserForm()
+    
+    return render(request, 'Modulo_administrador/usuarios/create_user.html', {'form': form})  # Asegúrate de cambiar 'tu_template.html' por el nombre real de tu plantilla
 # Cerrar sesión y redirigir al login
 def custom_logout_view(request):
     logout(request)
@@ -285,7 +282,7 @@ def inactivar_usuario(request, user_id):
 
 @login_required
 def editar_usuario(request, user_id):
-    user = get_object_or_404(CustomUser, id=user_id)
+    user = get_object_or_404(CustomUser, pk=user_id)
     if request.method == 'POST':
         form = CustomUserForm(request.POST, instance=user)
         if form.is_valid():
@@ -293,8 +290,7 @@ def editar_usuario(request, user_id):
             return redirect('lista_usuarios')
     else:
         form = CustomUserForm(instance=user)
-    return render(request, 'Modulo_administrador/menu_administrador/edit_user.html', {'form': form})
-
+    return render(request, 'Modulo_administrador/menu_administrador/editar_user.html', {'form': form})
 @login_required
 def crear_usuario(request):
     if request.method == 'POST':
@@ -304,7 +300,7 @@ def crear_usuario(request):
             return redirect('lista_usuarios')
     else:
         form = CustomUserForm()
-    return render(request, 'Modulo_administrador/menu_administrador/create_user.html', {'form': form})
+    return render(request, 'Modulo_administrador/usuarios/create_user.html', {'form': form})
 
 @login_required
 def activar_usuario(request, user_id):

@@ -31,7 +31,7 @@
         {% endif %}
 
         <!-- Botón de Editar -->
-        <a href="{% url 'editar_usuario' user.id %}" class="btn btn-primary"
+        <a href="{% url 'editar_usuario' user.id %}" class="btn btn-primary btn-primari"
           >Editar</a
         >
       </td>
@@ -50,5 +50,4 @@
 
 <!-- Botón para agregar un nuevo usuario -->
 <a href="{% url 'crear_usuario' %}" class="btn btn-success">Agregar Usuario</a>
-<a href="{% url 'menu_admin' %}">Volver al menú</a>
 {% endblock %}

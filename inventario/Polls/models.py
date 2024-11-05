@@ -9,7 +9,7 @@ class Role(models.Model):
         return self.name
 
 class CustomUser(AbstractUser):
-    roles = models.ManyToManyField(Role, blank=True) 
+    roles = models.ManyToManyField(Role,  related_name='users') 
     def __str__(self):
         return self.username 
     
