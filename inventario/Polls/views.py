@@ -228,7 +228,7 @@ def create_user(request):
         if form.is_valid():
             form.save()
             messages.success(request, "Usuario creado con éxito.")
-            return redirect('nombre_de_la_vista_donde_redirigir')  # Cambia esto por el nombre de la vista a la que deseas redirigir
+            return redirect('login_admin')  # Cambia esto por el nombre de la vista a la que deseas redirigir
     else:
         form = CustomUserForm()
     

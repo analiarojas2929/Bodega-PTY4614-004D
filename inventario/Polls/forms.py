@@ -10,6 +10,11 @@ class CustomUserForm(forms.ModelForm):
         required=True,
         label="Selecciona un rol",
     )
+    
+    class Meta:
+        model = CustomUser
+        fields = ['username', 'email', 'roles', 'is_active', 'new_password', 'confirm_password']
+
     new_password = forms.CharField(
         widget=forms.PasswordInput,
         required=False,
@@ -22,10 +27,7 @@ class CustomUserForm(forms.ModelForm):
         label="Confirmar Nueva Contraseña"
     )
 
-    class Meta:
-        model = CustomUser
-        fields = ['username', 'email', 'roles', 'is_active', 'new_password', 'confirm_password']
-
+    
     def clean_email(self):
         email = self.cleaned_data.get('email')
         if CustomUser.objects.filter(email=email).exclude(pk=self.instance.pk).exists():
@@ -50,5 +52,5 @@ class CustomUserForm(forms.ModelForm):
 
         if commit:
             user.save()
-            user.roles.set(self.cleaned_data['roles'])
+            user.roles.set([self.cleaned_data['roles']])
         return user
