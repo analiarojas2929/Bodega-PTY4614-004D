@@ -14,10 +14,9 @@ from django.contrib.auth.models import User
 import pdb
 from django.contrib.auth.forms import AuthenticationForm
 
-# Función para verificar el rol basado en ID
 def has_role_id(user, role_id):
-    print(f"Verificando rol: {role_id} para el usuario: {user.username}")
     return user.roles.filter(id=role_id).exists()
+
 # Vista principal
 def home_view(request):
     context = get_role_context(request.user)
@@ -54,9 +53,14 @@ def lista_view(request):
     })
 
 @login_required
-@user_passes_test(lambda u: has_role_id(u, ADMINISTRADOR_SISTEMA), login_url='/access_denied/')
 def menu_admin(request):
+    # Lógica para el menú del administrador
     return render(request, 'Modulo_administrador/menu_administrador/menu_admin.html')
+
+@login_required(login_url='/admin_login/')
+@user_passes_test(lambda u: has_role_id(u, ADMINISTRADOR_SISTEMA), login_url='/access_denied/')
+def home_admin(request):
+    return render(request, 'Modulo_administrador/usuarios/home_admin.html')
 
 
 @login_required(login_url='/admin_login/')
@@ -99,21 +103,12 @@ def custom_login_view(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                login(request, user)
-                messages.success(request, f'Bienvenido, {user.username}')
-                
-                # Verificar si el usuario tiene el rol de administrador de sistema
-                if has_role_id(user, ADMINISTRADOR_SISTEMA):
-                    return redirect('menu_admin')  # Redirigir al nombre de la vista, no a la plantilla
-                return redirect('restricted_view')  # Redirige a la vista restringida para otros roles
+            user = form.get_user()
+            login(request, user)
+            if has_role_id(user, ADMINISTRADOR_SISTEMA):  # Verifica si tiene rol de administrador de sistema
+                return redirect('menu_admin')  # Redirige al menú de administrador
             else:
-                messages.error(request, 'Nombre de usuario o contraseña incorrectos.')
-        else:
-            messages.error(request, 'Por favor corrige los errores en el formulario.')
+                return redirect('home_admin')  # Redirige a la página de inicio si no es administrador
     else:
         form = AuthenticationForm()
     return render(request, 'Modulo_administrador/usuarios/login_admin.html', {'form': form})
@@ -238,13 +233,7 @@ def create_user(request):
             user = form.save()
             messages.success(request, 'Usuario creado exitosamente.')
             # Redirigir al home específico del administrador
-            return redirect('restricted_view')
-        else:
-            messages.error(request, 'Por favor, corrige los errores en el formulario.')
-    else:
-        form = CustomUserCreationForm()
-    
-    return render(request, 'Modulo_administrador/usuarios/create_user.html', {'form': form})
+            return redirect('login_admin')
 
 
 # Cerrar sesión y redirigir al login

@@ -8,7 +8,7 @@ from django.contrib.auth import views as auth_views
 urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='Modulo_usuario/usuarios/login.html'), name='login'),
     path('home', views.home_view, name='home'),
-    path('admin_login/', auth_views.LoginView.as_view(template_name='Modulo_administrador/usuarios/login_admin.html'), name='admin_login'),
+    path('admin_login/', views.custom_login_view, name='admin_login'),
     path('inventory/', views.inventory, name='inventory'),
     path('menu_admin/', views.menu_admin, name='menu_admin'),
     path('lista_view/', views.lista_view, name='lista_view'),
@@ -28,5 +28,5 @@ urlpatterns = [
     path('access_denied/', views.access_denied_view, name='access_denied'),  # Vista para acceso denegado
     path('logout/', views.custom_logout_view, name='logout'),
     path('admin-user-list/', views.admin_user_list, name='admin_user_list'),
-
+    path('home_admin/', views.home_admin, name='home_admin'),
 ]
