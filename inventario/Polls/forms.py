@@ -24,7 +24,5 @@ class CustomUserCreationForm(UserCreationForm):
         user = super().save(commit=False)
         if commit:
             user.save()  # Guardar el usuario primero para que tengamos una instancia válida
-        user.roles.set([self.cleaned_data['roles']])  # Asignar el rol seleccionado
-        if commit:
-            user.save()  # Guardar de nuevo con el rol asignado
+            user.roles.set([self.cleaned_data['roles']])  # Asignar el rol seleccionado
         return user

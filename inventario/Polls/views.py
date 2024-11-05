@@ -16,6 +16,7 @@ from django.contrib.auth.forms import AuthenticationForm
 
 # Función para verificar el rol basado en ID
 def has_role_id(user, role_id):
+    print(f"Verificando rol: {role_id} para el usuario: {user.username}")
     return user.roles.filter(id=role_id).exists()
 # Vista principal
 def home_view(request):
@@ -52,6 +53,11 @@ def lista_view(request):
         'inactivos': materiales_inactivos
     })
 
+@login_required
+@user_passes_test(lambda u: has_role_id(u, ADMINISTRADOR_SISTEMA), login_url='/access_denied/')
+def menu_admin(request):
+    return render(request, 'Modulo_administrador/menu_administrador/menu_admin.html')
+
 
 @login_required(login_url='/admin_login/')
 def restricted_view(request):
@@ -64,8 +70,11 @@ def restricted_view(request):
         'is_administrador_obra': has_role_id(usuario, ADMINISTRADOR_OBRA),
         'is_jefe_bodega': has_role_id(usuario, JEFE_BODEGA),
         'is_jefe_obra': has_role_id(usuario, JEFE_OBRA),
+        'is_administrador_sistema': has_role_id(usuario, ADMINISTRADOR_SISTEMA),
     }
     return render(request, 'Modulo_administrador/usuarios/restricted_view.html', context)
+
+
 
 @login_required(login_url='/admin_login/')
 @user_passes_test(lambda u: has_role_id(u, ADMINISTRADOR_SISTEMA), login_url='/access_denied/')
@@ -86,7 +95,6 @@ def redirect_home_administrador(request):
         'mensaje': 'Bienvenido a la vista restringida'
     }
     return render(request, 'Modulo_administrador/usuarios/restricted_view.html', context)
-
 def custom_login_view(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
@@ -97,14 +105,18 @@ def custom_login_view(request):
             if user is not None:
                 login(request, user)
                 messages.success(request, f'Bienvenido, {user.username}')
-                return redirect('restricted_view')
+                
+                # Verificar si el usuario tiene el rol de administrador de sistema
+                if has_role_id(user, ADMINISTRADOR_SISTEMA):
+                    return redirect('menu_admin')  # Redirigir al nombre de la vista, no a la plantilla
+                return redirect('restricted_view')  # Redirige a la vista restringida para otros roles
             else:
                 messages.error(request, 'Nombre de usuario o contraseña incorrectos.')
         else:
             messages.error(request, 'Por favor corrige los errores en el formulario.')
     else:
         form = AuthenticationForm()
-    return render(request, 'Modulo_administrador/login.html', {'form': form})
+    return render(request, 'Modulo_administrador/usuarios/login_admin.html', {'form': form})
 
 # Restaurar material inactivo (solo accesible por Jefe de Bodega)
 @login_required
@@ -183,7 +195,6 @@ def crear_ticket(request):
 def lista_tickets(request):
     tickets = Ticket.objects.all()
     return render(request, 'Modulo_usuario/tickets/lista.html', {'tickets': tickets})
-
 
 # Ver ticket (solo accesible por Jefe de Obra o Jefe de Bodega)
 @login_required

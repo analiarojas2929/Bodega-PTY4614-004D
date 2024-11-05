@@ -8,8 +8,9 @@ from django.contrib.auth import views as auth_views
 urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='Modulo_usuario/usuarios/login.html'), name='login'),
     path('home', views.home_view, name='home'),
-    path('admin_login/', auth_views.LoginView.as_view(template_name='Modulo_administrador/usuarios/login.html'), name='admin_login'),
+    path('admin_login/', auth_views.LoginView.as_view(template_name='Modulo_administrador/usuarios/login_admin.html'), name='admin_login'),
     path('inventory/', views.inventory, name='inventory'),
+    path('menu_admin/', views.menu_admin, name='menu_admin'),
     path('lista_view/', views.lista_view, name='lista_view'),
     path('add_material/', views.add_material_view, name='add_material'),
     path('update_material/<int:id>/', views.update_material_view, name='update_material'),

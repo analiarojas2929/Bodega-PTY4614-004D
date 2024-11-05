@@ -58,32 +58,12 @@
                 ><i class="fas fa-home"></i> Inicio</a
               >
             </li>
-            {% if can_access_inventario %}
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'inventory' %}"
-                ><i class="fas fa-boxes"></i> Inventario</a
+              <a class="nav-link" href="{% url 'menu_admin' %}"
+                ><i class="fas fa-boxes"></i> Menu</a
               >
             </li>
-            {% endif %}
-            {% if can_access_reportes %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'reports' %}"
-                ><i class="fas fa-chart-line"></i> Reportes</a
-              >
-            </li>
-            {% endif %}
-            {% if can_access_ticket %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'crear_ticket' %}"
-                ><i class="fas fa-file-alt"></i> Ticket</a
-              >
-            </li>
-            {% endif %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'logout' %}">
-                <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
-              </a>
-            </li>
+            
           </ul>
         </div>
       </div>
@@ -102,31 +82,10 @@
               ><i class="fas fa-home"></i> <span>Inicio</span></a
             >
           </li>
-          {% if can_access_inventario %}
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'inventory' %}"
-              ><i class="fas fa-boxes"></i> <span>Inventario</span></a
+            <a class="nav-link" href="{% url 'menu_admin' %}"
+              ><i class="fas fa-boxes"></i> Menu</a
             >
-          </li>
-          {% endif %}
-          {% if can_access_reportes %}
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'reports' %}"
-              ><i class="fas fa-chart-line"></i> <span>Reportes</span></a
-            >
-          </li>
-          {% endif %}
-          {% if can_access_ticket %}
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'crear_ticket' %}"
-              ><i class="fas fa-file-alt"></i> <span>Ticket</span></a
-            >
-          </li>
-          {% endif %}
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'logout' %}">
-              <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
-            </a>
           </li>
         </ul>
       </div>

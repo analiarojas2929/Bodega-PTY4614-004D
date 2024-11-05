@@ -1,7 +1,14 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
 
+class CustomUser(AbstractUser):
+    roles = models.ManyToManyField('Role')
+
+    def __str__(self):
+        return self.username
+    
 # Modelo para los Materiales
 class Material(models.Model):
     nombre = models.CharField(max_length=100)
@@ -10,6 +17,10 @@ class Material(models.Model):
     cantidad_disponible = models.IntegerField()
     stock_minimo = models.IntegerField()
     activo = models.BooleanField(default=True)  # Campo para eliminación lógica
+
+    def clean(self):
+        if self.cantidad_disponible < 0:
+            raise ValidationError('La cantidad disponible no puede ser negativa.')
 
     def __str__(self):
         return self.nombre
@@ -39,7 +50,7 @@ class Ticket(models.Model):
     ]
 
     fecha = models.DateTimeField(default=timezone.now)
-    usuario = models.CharField(max_length=100)
+    usuario = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     estado_ticket = models.CharField(max_length=10, choices=ESTADO_CHOICES, default='pendiente')
     material_solicitado = models.CharField(max_length=255, null=True, blank=True)
     cantidad = models.IntegerField(default=0)
@@ -100,9 +111,4 @@ class Role(models.Model):
 
     def __str__(self):
         return f"{self.id} - {self.name}"
-
-class CustomUser(AbstractUser):
-    roles = models.ManyToManyField(Role)
-
-    def __str__(self):
-        return self.username
+    
