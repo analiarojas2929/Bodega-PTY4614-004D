@@ -3,12 +3,17 @@ from django.utils import timezone
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 
-class CustomUser(AbstractUser):
-    roles = models.ManyToManyField('Role')
-
+class Role(models.Model):
+    name = models.CharField(max_length=50)
     def __str__(self):
-        return self.username
+        return self.name
+
+class CustomUser(AbstractUser):
+    roles = models.ManyToManyField(Role, blank=True) 
+    def __str__(self):
+        return self.username 
     
+
 # Modelo para los Materiales
 class Material(models.Model):
     nombre = models.CharField(max_length=100)
@@ -106,9 +111,4 @@ class Reporte(models.Model):
     def __str__(self):
         return f"Reporte {self.id} - {self.tipo_reporte.descripcion}"
 
-class Role(models.Model):
-    name = models.CharField(max_length=100, unique=True)
 
-    def __str__(self):
-        return f"{self.id} - {self.name}"
-    

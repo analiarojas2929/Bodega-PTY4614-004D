@@ -267,8 +267,48 @@ def create_roles(request):
 @login_required
 @user_passes_test(lambda u: has_role_id(u, ADMINISTRADOR_SISTEMA), login_url='/access_denied/')
 def admin_user_list(request):
-    users = CustomUser.objects.prefetch_related('roles').all()  # Carga los roles relacionados con cada usuario
+    users = CustomUser.objects.prefetch_related('roles').all()  # Asegúrate de que 'roles' sea la relación correcta
     context = {
         'users': users
     }
-    return render(request, 'Modulo_administrador/menu_administrador/menu_admin.html', context)
+    return render(request, 'Modulo_administrador/menu_administrador/user_list.html', context)
+def lista_usuarios(request):
+    users = CustomUser.objects.all()
+    return render(request, 'Modulo_administrador/menu_administrador/user_list.html', {'users': users})
+
+@login_required
+def inactivar_usuario(request, user_id):
+    user = get_object_or_404(CustomUser, id=user_id)
+    user.is_active = False
+    user.save()
+    return redirect('lista_usuarios')
+
+@login_required
+def editar_usuario(request, user_id):
+    user = get_object_or_404(CustomUser, id=user_id)
+    if request.method == 'POST':
+        form = CustomUserForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect('lista_usuarios')
+    else:
+        form = CustomUserForm(instance=user)
+    return render(request, 'Modulo_administrador/menu_administrador/edit_user.html', {'form': form})
+
+@login_required
+def crear_usuario(request):
+    if request.method == 'POST':
+        form = CustomUserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('lista_usuarios')
+    else:
+        form = CustomUserForm()
+    return render(request, 'Modulo_administrador/menu_administrador/create_user.html', {'form': form})
+
+@login_required
+def activar_usuario(request, user_id):
+    user = get_object_or_404(CustomUser, id=user_id)
+    user.is_active = True
+    user.save()
+    return redirect('lista_usuarios')

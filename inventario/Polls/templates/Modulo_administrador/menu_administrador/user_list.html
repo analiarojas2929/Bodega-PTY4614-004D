@@ -1,0 +1,54 @@
+{% extends 'Modulo_administrador/base/base_admin.html' %} {% load static %} 
+{% block title %}Lista de Usuarios{% endblock %} {% block content %}
+<h1>Lista de Usuarios</h1>
+<table>
+  <thead>
+    <tr>
+      <th>Nombre de Usuario</th>
+      <th>Roles</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% if users %} {% for user in users %}
+    <tr>
+      <td>{{ user.username }}</td>
+      <td>
+        {% for role in user.roles.all %} {{ role.name }}
+        {% if not forloop.last %},
+         {% endif %} 
+         {% endfor %}
+      </td>
+      <td>
+        {% if user.is_active %}
+        <a href="{% url 'inactivar_usuario' user.id %}" class="btn btn-warning"
+          >Inactivar</a
+        >
+        {% else %}
+        <a href="{% url 'activar_usuario' user.id %}" class="btn btn-success"
+          >Activar</a
+        >
+        {% endif %}
+
+        <!-- Botón de Editar -->
+        <a href="{% url 'editar_usuario' user.id %}" class="btn btn-primary"
+          >Editar</a
+        >
+      </td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="3">No hay usuarios registrados.</td>
+    </tr>
+    {% endfor %} {% else %}
+    <tr>
+      <td colspan="3">No hay usuarios registrados.</td>
+    </tr>
+    {% endif %}
+  </tbody>
+</table>
+
+<!-- Botón para agregar un nuevo usuario -->
+<a href="{% url 'crear_usuario' %}" class="btn btn-success">Agregar Usuario</a>
+<a href="{% url 'menu_admin' %}">Volver al menú</a>
+{% endblock %}

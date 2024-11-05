@@ -1,0 +1,10 @@
+{% extends 'Modulo_administrador/base/base_admin.html' %}
+{% block content %}
+<h1>Editar Usuario</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+</form>
+<a href="{% url 'lista_usuarios' %}">Cancelar</a>
+{% endblock %}

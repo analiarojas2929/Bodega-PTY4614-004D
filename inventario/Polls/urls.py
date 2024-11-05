@@ -29,4 +29,9 @@ urlpatterns = [
     path('logout/', views.custom_logout_view, name='logout'),
     path('admin-user-list/', views.admin_user_list, name='admin_user_list'),
     path('home_admin/', views.home_admin, name='home_admin'),
+    path('usuarios/', views.lista_usuarios, name='lista_usuarios'),
+    path('usuarios/inactivar/<int:user_id>/', views.inactivar_usuario, name='inactivar_usuario'),
+    path('usuarios/editar/<int:user_id>/', views.editar_usuario, name='editar_usuario'),
+    path('usuarios/crear/', views.crear_usuario, name='crear_usuario'),
+    path('usuarios/activar/<int:user_id>/', views.activar_usuario, name='activar_usuario'),  # Nueva URL para activar
 ]

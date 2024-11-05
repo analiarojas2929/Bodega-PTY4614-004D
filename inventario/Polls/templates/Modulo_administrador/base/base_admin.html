@@ -11,6 +11,7 @@
       type="text/css"
       href="{% static 'css/style.css' %}"
     />
+    <link rel="stylesheet" href="{% static 'css/admin_style.css' %}">
     <link
       href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
       rel="stylesheet"
@@ -59,11 +60,10 @@
               >
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'menu_admin' %}"
-                ><i class="fas fa-boxes"></i> Menu</a
+              <a class="nav-link" href="{% url 'lista_usuarios' %}"
+                ><i class="fas fa-boxes"></i> Lista usuarios</a
               >
             </li>
-            
           </ul>
         </div>
       </div>
@@ -83,8 +83,8 @@
             >
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'menu_admin' %}"
-              ><i class="fas fa-boxes"></i> Menu</a
+            <a class="nav-link" href="{% url 'lista_usuarios' %}"
+              ><i class="fas fa-boxes"></i> Lista usuarios</a
             >
           </li>
         </ul>
