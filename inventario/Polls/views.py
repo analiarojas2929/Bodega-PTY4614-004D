@@ -9,8 +9,6 @@ from .roles import ADMINISTRADOR_SISTEMA, ADMINISTRADOR_OBRA, JEFE_OBRA, CAPATAZ
 from .models import Role
 from .roles import ADMINISTRADOR_OBRA, JEFE_BODEGA, JEFE_OBRA
 from django.contrib.auth.models import User
-
-
 import pdb
 from django.contrib.auth.forms import AuthenticationForm
 
@@ -30,6 +28,7 @@ def get_role_context(user):
         'can_access_inventario': user.roles.filter(id=JEFE_BODEGA).exists() or user.roles.filter(id=JEFE_OBRA).exists(),
         'can_access_reportes': user.roles.filter(id=ADMINISTRADOR_OBRA).exists(),
         'is_administrador_obra': user.roles.filter(id=ADMINISTRADOR_OBRA).exists(),
+        'is_administrador_sistema': user.roles.filter(id=ADMINISTRADOR_SISTEMA).exists(),
     }
 
 
@@ -101,10 +100,10 @@ def custom_login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            if has_role_id(user, ADMINISTRADOR_SISTEMA):  # Verifica si tiene rol de administrador de sistema
+            if has_role_id(user, ADMINISTRADOR_SISTEMA):  # Verifica el rol
                 return redirect('admin_user_list')  # Redirige al menú de administrador
             else:
-                return redirect('home_admin')  # Redirige a la página de inicio si no es administrador
+                return redirect('home')  # Redirige a la página de inicio para otros roles
     else:
         form = AuthenticationForm()
     return render(request, 'Modulo_administrador/usuarios/login_admin.html', {'form': form})
@@ -219,6 +218,21 @@ def reports_view(request):
     reportes = []  # Aquí podrías cargar los reportes desde la base de datos
     return render(request, 'Modulo_usuario/ReportsView/reports.html', {'reportes': reportes})
 
+def user_login(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            if has_role_id(user, ADMINISTRADOR_SISTEMA):
+                return redirect('admin_user_list')  # Redirige al menú de administrador
+            else:
+                return redirect('home')  # Para usuarios generales
+        else:
+            messages.error(request, 'Nombre de usuario o contraseña incorrectos.')
+    else:
+        form = AuthenticationForm()
+    return render(request, 'Modulo_usuario/usuarios/login.html', {'form': form})
 
 # Crear usuario
 # En views.py del administrador de sistema

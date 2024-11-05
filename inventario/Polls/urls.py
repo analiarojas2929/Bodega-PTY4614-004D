@@ -6,7 +6,7 @@ from django.contrib.auth import views as auth_views
 
 # Definir las rutas
 urlpatterns = [
-    path('login/', auth_views.LoginView.as_view(template_name='Modulo_usuario/usuarios/login.html'), name='login'),
+    path('login/', views.user_login, name='login'),
     path('home', views.home_view, name='home'),
     path('admin_login/', views.custom_login_view, name='admin_login'),
     path('inventory/', views.inventory, name='inventory'),
