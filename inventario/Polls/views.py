@@ -11,6 +11,7 @@ from .roles import ADMINISTRADOR_OBRA, JEFE_BODEGA, JEFE_OBRA
 from django.contrib.auth.models import User
 import pdb
 from django.contrib.auth.forms import AuthenticationForm
+import json
 
 def has_role_id(user, role_id):
     return user.roles.filter(id=role_id).exists()
@@ -44,13 +45,21 @@ def inventory(request):
 @login_required
 @user_passes_test(lambda u: has_role_id(u, JEFE_BODEGA) or has_role_id(u, JEFE_OBRA), login_url='/access_denied/')
 def lista_view(request):
+    # Obtener materiales activos e inactivos desde la base de datos
     materiales_activos = Material.objects.filter(activo=True)
     materiales_inactivos = Material.objects.filter(activo=False)
+
+    # Leer el archivo JSON
+    json_file_path = 'Polls/materiales_data.json'
+    with open(json_file_path, 'r', encoding='utf-8') as file:
+        materiales_json = json.load(file)
+
+    # Pasar los materiales de la base de datos y del JSON a la plantilla
     return render(request, 'Modulo_usuario/InventoryView/lista.html', {
         'materiales': materiales_activos,
-        'inactivos': materiales_inactivos
+        'inactivos': materiales_inactivos,
+        'materiales_json': materiales_json  # Añadir materiales desde el JSON
     })
-
 
 @login_required(login_url='/admin_login/')
 @user_passes_test(lambda u: has_role_id(u, ADMINISTRADOR_SISTEMA), login_url='/access_denied/')

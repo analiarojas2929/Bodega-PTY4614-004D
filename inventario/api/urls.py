@@ -1,12 +1,9 @@
-# inventory/urls.py
-
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import MaterialViewSet
+from . import views
 
-# Configura el enrutador y registra el viewset de Material
 router = DefaultRouter()
-router.register(r'materials', MaterialViewSet)
+router.register(r'materiales', views.MaterialViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
