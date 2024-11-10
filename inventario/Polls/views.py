@@ -228,21 +228,30 @@ def reports_view(request):
     return render(request, 'Modulo_usuario/ReportsView/reports.html', {'reportes': reportes})
 
 def user_login(request):
+    form = AuthenticationForm(request, data=request.POST or None)
     if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            if has_role_id(user, ADMINISTRADOR_SISTEMA):
-                return redirect('admin_user_list')  # Redirige al menú de administrador
-            else:
-                return redirect('home')  # Para usuarios generales
-        else:
-            messages.error(request, 'Nombre de usuario o contraseña incorrectos.')
-    else:
-        form = AuthenticationForm()
-    return render(request, 'Modulo_usuario/usuarios/login.html', {'form': form})
+        username = request.POST.get('username')
+        password = request.POST.get('password')
 
+        # Verificar si el nombre de usuario existe
+        if not CustomUser.objects.filter(username=username).exists():
+            messages.error(request, 'El usuario ingresado no existe.')
+        else:
+            # Validar la autenticación del usuario
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                messages.success(request, 'Inicio de sesión exitoso.')
+                
+                # Redirigir según el rol del usuario
+                if has_role_id(user, ADMINISTRADOR_SISTEMA):
+                    return redirect('admin_user_list')
+                else:
+                    return redirect('home')
+            else:
+                messages.error(request, 'Contraseña incorrecta.')
+
+    return render(request, 'Modulo_usuario/usuarios/login.html', {'form': form})
 # Crear usuario
 # En views.py del administrador de sistema
 def create_user(request):

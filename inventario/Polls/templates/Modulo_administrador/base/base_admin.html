@@ -8,10 +8,9 @@
     <title>{% block title %}Inicio{% endblock %}</title>
     <link
       rel="stylesheet"
-      type="text/css"
       href="{% static 'css/style.css' %}"
     />
-    <link rel="stylesheet" href="{% static 'css/admin_style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/admin_style.css' %}" />
     <link
       href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
       rel="stylesheet"
@@ -64,6 +63,11 @@
                 ><i class="fas fa-boxes"></i> Lista usuarios</a
               >
             </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'logout' %}">
+                <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
+              </a>
+            </li>
           </ul>
         </div>
       </div>
@@ -86,6 +90,11 @@
             <a class="nav-link" href="{% url 'lista_usuarios' %}"
               ><i class="fas fa-boxes"></i> Lista usuarios</a
             >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'logout' %}">
+              <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
+            </a>
           </li>
         </ul>
       </div>
