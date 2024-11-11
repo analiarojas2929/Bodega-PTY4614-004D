@@ -7,6 +7,7 @@ from django.http import JsonResponse
 from django.conf import settings
 from django.db import transaction
 import os
+from rest_framework.decorators import action
 import json
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -23,6 +24,28 @@ class MaterialViewSet(viewsets.ModelViewSet):
     queryset = Material.objects.all()
     serializer_class = MaterialSerializer
     http_method_names = ['get', 'post', 'patch', 'delete']
+    def destroy(self, request, *args, **kwargs):
+        """Eliminar lógicamente un material usando el método DELETE"""
+        try:
+            # Obtener el objeto material
+            material = self.get_object()
+            # Realizar la eliminación lógica
+            material.activo = False
+            material.save()
+            return Response({"message": "Material eliminado lógicamente"}, status=status.HTTP_200_OK)
+        except Material.DoesNotExist:
+            return Response({"error": "Material no encontrado"}, status=status.HTTP_404_NOT_FOUND)
+
+    @action(detail=True, methods=['patch'])
+    def delete_material(self, request, pk=None):
+        """Eliminación lógica de un material"""
+        try:
+            material = self.get_object()
+            material.activo = False  # Cambiar el estado a inactivo
+            material.save()
+            return Response({"message": "Material eliminado lógicamente"}, status=status.HTTP_200_OK)
+        except Material.DoesNotExist:
+            return Response({"error": "Material no encontrado"}, status=status.HTTP_404_NOT_FOUND)
 # Vista para agregar material y guardar en archivo JSON
 def add_material_view(request):
     json_file_path = os.path.join(BASE_DIR, 'api', 'materiales_data.json')
