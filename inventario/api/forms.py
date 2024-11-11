@@ -1,6 +1,5 @@
-# api/forms.py
 from django import forms
-from .models import Material, UnidadMedida
+from .models import Material
 
 class MaterialForm(forms.ModelForm):
     class Meta:
@@ -14,7 +13,3 @@ class MaterialForm(forms.ModelForm):
             'stock': forms.NumberInput(attrs={'class': 'form-control'}),
             'activo': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
-
-    def __init__(self, *args, **kwargs):
-        super(MaterialForm, self).__init__(*args, **kwargs)
-        self.fields['unidad_medida'].queryset = UnidadMedida.objects.all()

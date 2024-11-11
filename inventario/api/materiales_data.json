@@ -898,14 +898,5 @@
         "cantidad_disponible": 100,
         "stock": 20,
         "activo": true
-    },
-    {
-        "id": 103,
-        "nombre": "madera 233",
-        "descripcion": "madera",
-        "unidad_medida": "ROLLO",
-        "cantidad_disponible": 21,
-        "stock": 21,
-        "activo": true
     }
 ]

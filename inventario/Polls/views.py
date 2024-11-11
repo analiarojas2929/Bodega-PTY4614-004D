@@ -187,6 +187,12 @@ def add_material_view(request):
 
     return render(request, 'Modulo_usuario/InventoryView/agregar.html', {'form': form})
 
+def actualizar_stock(material_id, nueva_cantidad):
+    url = f"{settings.API_BASE_URL}/materiales/{material_id}/"
+    data = {'cantidad_disponible': nueva_cantidad}
+    response = requests.patch(url, json=data)
+    return response.status_code == 200
+
 # Actualizar material (solo accesible por Jefe de Bodega)
 # Ruta al archivo JSON
 JSON_FILE_PATH = os.path.join(settings.BASE_DIR, 'api', 'materiales_data.json')
@@ -238,54 +244,41 @@ def delete_material_view(request, id):
 @login_required
 @user_passes_test(lambda u: has_role_id(u, JEFE_OBRA) or has_role_id(u, JEFE_BODEGA), login_url='/access_denied/')
 def crear_ticket(request):
-    # Obtener materiales desde la API
+    # Obtener materiales desde la API para autocompletar (opcional)
     response = requests.get(f'{settings.API_BASE_URL}/materiales/')
     materiales_json = response.json() if response.status_code == 200 else []
 
     if request.method == 'POST':
         usuario = request.user
-        material_id = request.POST.get('material_solicitado')
+        nombre_material = request.POST.get('nombre')
         cantidad = int(request.POST.get('cantidad'))
         estado = request.POST.get('estado')
 
-        # Buscar el material en la API
-        material = next((m for m in materiales_json if str(m['id']) == material_id), None)
-        
-        if not material:
-            messages.error(request, 'Material no encontrado.')
+        # Buscar el material por nombre en la base de datos
+        try:
+            material = Material.objects.get(nombre=nombre_material)
+        except Material.DoesNotExist:
+            messages.error(request, 'El material seleccionado no existe.')
             return redirect('crear_ticket')
-        
+
         # Verificar si hay suficiente stock disponible
-        if material['cantidad_disponible'] >= cantidad:
+        if material.cantidad_disponible >= cantidad:
             # Crear el ticket en la base de datos local
-            ticket = Ticket.objects.create(
-                usuario=usuario,
-                material_solicitado_id=material_id,
-                cantidad=cantidad,
-                estado=estado
-            )
-
-            # Descontar la cantidad del stock
-            updated_stock = material['cantidad_disponible'] - cantidad
-
-            # Actualizar el stock en la API usando PATCH
-            update_response = requests.put(
-                f"{settings.API_BASE_URL}/materiales/{material_id}/",
-                json={'cantidad_disponible': updated_stock},
-                headers={'Content-Type': 'application/json'}
-            )
-
-            # Verificar si la actualización fue exitosa
-            if update_response.status_code == 200:
-                messages.success(request, 'Ticket creado exitosamente y stock actualizado en la API.')
-            else:
-                messages.error(request, 'Ticket creado, pero no se pudo actualizar el stock en la API.')
-            
-            return redirect('lista_tickets')
+            try:
+                ticket = Ticket.objects.create(
+                    usuario=usuario,
+                    material_solicitado=material,
+                    cantidad=cantidad,
+                    estado=estado
+                )
+                messages.success(request, 'Ticket creado exitosamente.')
+            except Exception as e:
+                messages.error(request, f'Error al crear el ticket: {str(e)}')
         else:
             messages.error(request, 'No hay suficiente stock disponible.')
 
-    # Renderizar la página de creación de ticket
+        return redirect('lista_tickets')
+
     return render(request, 'Modulo_usuario/tickets/crear.html', {'materiales': materiales_json})
 
 # Lista de tickets (solo accesible por Jefe de Obra o Jefe de Bodega)
@@ -301,70 +294,70 @@ def lista_tickets(request):
     
     return render(request, 'Modulo_usuario/tickets/lista.html', {'tickets': tickets})
 
-from django.shortcuts import get_object_or_404, redirect
-from django.contrib import messages
-from django.conf import settings
-import requests
-from django.db import transaction
-from .models import Ticket, Material
-
 @login_required
 @user_passes_test(lambda u: has_role_id(u, JEFE_OBRA) or has_role_id(u, JEFE_BODEGA), login_url='/access_denied/')
 def cobrar_ticket(request, ticket_id):
-    # Obtener el ticket
+    # Obtener el ticket y el material solicitado
     ticket = get_object_or_404(Ticket, id=ticket_id)
-    
+    material = ticket.material_solicitado
+
+    print(f"[DEBUG] Ticket encontrado: {ticket}")
+    print(f"[DEBUG] Material solicitado: {material}, Cantidad disponible: {material.cantidad_disponible}, Cantidad del ticket: {ticket.cantidad}")
+
     # Verificar si el ticket ya fue cobrado
     if ticket.estado == 'cobrado':
         messages.warning(request, "El ticket ya ha sido cobrado.")
         return redirect('lista_tickets')
-    
-    # Obtener el material solicitado
-    material = ticket.material_solicitado
 
-    print(f"Material seleccionado: {material.nombre} (ID: {material.id})")
-    print(f"Stock actual antes de cobrar: {material.cantidad_disponible}")
-    print(f"Cantidad solicitada en el ticket: {ticket.cantidad}")
+    # Verificar si hay suficiente stock disponible
+    if material.cantidad_disponible < ticket.cantidad:
+        messages.error(request, 'No hay suficiente stock disponible para cobrar este ticket.')
+        print("[ERROR] Stock insuficiente para cobrar el ticket.")
+        return redirect('lista_tickets')
 
-    # Iniciar una transacción atómica
     try:
+        # Iniciar la transacción
         with transaction.atomic():
-            # Verificar si hay suficiente stock disponible
-            if material.cantidad_disponible < ticket.cantidad:
-                messages.error(request, 'No hay suficiente stock disponible para cobrar este ticket.')
-                print("Error: Stock insuficiente")
-                return redirect('lista_tickets')
-            
             # Descontar el stock en la base de datos local
             material.cantidad_disponible -= ticket.cantidad
             material.save()
-            print(f"Nuevo stock después de cobrar: {material.cantidad_disponible}")
+            print(f"[DEBUG] Stock actualizado en la base de datos local: {material.cantidad_disponible}")
+
+            # Configurar la solicitud para la API externa
+            api_url = f"{settings.API_BASE_URL}/materiales/{material.id}/"
+            headers = {
+                'Content-Type': 'application/json',
+                'Authorization': f"Bearer {settings.API_TOKEN}"  # Incluye tu token si es necesario
+            }
+            payload = {'cantidad_disponible': material.cantidad_disponible}
+
+            print(f"[DEBUG] Intentando actualizar la API en {api_url} con datos: {payload}")
 
             # Actualizar el stock en la API externa
-            response = requests.patch(
-                f"{settings.API_BASE_URL}/materiales/{material.id}/",
-                json={'cantidad_disponible': material.cantidad_disponible},
-                headers={'Content-Type': 'application/json'}
-            )
-            
-            print(f"Respuesta de la API: {response.status_code}")
-            print(f"Contenido de la respuesta: {response.content}")
+            response = requests.patch(api_url, json=payload, headers=headers, timeout=10)
 
-            if response.status_code != 200:
-                messages.error(request, 'Error al actualizar el stock en la API externa.')
-                print("Error al actualizar el stock en la API")
-                return redirect('lista_tickets')
+            # Verificar la respuesta de la API
+            if response.status_code == 200:
+                # Cambiar el estado del ticket a 'cobrado'
+                ticket.estado = 'cobrado'
+                ticket.save()
+                messages.success(request, "Ticket cobrado exitosamente y stock actualizado.")
+                print("[DEBUG] Ticket cobrado y stock actualizado correctamente en la API.")
+            else:
+                print(f"[ERROR] Error al actualizar la API externa: {response.status_code} - {response.text}")
+                # Revertir cambios en la base de datos si falla la API
+                raise ValueError(f"Error al actualizar el stock en la API externa: {response.status_code} - {response.text}")
 
-            # Actualizar el estado del ticket a 'cobrado'
-            ticket.estado = 'cobrado'
-            ticket.save()
-            messages.success(request, "Ticket cobrado exitosamente y stock actualizado.")
-            print("Ticket cobrado y stock actualizado correctamente")
+    except requests.exceptions.RequestException as e:
+        # Manejar excepciones relacionadas con la API externa
+        messages.error(request, f"Error de conexión con la API: {e}")
+        print(f"[ERROR] Error de conexión con la API: {e}")
 
     except Exception as e:
+        # Manejar cualquier otra excepción en la transacción
         messages.error(request, f"Error al cobrar el ticket: {str(e)}")
-        print(f"Excepción: {e}")
-    
+        print(f"[ERROR] Excepción al intentar cobrar el ticket: {e}")
+
     return redirect('lista_tickets')
 
 # Ver ticket (solo accesible por Jefe de Obra o Jefe de Bodega)
@@ -545,3 +538,4 @@ def buscar_material_ajax(request):
     ] if query else []
 
     return JsonResponse({'materiales': materiales_filtrados})
+    

@@ -54,12 +54,11 @@ class Ticket(models.Model):
         ('cobrado', 'Cobrado'),
     ]
     
-    estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default='pendiente')
     usuario = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     material_solicitado = models.ForeignKey(Material, on_delete=models.CASCADE)
     cantidad = models.IntegerField()
-    fecha_creacion = models.DateTimeField(default=now)  # Cambiado para permitir un valor predeterminado
-
+    estado = models.CharField(max_length=20)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return f"{self.material_solicitado.nombre} - {self.cantidad} unidades"
 

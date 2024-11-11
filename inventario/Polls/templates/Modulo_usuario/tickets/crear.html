@@ -7,23 +7,22 @@
     <a href="{% url 'lista_tickets' %}" class="btn btn-secondary mt-3">Volver a la Lista</a>
     <h2 class="text-center">Crear Nuevo Ticket</h2>
     <hr>
-    
+
     <form method="POST">
         {% csrf_token %}
-
         <!-- Usuario que crea el ticket (esto lo puedes establecer automáticamente con el usuario autenticado) -->
         <input type="hidden" name="usuario" value="{{ request.user.id }}">
 
-        <div class="mb-3">
-            <label for="material_solicitado" class="form-label">Material Solicitado</label>
-            <select class="form-control" id="material_solicitado" name="material_solicitado" required>
-                <option value="">Selecciona un Material</option>
-                {% for material in materiales %}
-                    <option value="{{ material.id }}">{{ material.nombre }} (Stock: {{ material.cantidad_disponible }})</option>
-                {% endfor %}
-            </select>
+
+        <!-- Campo para Nombre con Sugerencias -->
+        <div class="form-group mb-3">
+            <label for="id_nombre">Material solicitado:</label>
+            <input type="text" name="nombre" id="id_nombre" class="form-control" autocomplete="off">
+            <!-- Aquí se mostrarán las sugerencias -->
+            <div id="materialSuggestions" class="suggestions"></div>
         </div>
 
+        
         <div class="mb-3">
             <label for="cantidad" class="form-label">Cantidad</label>
             <input type="number" class="form-control" id="cantidad" name="cantidad" min="1" required>
@@ -41,4 +40,44 @@
         <a href="{% url 'lista_tickets' %}" class="btn btn-secondary">Cancelar</a>
     </form>
 </div>
+
+<!-- JavaScript para mostrar sugerencias -->
+<script>
+    document.getElementById("id_nombre").addEventListener("input", function () {
+        const query = this.value.toLowerCase();
+
+        if (query.length > 2) {
+            fetch(`/buscar_material_ajax/?q=${encodeURIComponent(query)}`)
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("Error en la respuesta de la API");
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    const suggestions = document.getElementById("materialSuggestions");
+                    suggestions.innerHTML = "";
+
+                    data.materiales.forEach((material) => {
+                        const div = document.createElement("div");
+                        div.className = "suggestion-item";
+                        div.textContent = `${material.nombre} - Unidad: ${material.unidad_medida}`;
+                        div.addEventListener("click", function () {
+                            document.getElementById("id_nombre").value = material.nombre;
+                            suggestions.innerHTML = "";
+                        });
+                        suggestions.appendChild(div);
+                    });
+
+                    if (data.materiales.length === 0) {
+                        suggestions.innerHTML = "<p>No se encontraron materiales similares.</p>";
+                    }
+                })
+                .catch((error) => console.error("Error al cargar materiales:", error));
+        } else {
+            document.getElementById("materialSuggestions").innerHTML = "";
+        }
+    });
+</script>
+
 {% endblock %}
