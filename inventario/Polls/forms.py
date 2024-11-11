@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.hashers import make_password
-from .models import CustomUser, Role, Material
+from .models import CustomUser, Role, Material,Ticket
 
 class CustomUserForm(forms.ModelForm):
     roles = forms.ModelChoiceField(
@@ -60,10 +60,13 @@ class MaterialForm(forms.ModelForm):
         model = Material
         fields = ['nombre', 'descripcion', 'unidad_medida', 'cantidad_disponible', 'stock', 'activo']
 
-        from django import forms
-from .models import Ticket, Material
 
 class TicketForm(forms.ModelForm):
     class Meta:
         model = Ticket
         fields = ['material_solicitado', 'cantidad']
+class MaterialForm(forms.ModelForm):
+    class Meta:
+        model = Material
+        fields = ['nombre', 'descripcion', 'unidad_medida', 'cantidad_disponible', 'stock', 'activo']
+

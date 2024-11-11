@@ -5,51 +5,96 @@
 {% block content %}
 <div class="container my-5">
     <h2 class="text-center mb-4">Lista de Materiales</h2>
-    
-    <table class="table table-striped table-bordered" id="jsonMaterialTable">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Descripción</th>
-                <th>Unidad Medida</th>
-                <th>Cantidad Disponible</th>
-                <th>Stock Minimo</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for material in materiales_json %}
-            <tr>
-                <td>{{ material.id }}</td>
-                <td>{{ material.nombre }}</td>
-                <td>{{ material.descripcion }}</td>
-                <td>{{ material.unidad_medida }}</td>
-                <td>{{ material.cantidad_disponible }}</td>
-                <td>{{ material.stock }}</td>
-                <td>
-                    {% if material.activo %}
-                        Activo
-                    {% else %}
-                        Inactivo
-                    {% endif %}
-                </td>
-                <td>
-                    {% if material.id %}
+
+    <!-- Barra de búsqueda personalizada -->
+    <div class="mb-3">
+        <input type="text" id="searchInput" class="form-control" placeholder="Buscar material por nombre...">
+    </div>
+
+    <!-- Contenedor con scroll para hacer la tabla responsiva -->
+    <div style="overflow-x: auto;">
+        <table class="table table-striped table-hover compact" id="jsonMaterialTable">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Unidad Medida</th>
+                    <th>Cantidad Disponible</th>
+                    <th>Stock Mínimo</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for material in materiales_json %}
+                <tr>
+                    <td>{{ material.id }}</td>
+                    <td>{{ material.nombre }}</td>
+                    <td>{{ material.descripcion }}</td>
+                    <td>{{ material.unidad_medida }}</td>
+                    <td>{{ material.cantidad_disponible }}</td>
+                    <td>{{ material.stock }}</td>
+                    <td>
+                        {% if material.activo %}
+                            <span class="badge bg-success">Activo</span>
+                        {% else %}
+                            <span class="badge bg-danger">Inactivo</span>
+                        {% endif %}
+                    </td>
+                    <td>
                         <a href="{% url 'editar_material' material.id %}" class="btn btn-primary btn-sm">Editar</a>
-                    {% else %}
-                        <span class="text-muted">No disponible</span>
-                    {% endif %}
-                </td>
-                
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="8" class="text-center">No hay materiales disponibles en el archivo JSON.</td>
-            </tr>
-            {% endfor %}
-        </tbody>        
-    </table>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="text-center">No hay materiales disponibles en el archivo JSON.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
+
+<!-- Asegúrate de que las bibliotecas estén cargadas -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+
+<!-- Inicializar DataTables -->
+<script>
+    $(document).ready(function() {
+        // Asegúrate de que DataTables se inicializa solo una vez
+        if (!$.fn.DataTable.isDataTable('#jsonMaterialTable')) {
+            $('#jsonMaterialTable').DataTable({
+                "pageLength": 10,
+                "lengthMenu": [10, 20, 50, 100],
+                "paging": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "language": {
+                    "search": "Buscar:",
+                    "lengthMenu": "Mostrar _MENU_ registros por página",
+                    "info": "Mostrando _START_ a _END_ de _TOTAL_ materiales",
+                    "infoEmpty": "No hay materiales disponibles",
+                    "zeroRecords": "No se encontraron materiales que coincidan con la búsqueda",
+                    "paginate": {
+                        "first": "Primero",
+                        "last": "Último",
+                        "next": "Siguiente",
+                        "previous": "Anterior"
+                    }
+                }
+            });
+        }
+
+        // Filtrar por nombre utilizando el campo de búsqueda personalizado
+        $('#searchInput').on('keyup', function() {
+            $('#jsonMaterialTable').DataTable().search(this.value).draw();
+        });
+    });
+</script>
 {% endblock %}

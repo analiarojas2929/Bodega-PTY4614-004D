@@ -8,6 +8,12 @@ from django.conf import settings
 from django.db import transaction
 import os
 import json
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .models import Material
+from .serializers import MaterialSerializer
+from django.db import transaction
+
 
 # Ruta al directorio base
 BASE_DIR = settings.BASE_DIR
@@ -94,3 +100,32 @@ class MaterialListView(generics.ListAPIView):
 class MaterialDetailView(generics.RetrieveUpdateAPIView):
     queryset = Material.objects.all()
     serializer_class = MaterialSerializer
+
+
+@api_view(['GET', 'POST'])
+def sync_materiales(request):
+    if request.method == 'GET':
+        # Retorna todos los materiales
+        materiales = Material.objects.all()
+        serializer = MaterialSerializer(materiales, many=True)
+        return Response(serializer.data)
+
+    elif request.method == 'POST':
+        data = request.data
+        try:
+            with transaction.atomic():
+                for material_data in data:
+                    Material.objects.update_or_create(
+                        id=material_data['id'],
+                        defaults={
+                            'nombre': material_data['nombre'],
+                            'descripcion': material_data['descripcion'],
+                            'unidad_medida': material_data['unidad_medida'],
+                            'cantidad_disponible': material_data['cantidad_disponible'],
+                            'stock': material_data['stock'],
+                            'activo': material_data['activo']
+                        }
+                    )
+            return Response({"message": "Sincronización completada"})
+        except Exception as e:
+            return Response({"error": str(e)}, status=400)
