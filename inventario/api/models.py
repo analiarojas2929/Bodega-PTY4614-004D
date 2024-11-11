@@ -10,7 +10,7 @@ class Material(models.Model):
     descripcion = models.TextField(blank=True, null=True)
     unidad_medida = models.ForeignKey('UnidadMedida', on_delete=models.CASCADE)
     cantidad_disponible = models.IntegerField()
-    stock_minimo = models.IntegerField()
+    stock= models.IntegerField()
     activo = models.BooleanField(default=True)  # Campo para eliminación lógica
 
     def clean(self):

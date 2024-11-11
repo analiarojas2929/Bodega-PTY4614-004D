@@ -23,7 +23,7 @@ for material_data in materiales_data:
         descripcion=material_data['descripcion'],
         unidad_medida=material_data['unidad_medida'],
         cantidad_disponible=material_data['cantidad_disponible'],
-        stock_minimo=material_data['stock_minimo'],
+        stock=material_data['stock'],
         activo=material_data['activo']
     )
     if created:

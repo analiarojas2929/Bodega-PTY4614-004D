@@ -33,7 +33,7 @@ with open(json_path, 'r', encoding='utf-8') as file:
                 'descripcion': item['descripcion'],
                 'unidad_medida': unidad_medida,
                 'cantidad_disponible': item['cantidad_disponible'],
-                'stock_minimo': item['stock_minimo'],
+                'stock': item['stock'],
                 'activo': item['activo']
             }
         )

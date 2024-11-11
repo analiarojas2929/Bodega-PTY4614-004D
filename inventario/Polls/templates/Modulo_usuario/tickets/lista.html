@@ -18,6 +18,7 @@
                 <th>Estado</th>
                 <th>Fecha de Creación</th>
                 <th>Acciones</th>
+                <th>Accion</th>
             </tr>
         </thead>
         <tbody>
@@ -45,12 +46,20 @@
                     <!-- Acciones disponibles para el ticket -->
                     <td>
                         {% if ticket.estado == 'pendiente' %}
-                            <a href="{% url 'cobrar_ticket' ticket.id %}" class="btn btn-sm btn-primary">
+                            <a href="{% url 'cobrar_ticket' ticket.id %}" class="btn btn-sm btn-primary" onclick="return confirm('¿Estás seguro de cobrar este ticket?');">
                                 Cobrar
                             </a>
+            
                         {% else %}
                             <span class="text-muted">N/A</span>
                         {% endif %}
+                        
+                    </td>
+                    <td>
+                    <form action="{% url 'eliminar_ticket' ticket.id %}" method="POST" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de eliminar este ticket?');">Eliminar</button>
+                        </form>
                     </td>
                 </tr>
                 {% endfor %}

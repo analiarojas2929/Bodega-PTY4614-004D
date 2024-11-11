@@ -27,7 +27,7 @@ class Command(BaseCommand):
                         'descripcion': material_data['descripcion'],
                         'unidad_medida': unidad_medida,
                         'cantidad_disponible': material_data['cantidad_disponible'],
-                        'stock_minimo': material_data['stock_minimo'],
+                        'stock': material_data['stock'],
                         'activo': material_data['activo'],
                     }
                 )

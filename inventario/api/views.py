@@ -33,7 +33,7 @@ def add_material_view(request):
                 "descripcion": nuevo_material.descripcion,
                 "unidad_medida": nuevo_material.unidad_medida.descripcion,
                 "cantidad_disponible": nuevo_material.cantidad_disponible,
-                "stock_minimo": nuevo_material.stock_minimo,
+                "stock": nuevo_material.stock,
                 "activo": nuevo_material.activo
             }
 

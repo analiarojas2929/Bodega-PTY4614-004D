@@ -5,7 +5,7 @@
         "descripcion": "Lámina impermeabilizante.",
         "unidad_medida": "M2",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -14,7 +14,7 @@
         "descripcion": "Pieza de hormigón de 50mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -23,7 +23,7 @@
         "descripcion": "Malla para refuerzo estructural.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -32,7 +32,7 @@
         "descripcion": "Conector T para tuberías.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -41,7 +41,7 @@
         "descripcion": "Codo 90° para tubería 110mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -50,7 +50,7 @@
         "descripcion": "Codo 90° para tubería 75mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -59,7 +59,7 @@
         "descripcion": "Codo 90° para tubería 50mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -68,7 +68,7 @@
         "descripcion": "Codo 90° para tubería 40mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -77,7 +77,7 @@
         "descripcion": "Codo 45° para tubería 110mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -86,7 +86,7 @@
         "descripcion": "Codo 45° para tubería 50mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -95,7 +95,7 @@
         "descripcion": "Reducción de tubería PVC.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -104,7 +104,7 @@
         "descripcion": "Conector T para tubería.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -113,7 +113,7 @@
         "descripcion": "T de conexión PVC.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -122,7 +122,7 @@
         "descripcion": "Conector en T para tuberías.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -131,7 +131,7 @@
         "descripcion": "Tubería de PVC de 110mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -140,7 +140,7 @@
         "descripcion": "Tubería de PVC de 75mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -149,7 +149,7 @@
         "descripcion": "Tubería de PVC de 50mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -158,7 +158,7 @@
         "descripcion": "Tubería de PVC de 40mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -167,7 +167,7 @@
         "descripcion": "Conector tipo copla de 110mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -176,7 +176,7 @@
         "descripcion": "Tapa para tubería de 110mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -185,7 +185,7 @@
         "descripcion": "Conector T para PVC de 110mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -194,7 +194,7 @@
         "descripcion": "Codo PPR de 20mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -203,7 +203,7 @@
         "descripcion": "Codo PPR de 25mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -212,7 +212,7 @@
         "descripcion": "Codo PPR de 25x20mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -221,7 +221,7 @@
         "descripcion": "Curva PPR de 25mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -230,7 +230,7 @@
         "descripcion": "Tee PPR de 25mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -239,7 +239,7 @@
         "descripcion": "Tee PPR de 25x25x20mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -248,7 +248,7 @@
         "descripcion": "Codo terminal PPR 20mm a 1/2 HE.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -257,7 +257,7 @@
         "descripcion": "Codo terminal PPR 20mm a 1/2 HI.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -266,7 +266,7 @@
         "descripcion": "Reducción PPR de 32 a 25mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -275,7 +275,7 @@
         "descripcion": "Reducción de 25 a 20mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -284,7 +284,7 @@
         "descripcion": "Llave de paso de 25mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -293,7 +293,7 @@
         "descripcion": "Llave de paso de 20mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -302,7 +302,7 @@
         "descripcion": "Terminal de 20mm HE.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -311,7 +311,7 @@
         "descripcion": "Tubería PPR de 32mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -320,7 +320,7 @@
         "descripcion": "Tubería PPR de 25mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -329,7 +329,7 @@
         "descripcion": "Tubería PPR de 20mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -338,7 +338,7 @@
         "descripcion": "Tapón PPR 25mm HI.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -347,7 +347,7 @@
         "descripcion": "Tapón PPR 20mm HI.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -356,7 +356,7 @@
         "descripcion": "Tapón PPR 20mm HE.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -365,7 +365,7 @@
         "descripcion": "Llave de bola de 20mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -374,7 +374,7 @@
         "descripcion": "Abrazadera PPR de 25mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -383,7 +383,7 @@
         "descripcion": "Abrazadera PPR de 20mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -392,7 +392,7 @@
         "descripcion": "Copla para tubería de 25mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -401,7 +401,7 @@
         "descripcion": "Solera de 92mm (6 metros).",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -410,7 +410,7 @@
         "descripcion": "Montante viga de 90mm (6 metros).",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -419,7 +419,7 @@
         "descripcion": "Montante tabique de 90mm (2.4 metros).",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -428,7 +428,7 @@
         "descripcion": "Anclaje tipo AN1.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -437,7 +437,7 @@
         "descripcion": "Perno de expansión 1/2 x 3 3/4.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -446,7 +446,7 @@
         "descripcion": "Perno de expansión para refuerzo.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -455,7 +455,7 @@
         "descripcion": "Anclaje tipo AN2.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -464,7 +464,7 @@
         "descripcion": "Tornillo lenteja punta broca.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -473,7 +473,7 @@
         "descripcion": "Tornillo hexagonal PB.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -482,7 +482,7 @@
         "descripcion": "Huincha tensora, rollo.",
         "unidad_medida": "ROLLO",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -491,7 +491,7 @@
         "descripcion": "Ángulo tensor.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -500,7 +500,7 @@
         "descripcion": "Resina epóxica Sika.",
         "unidad_medida": "TARRO",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -509,7 +509,7 @@
         "descripcion": "Clavos Hilti tamaño 2.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -518,7 +518,7 @@
         "descripcion": "Solera de 92mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -527,7 +527,7 @@
         "descripcion": "Montante viga 90mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -536,7 +536,7 @@
         "descripcion": "Montante tabique 2.4m.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -545,7 +545,7 @@
         "descripcion": "Tornillo lenteja broca.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -554,7 +554,7 @@
         "descripcion": "Tornillo hexagonal 3/4.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -563,7 +563,7 @@
         "descripcion": "Huincha tensora, rollo.",
         "unidad_medida": "ROLLO",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -572,7 +572,7 @@
         "descripcion": "Ángulo tensor.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -581,7 +581,7 @@
         "descripcion": "Tirafondo con golilla.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -590,7 +590,7 @@
         "descripcion": "Viga madera 2x8.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -599,7 +599,7 @@
         "descripcion": "Viga madera 2x4.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -608,7 +608,7 @@
         "descripcion": "Tornillo turbo 4.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -617,7 +617,7 @@
         "descripcion": "Tornillo turbo 2.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -626,7 +626,7 @@
         "descripcion": "Plancha terciado 18mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -635,7 +635,7 @@
         "descripcion": "Tornillo lenteja broca.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -644,7 +644,7 @@
         "descripcion": "Solera de 92mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -653,7 +653,7 @@
         "descripcion": "Montante viga 90mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -662,7 +662,7 @@
         "descripcion": "Montante tabique 2.4m.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -671,7 +671,7 @@
         "descripcion": "Tornillo lenteja broca.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -680,7 +680,7 @@
         "descripcion": "Tornillo hexagonal.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -689,7 +689,7 @@
         "descripcion": "Perfil omega 6m.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -698,7 +698,7 @@
         "descripcion": "Plancha OSB 11mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -707,7 +707,7 @@
         "descripcion": "Tornillo trompeta broca.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -716,7 +716,7 @@
         "descripcion": "Plancha OSB 11mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -725,7 +725,7 @@
         "descripcion": "Tornillo trompeta broca.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -734,7 +734,7 @@
         "descripcion": "Fieltro de 15 lb.",
         "unidad_medida": "ROLLO",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -743,7 +743,7 @@
         "descripcion": "Tornillo trompeta broca.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -752,7 +752,7 @@
         "descripcion": "Plancha microondulada 1.65m.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -761,7 +761,7 @@
         "descripcion": "Plancha microondulada 2.45m.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -770,7 +770,7 @@
         "descripcion": "Plancha microondulada 3.05m.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -779,7 +779,7 @@
         "descripcion": "Plancha microondulada 3.35m.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -788,7 +788,7 @@
         "descripcion": "Plancha microondulada 3.65m.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -797,7 +797,7 @@
         "descripcion": "Tornillo lenteja PF.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -806,7 +806,7 @@
         "descripcion": "Perfil Jota hojalatería.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -815,7 +815,7 @@
         "descripcion": "Perfil de inicio para hojalatería.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -824,7 +824,7 @@
         "descripcion": "Perfil para esquinas interiores.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -833,7 +833,7 @@
         "descripcion": "Perfil para esquinas exteriores.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -842,7 +842,7 @@
         "descripcion": "Tornillo con golilla de goma.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -851,7 +851,7 @@
         "descripcion": "Forro para coronación.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -860,7 +860,7 @@
         "descripcion": "Forro para atraque.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -869,7 +869,7 @@
         "descripcion": "Remate para acabados frontales.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -878,7 +878,7 @@
         "descripcion": "Fieltro de 15 lb para aislamiento.",
         "unidad_medida": "ROLLO",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -887,7 +887,7 @@
         "descripcion": "Tornillo hexagonal corto con golilla.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     },
     {
@@ -896,7 +896,7 @@
         "descripcion": "Gancho omega para PV4.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
-        "stock_minimo": 20,
+        "stock": 20,
         "activo": true
     }
 ]
