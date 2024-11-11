@@ -1,38 +1,39 @@
 {% extends 'Modulo_usuario/base/base.html' %}
-{% load custom_filters %}
 
 {% block title %}Editar Material{% endblock %}
 
 {% block content %}
 <div class="container my-5">
     <h2 class="text-center mb-4">Editar Material</h2>
-    <form method="post" class="form">
+    <form method="POST">
         {% csrf_token %}
-        <div class="form-group">
-            <label for="id_nombre">Nombre:</label>
-            {{ form.nombre|add_class:"form-control" }}
-        </div>
-        <div class="form-group">
-            <label for="id_descripcion">Descripción:</label>
-            {{ form.descripcion|add_class:"form-control" }}
-        </div>
-        <div class="form-group">
-            <label for="id_unidad_medida">Unidad de Medida:</label>
-            {{ form.unidad_medida|add_class:"form-control" }}
-        </div>
-        <div class="form-group">
-            <label for="id_cantidad_disponible">Cantidad Disponible:</label>
-            {{ form.cantidad_disponible|add_class:"form-control" }}
-        </div>
-        <div class="form-group">
-            <label for="id_stock_minimo">Stock Mínimo:</label>
-            {{ form.stock_minimo|add_class:"form-control" }}
-        </div>
+        
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" class="form-control" value="{{ material.nombre }}" required><br>
+
+        <label for="descripcion">Descripción:</label>
+        <textarea id="descripcion" name="descripcion" class="form-control">{{ material.descripcion }}</textarea><br>
+
+        <label for="unidad_medida">Unidad de Medida:</label>
+        <select id="unidad_medida" name="unidad_medida" class="form-control" required>
+            <option value="M2" {% if material.unidad_medida == 'M2' %}selected{% endif %}>M2</option>
+            <option value="UN" {% if material.unidad_medida == 'UN' %}selected{% endif %}>UN</option>
+            <option value="ROLLO" {% if material.unidad_medida == 'ROLLO' %}selected{% endif %}>ROLLO</option>
+            <option value="TARRO" {% if material.unidad_medida == 'TARRO' %}selected{% endif %}>TARRO</option>
+            <option value="LITRO" {% if material.unidad_medida == 'LITRO' %}selected{% endif %}>LITRO</option>
+        </select>
+        <label for="cantidad_disponible">Cantidad Disponible:</label>
+        <input type="number" id="cantidad_disponible" name="cantidad_disponible" class="form-control" value="{{ material.cantidad_disponible }}" required><br>
+
+        <label for="stock_minimo">Stock Mínimo:</label>
+        <input type="number" id="stock_minimo" name="stock_minimo" class="form-control" value="{{ material.stock_minimo }}" required><br>
+
         <div class="form-check">
-            {{ form.activo|add_class:"form-check-input" }}
-            <label for="id_activo" class="form-check-label">Activo</label>
+            <input type="checkbox" id="activo" name="activo" class="form-check-input" {% if material.activo %}checked{% endif %}>
+            <label for="activo" class="form-check-label">Activo</label>
         </div>
-        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+
+        <button type="submit" class="btn btn-primary mt-3">Guardar Cambios</button>
     </form>
 </div>
 {% endblock %}

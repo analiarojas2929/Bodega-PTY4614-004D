@@ -2,7 +2,7 @@
     {
         "id": 1,
         "nombre": "POLIETILENO 0,2MM",
-        "descripcion": "Descripción del material",
+        "descripcion": "Lámina impermeabilizante.",
         "unidad_medida": "M2",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
@@ -11,7 +11,7 @@
     {
         "id": 2,
         "nombre": "CALUGA H° 50MM",
-        "descripcion": "Descripción del material",
+        "descripcion": "Pieza de hormigón de 50mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
@@ -20,7 +20,7 @@
     {
         "id": 3,
         "nombre": "MALLA ACMA C-139",
-        "descripcion": "Descripción del material",
+        "descripcion": "Malla para refuerzo estructural.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
@@ -29,7 +29,7 @@
     {
         "id": 4,
         "nombre": "TEE REGISTRO 110MM",
-        "descripcion": "Descripción del material",
+        "descripcion": "Conector T para tuberías.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
@@ -38,7 +38,7 @@
     {
         "id": 5,
         "nombre": "CODO 90° D 110MM",
-        "descripcion": "Descripción del material",
+        "descripcion": "Codo 90° para tubería 110mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
@@ -47,7 +47,7 @@
     {
         "id": 6,
         "nombre": "CODO 90° D 75MM",
-        "descripcion": "Descripción del material",
+        "descripcion": "Codo 90° para tubería 75mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
@@ -56,859 +56,847 @@
     {
         "id": 7,
         "nombre": "CODO 90° D 50MM",
-        "descripcion": "Descripción del material",
+        "descripcion": "Codo 90° para tubería 50mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
         "activo": true
     },
     {
+        "id": 8,
         "nombre": "CODO 90° D 40MM",
-        "descripcion": "Descripción del material",
+        "descripcion": "Codo 90° para tubería 40mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 8
+        "activo": true
     },
     {
+        "id": 9,
         "nombre": "CODO 45° D 110MM",
-        "descripcion": "Descripción del material",
+        "descripcion": "Codo 45° para tubería 110mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 9
+        "activo": true
     },
     {
+        "id": 10,
         "nombre": "CODO 45° D 50MM",
-        "descripcion": "Descripción del material",
+        "descripcion": "Codo 45° para tubería 50mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 10
+        "activo": true
     },
     {
+        "id": 11,
         "nombre": "REDUCCION PVC 110/75MM",
-        "descripcion": "Descripción del material",
+        "descripcion": "Reducción de tubería PVC.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 11
+        "activo": true
     },
     {
+        "id": 12,
         "nombre": "TEE 110/50/110",
-        "descripcion": "Descripción del material",
+        "descripcion": "Conector T para tubería.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 12
+        "activo": true
     },
     {
+        "id": 13,
         "nombre": "TEE 110/40/110",
-        "descripcion": "Descripción del material",
+        "descripcion": "T de conexión PVC.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 13
+        "activo": true
     },
     {
+        "id": 14,
         "nombre": "TEE 75/40/75",
-        "descripcion": "Descripción del material",
+        "descripcion": "Conector en T para tuberías.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 14
+        "activo": true
     },
     {
+        "id": 15,
         "nombre": "TUBO PVC D 110MM",
-        "descripcion": "Descripción del material",
+        "descripcion": "Tubería de PVC de 110mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 15
+        "activo": true
     },
     {
+        "id": 16,
         "nombre": "TUBO PVC D 75MM",
-        "descripcion": "Descripción del material",
+        "descripcion": "Tubería de PVC de 75mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 16
+        "activo": true
     },
     {
+        "id": 17,
         "nombre": "TUBO PVC D 50MM",
-        "descripcion": "Descripción del material",
+        "descripcion": "Tubería de PVC de 50mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 17
+        "activo": true
     },
     {
+        "id": 18,
         "nombre": "TUBO PVC D 40MM",
-        "descripcion": "Descripción del material",
+        "descripcion": "Tubería de PVC de 40mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 18
+        "activo": true
     },
     {
+        "id": 19,
         "nombre": "COPLA D 110MM",
-        "descripcion": "Descripción del material",
+        "descripcion": "Conector tipo copla de 110mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 19
+        "activo": true
     },
     {
+        "id": 20,
         "nombre": "TAPA D 110MM",
-        "descripcion": "Descripción del material",
+        "descripcion": "Tapa para tubería de 110mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 20
+        "activo": true
     },
     {
+        "id": 21,
         "nombre": "TEE 110/110/110",
-        "descripcion": "Descripción del material",
+        "descripcion": "Conector T para PVC de 110mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 21
+        "activo": true
     },
     {
+        "id": 22,
         "nombre": "PPR CODO 20mm",
-        "descripcion": "Descripción del material",
+        "descripcion": "Codo PPR de 20mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 22
+        "activo": true
     },
     {
+        "id": 23,
         "nombre": "PPR CODO 25mm",
-        "descripcion": "Descripción del material",
+        "descripcion": "Codo PPR de 25mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 23
+        "activo": true
     },
     {
+        "id": 24,
         "nombre": "PPR CODO 25x20mm",
-        "descripcion": "Descripción del material",
+        "descripcion": "Codo PPR de 25x20mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 24
+        "activo": true
     },
     {
+        "id": 25,
         "nombre": "PPR CURVA 25mm",
-        "descripcion": "Descripción del material",
+        "descripcion": "Curva PPR de 25mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 25
+        "activo": true
     },
     {
+        "id": 26,
         "nombre": "PPR TEE 25x25x25",
-        "descripcion": "Descripción del material",
+        "descripcion": "Tee PPR de 25mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 26
+        "activo": true
     },
     {
+        "id": 27,
         "nombre": "PPR TEE 25x25x20",
-        "descripcion": "Descripción del material",
+        "descripcion": "Tee PPR de 25x25x20mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 27
+        "activo": true
     },
     {
+        "id": 28,
         "nombre": "PPR CODO TERMINAL 20 A 1/2 HE",
-        "descripcion": "Descripción del material",
+        "descripcion": "Codo terminal PPR 20mm a 1/2 HE.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 28
+        "activo": true
     },
     {
+        "id": 29,
         "nombre": "PPR CODO TERMINAL 20 A 1/2 HI",
-        "descripcion": "Descripción del material",
+        "descripcion": "Codo terminal PPR 20mm a 1/2 HI.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 29
+        "activo": true
     },
     {
+        "id": 30,
         "nombre": "REDUCCION 32/25mm",
-        "descripcion": "Descripción del material",
+        "descripcion": "Reducción PPR de 32 a 25mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 30
+        "activo": true
     },
     {
+        "id": 31,
         "nombre": "REDUCCION 25/20mm",
-        "descripcion": "Descripción del material",
+        "descripcion": "Reducción de 25 a 20mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 31
+        "activo": true
     },
     {
+        "id": 32,
         "nombre": "LLAVE DE PASO 25mm",
-        "descripcion": "Descripción del material",
+        "descripcion": "Llave de paso de 25mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 32
+        "activo": true
     },
     {
+        "id": 33,
         "nombre": "LLAVE DE PASO 20mm",
-        "descripcion": "Descripción del material",
+        "descripcion": "Llave de paso de 20mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 33
+        "activo": true
     },
     {
+        "id": 34,
         "nombre": "TERMINAL 20mm HE",
-        "descripcion": "Descripción del material",
+        "descripcion": "Terminal de 20mm HE.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 34
+        "activo": true
     },
     {
+        "id": 35,
         "nombre": "PPR 32mm",
-        "descripcion": "Descripción del material",
+        "descripcion": "Tubería PPR de 32mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 35
+        "activo": true
     },
     {
+        "id": 36,
         "nombre": "PPR 25mm",
-        "descripcion": "Descripción del material",
+        "descripcion": "Tubería PPR de 25mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 36
+        "activo": true
     },
     {
+        "id": 37,
         "nombre": "PPR 20mm",
-        "descripcion": "Descripción del material",
+        "descripcion": "Tubería PPR de 20mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 37
+        "activo": true
     },
     {
+        "id": 38,
         "nombre": "PPR TAPON 25mm HI",
-        "descripcion": "Descripción del material",
+        "descripcion": "Tapón PPR 25mm HI.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 38
+        "activo": true
     },
     {
+        "id": 39,
         "nombre": "PPR TAPON 20mm HI",
-        "descripcion": "Descripción del material",
+        "descripcion": "Tapón PPR 20mm HI.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 39
+        "activo": true
     },
     {
+        "id": 40,
         "nombre": "PPR TAPON 20mm HE",
-        "descripcion": "Descripción del material",
+        "descripcion": "Tapón PPR 20mm HE.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 40
+        "activo": true
     },
     {
+        "id": 41,
         "nombre": "LLAVE DE BOLA 20mm",
-        "descripcion": "Descripción del material",
+        "descripcion": "Llave de bola de 20mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 41
+        "activo": true
     },
     {
+        "id": 42,
         "nombre": "ABRAZADERA PPR 25mm",
-        "descripcion": "Descripción del material",
+        "descripcion": "Abrazadera PPR de 25mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 42
+        "activo": true
     },
     {
+        "id": 43,
         "nombre": "ABRAZADERA PPR 20mm",
-        "descripcion": "Descripción del material",
+        "descripcion": "Abrazadera PPR de 20mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 43
+        "activo": true
     },
     {
+        "id": 44,
         "nombre": "COPLA 25mm",
-        "descripcion": "Descripción del material",
+        "descripcion": "Copla para tubería de 25mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 44
+        "activo": true
     },
     {
+        "id": 45,
         "nombre": "SOLERA 92 (TIRA 6 MT)",
-        "descripcion": "Descripción del material",
+        "descripcion": "Solera de 92mm (6 metros).",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 45
+        "activo": true
     },
     {
-        "nombre": "MONTANTE 90 VIGA (6ML) ",
-        "descripcion": "Descripción del material",
+        "id": 46,
+        "nombre": "MONTANTE 90 VIGA (6ML)",
+        "descripcion": "Montante viga de 90mm (6 metros).",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 46
+        "activo": true
     },
     {
+        "id": 47,
         "nombre": "MONTANTE 90 TABIQUE (2,4ML)",
-        "descripcion": "Descripción del material",
+        "descripcion": "Montante tabique de 90mm (2.4 metros).",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 47
+        "activo": true
     },
     {
+        "id": 48,
         "nombre": "ANCLAJE AN1",
-        "descripcion": "Descripción del material",
+        "descripcion": "Anclaje tipo AN1.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 48
+        "activo": true
     },
     {
+        "id": 49,
         "nombre": "PERNO EXPANSIÓN 4 (1/2X3 3/4)",
-        "descripcion": "Descripción del material",
+        "descripcion": "Perno de expansión 1/2 x 3 3/4.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 49
+        "activo": true
     },
     {
+        "id": 50,
         "nombre": "PERNO EXPANSIÓN 2 (REFUERZO)",
-        "descripcion": "Descripción del material",
+        "descripcion": "Perno de expansión para refuerzo.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 50
+        "activo": true
     },
     {
+        "id": 51,
         "nombre": "ANCLAJE AN2",
-        "descripcion": "Descripción del material",
+        "descripcion": "Anclaje tipo AN2.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 51
+        "activo": true
     },
     {
+        "id": 52,
         "nombre": "TORNILLO LENTEJA PUNTA BROCA 8-18 X 1/2",
-        "descripcion": "Descripción del material",
+        "descripcion": "Tornillo lenteja punta broca.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 52
+        "activo": true
     },
     {
+        "id": 53,
         "nombre": "TORNILLO HEXAGONAL 10 - 16 X 3/4 PB",
-        "descripcion": "Descripción del material",
+        "descripcion": "Tornillo hexagonal PB.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 53
+        "activo": true
     },
     {
+        "id": 54,
         "nombre": "HUINCHA TENSORA 0.85 X 50 X 60MT",
-        "descripcion": "Descripción del material",
+        "descripcion": "Huincha tensora, rollo.",
         "unidad_medida": "ROLLO",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 54
+        "activo": true
     },
     {
+        "id": 55,
         "nombre": "ANGULO TENSOR",
-        "descripcion": "Descripción del material",
+        "descripcion": "Ángulo tensor.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 55
+        "activo": true
     },
     {
+        "id": 56,
         "nombre": "SIKADUR 31",
-        "descripcion": "Descripción del material",
+        "descripcion": "Resina epóxica Sika.",
         "unidad_medida": "TARRO",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 56
+        "activo": true
     },
     {
+        "id": 57,
         "nombre": "CLAVOS HILTI 2",
-        "descripcion": "Descripción del material",
+        "descripcion": "Clavos Hilti tamaño 2.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 57
+        "activo": true
     },
     {
+        "id": 58,
         "nombre": "SOLERA 92 (TIRA 6 MT)",
-        "descripcion": "Descripción del material",
+        "descripcion": "Solera de 92mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 58
+        "activo": true
     },
     {
-        "nombre": "MONTANTE 90 VIGA (6ML) ",
-        "descripcion": "Descripción del material",
+        "id": 59,
+        "nombre": "MONTANTE 90 VIGA (6ML)",
+        "descripcion": "Montante viga 90mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 59
+        "activo": true
     },
     {
+        "id": 60,
         "nombre": "MONTANTE 90 TABIQUE (2,4ML)",
-        "descripcion": "Descripción del material",
+        "descripcion": "Montante tabique 2.4m.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 60
+        "activo": true
     },
     {
+        "id": 61,
         "nombre": "TORNILLO LENTEJA PUNTA BROCA 8-18 X 1/2",
-        "descripcion": "Descripción del material",
+        "descripcion": "Tornillo lenteja broca.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 61
+        "activo": true
     },
     {
+        "id": 62,
         "nombre": "TORNILLO HEXAGONAL 10 - 16 X 3/4",
-        "descripcion": "Descripción del material",
+        "descripcion": "Tornillo hexagonal 3/4.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 62
+        "activo": true
     },
     {
+        "id": 63,
         "nombre": "HUINCHA TENSORA 0.85 X 50 X 60MT",
-        "descripcion": "Descripción del material",
+        "descripcion": "Huincha tensora, rollo.",
         "unidad_medida": "ROLLO",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 63
+        "activo": true
     },
     {
-        "nombre": "ANGULO TENSOR ",
-        "descripcion": "Descripción del material",
+        "id": 64,
+        "nombre": "ANGULO TENSOR",
+        "descripcion": "Ángulo tensor.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 64
+        "activo": true
     },
     {
+        "id": 65,
         "nombre": "TIRAFONDO CON GOLILLA",
-        "descripcion": "Descripción del material",
+        "descripcion": "Tirafondo con golilla.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 65
+        "activo": true
     },
     {
+        "id": 66,
         "nombre": "VIGA MADERA 2X8 IMPREGNADA (3,20MT)",
-        "descripcion": "Descripción del material",
+        "descripcion": "Viga madera 2x8.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 66
+        "activo": true
     },
     {
+        "id": 67,
         "nombre": "VIGA MADERA 2X4 IMPREGNADA (3,20MT)",
-        "descripcion": "Descripción del material",
+        "descripcion": "Viga madera 2x4.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 67
+        "activo": true
     },
     {
+        "id": 68,
         "nombre": "TORNILLO TURBO 4 (14(6.0)X100MM)",
-        "descripcion": "Descripción del material",
+        "descripcion": "Tornillo turbo 4.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 68
+        "activo": true
     },
     {
+        "id": 69,
         "nombre": "TORNILLO 8x1 5/8 TURBO 2",
-        "descripcion": "Descripción del material",
+        "descripcion": "Tornillo turbo 2.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 69
+        "activo": true
     },
     {
+        "id": 70,
         "nombre": "PLANCHA TERCIADO ESTRUCTURAL 18MM",
-        "descripcion": "Descripción del material",
+        "descripcion": "Plancha terciado 18mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 70
+        "activo": true
     },
     {
+        "id": 71,
         "nombre": "TORNILLO LENTEJA PUNTA BROCA 8-18 X 1/2",
-        "descripcion": "Descripción del material",
+        "descripcion": "Tornillo lenteja broca.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 71
+        "activo": true
     },
     {
+        "id": 72,
         "nombre": "SOLERA 92 (TIRA 6 MT)",
-        "descripcion": "Descripción del material",
+        "descripcion": "Solera de 92mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 72
+        "activo": true
     },
     {
-        "nombre": "MONTANTE 90 VIGA (6ML) ",
-        "descripcion": "Descripción del material",
+        "id": 73,
+        "nombre": "MONTANTE 90 VIGA (6ML)",
+        "descripcion": "Montante viga 90mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 73
+        "activo": true
     },
     {
+        "id": 74,
         "nombre": "MONTANTE 90 TABIQUE (2,4ML)",
-        "descripcion": "Descripción del material",
+        "descripcion": "Montante tabique 2.4m.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 74
+        "activo": true
     },
     {
+        "id": 75,
         "nombre": "TORNILLO LENTEJA PUNTA BROCA 8-18 X 1/2",
-        "descripcion": "Descripción del material",
+        "descripcion": "Tornillo lenteja broca.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 75
+        "activo": true
     },
     {
+        "id": 76,
         "nombre": "TORNILLO HEXAGONAL 10 - 16 X 3/4",
-        "descripcion": "Descripción del material",
+        "descripcion": "Tornillo hexagonal.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 76
+        "activo": true
     },
     {
+        "id": 77,
         "nombre": "OMEGA 35X38X15X8X0,85(TIRA 6 MT)",
-        "descripcion": "Descripción del material",
+        "descripcion": "Perfil omega 6m.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 77
+        "activo": true
     },
     {
+        "id": 78,
         "nombre": "PLANCHA OSB 11,1MM",
-        "descripcion": "Descripción del material",
+        "descripcion": "Plancha OSB 11mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 78
+        "activo": true
     },
     {
+        "id": 79,
         "nombre": "TORNILLOS CABEZA DE TROMPETA 6X1 1/4 PUNTA BROCA",
-        "descripcion": "Descripción del material",
+        "descripcion": "Tornillo trompeta broca.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 79
+        "activo": true
     },
     {
+        "id": 80,
         "nombre": "PLANCHA OSB 11,1MM",
-        "descripcion": "Descripción del material",
+        "descripcion": "Plancha OSB 11mm.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 80
+        "activo": true
     },
     {
+        "id": 81,
         "nombre": "TORNILLOS CABEZA DE TROMPETA 6X1 1/4 PUNTA BROCA",
-        "descripcion": "Descripción del material",
+        "descripcion": "Tornillo trompeta broca.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 81
+        "activo": true
     },
     {
-        "nombre": "FIELTRO 15 LB  (ROLLO 40M2)",
-        "descripcion": "Descripción del material",
+        "id": 82,
+        "nombre": "FIELTRO 15 LB (ROLLO 40M2)",
+        "descripcion": "Fieltro de 15 lb.",
         "unidad_medida": "ROLLO",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 82
+        "activo": true
     },
     {
+        "id": 83,
         "nombre": "TORNILLOS CABEZA DE TROMPETA 6X1 1/4 PUNTA BROCA",
-        "descripcion": "Descripción del material",
+        "descripcion": "Tornillo trompeta broca.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 83
+        "activo": true
     },
     {
+        "id": 84,
         "nombre": "MICROONDULADA PP 0,4 x 976 x 1,65 MT",
-        "descripcion": "Descripción del material",
+        "descripcion": "Plancha microondulada 1.65m.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 84
+        "activo": true
     },
     {
-        "nombre": "MICROONDULADA PP 0,4 x 976 x 2,45 MT ",
-        "descripcion": "Descripción del material",
+        "id": 85,
+        "nombre": "MICROONDULADA PP 0,4 x 976 x 2,45 MT",
+        "descripcion": "Plancha microondulada 2.45m.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 85
+        "activo": true
     },
     {
+        "id": 86,
         "nombre": "MICROONDULADA PP 0,4 x 976 x 3,050 MT",
-        "descripcion": "Descripción del material",
+        "descripcion": "Plancha microondulada 3.05m.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 86
+        "activo": true
     },
     {
+        "id": 87,
         "nombre": "MICROONDULADA PP 0,4 x 976 x 3,350 MT",
-        "descripcion": "Descripción del material",
+        "descripcion": "Plancha microondulada 3.35m.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 87
+        "activo": true
     },
     {
-        "nombre": "MICROONDULADA PP 0,4 x 976 x 3,650 MT ",
-        "descripcion": "Descripción del material",
+        "id": 88,
+        "nombre": "MICROONDULADA PP 0,4 x 976 x 3,650 MT",
+        "descripcion": "Plancha microondulada 3.65m.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 88
+        "activo": true
     },
     {
+        "id": 89,
         "nombre": "TORNILLOS CABEZA DE LENTEJA PF 8X3/4",
-        "descripcion": "Descripción del material",
+        "descripcion": "Tornillo lenteja PF.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 89
+        "activo": true
     },
     {
+        "id": 90,
         "nombre": "PERFIL JOTA - HOJALATERIA",
-        "descripcion": "Descripción del material",
+        "descripcion": "Perfil Jota hojalatería.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 90
+        "activo": true
     },
     {
-        "nombre": "PERFIL INICIO - HOJALATERIA ",
-        "descripcion": "Descripción del material",
+        "id": 91,
+        "nombre": "PERFIL INICIO - HOJALATERIA",
+        "descripcion": "Perfil de inicio para hojalatería.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 91
+        "activo": true
     },
     {
-        "nombre": "PERFIL ESQUINERO INTERIOR ",
-        "descripcion": "Descripción del material",
+        "id": 92,
+        "nombre": "PERFIL ESQUINERO INTERIOR",
+        "descripcion": "Perfil para esquinas interiores.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 92
+        "activo": true
     },
     {
-        "nombre": "PERFIL ESQUINERO EXTERIOR  ",
-        "descripcion": "Descripción del material",
+        "id": 93,
+        "nombre": "PERFIL ESQUINERO EXTERIOR",
+        "descripcion": "Perfil para esquinas exteriores.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 93
+        "activo": true
     },
     {
+        "id": 94,
         "nombre": "TORNILLO 10 - 12 x 1 1/2 CON GOLILLA DE GOMA PF",
-        "descripcion": "Descripción del material",
+        "descripcion": "Tornillo con golilla de goma.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 94
+        "activo": true
     },
     {
+        "id": 95,
         "nombre": "FORRO DE CORONACION",
-        "descripcion": "Descripción del material",
+        "descripcion": "Forro para coronación.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 95
+        "activo": true
     },
     {
+        "id": 96,
         "nombre": "FORRO DE ATRAQUE",
-        "descripcion": "Descripción del material",
+        "descripcion": "Forro para atraque.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 96
+        "activo": true
     },
     {
+        "id": 97,
         "nombre": "REMATE FRONTAL",
-        "descripcion": "Descripción del material",
+        "descripcion": "Remate para acabados frontales.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true,
-        "id": 97
+        "activo": true
     },
     {
         "id": 98,
         "nombre": "FIELTRO 15 LB (ROLLO 40M2)",
-        "descripcion": "Descripción del material",
+        "descripcion": "Fieltro de 15 lb para aislamiento.",
         "unidad_medida": "ROLLO",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
         "activo": true
-        
     },
     {
         "id": 99,
         "nombre": "TORNILLO HEXAGONAL 1/4 - 14 X 7/8 CON GOLLILLA (CORTO)",
-        "descripcion": "Descripción del material",
+        "descripcion": "Tornillo hexagonal corto con golilla.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
         "activo": true
-        
     },
     {
         "id": 100,
         "nombre": "GANCHO OMEGA PARA PV4",
-        "descripcion": "Descripción del material",
+        "descripcion": "Gancho omega para PV4.",
         "unidad_medida": "UN",
         "cantidad_disponible": 100,
         "stock_minimo": 20,
-        "activo": true
-        
-    },
-    {
-        "id": 101,
-        "nombre": "madera",
-        "descripcion": "madera",
-        "unidad_medida": "Sin especificar",
-        "cantidad_disponible": 21,
-        "stock_minimo": 12,
         "activo": true
     }
 ]

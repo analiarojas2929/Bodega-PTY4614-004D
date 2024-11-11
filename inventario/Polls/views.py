@@ -183,22 +183,42 @@ def add_material_view(request):
         form = MaterialForm()
 
     return render(request, 'Modulo_usuario/InventoryView/agregar.html', {'form': form})
+
 # Actualizar material (solo accesible por Jefe de Bodega)
+# Ruta al archivo JSON
+JSON_FILE_PATH = os.path.join(settings.BASE_DIR, 'api', 'materiales_data.json')
+
 @login_required
 @user_passes_test(lambda u: u.roles.filter(id=JEFE_BODEGA).exists(), login_url='/access_denied/')
 def edit_material_view(request, material_id):
-    material = get_object_or_404(Material, id=material_id)
+    # Leer el archivo JSON
+    try:
+        with open(JSON_FILE_PATH, 'r', encoding='utf-8') as file:
+            materiales = json.load(file)
+    except FileNotFoundError:
+        raise Http404("Archivo JSON no encontrado.")
+
+    # Buscar el material por ID en la lista
+    material = next((m for m in materiales if m['id'] == material_id), None)
+    if not material:
+        raise Http404("Material no encontrado.")
 
     if request.method == 'POST':
-        form = MaterialForm(request.POST, instance=material)
-        if form.is_valid():
-            form.save()
-            return redirect('lista_view')
-    else:
-        form = MaterialForm(instance=material)
+        # Actualizar los datos del material con los valores enviados desde el formulario
+        material['nombre'] = request.POST.get('nombre', material['nombre'])
+        material['descripcion'] = request.POST.get('descripcion', material['descripcion'])
+        material['unidad_medida'] = request.POST.get('unidad_medida', material['unidad_medida'])
+        material['cantidad_disponible'] = int(request.POST.get('cantidad_disponible', material['cantidad_disponible']))
+        material['stock_minimo'] = int(request.POST.get('stock_minimo', material['stock_minimo']))
+        material['activo'] = request.POST.get('activo') == 'on'
 
-    return render(request, 'Modulo_usuario/InventoryView/editar.html', {'form': form, 'material': material})
+        # Guardar los cambios en el archivo JSON
+        with open(JSON_FILE_PATH, 'w', encoding='utf-8') as file:
+            json.dump(materiales, file, ensure_ascii=False, indent=4)
 
+        return redirect('lista_view')
+
+    return render(request, 'Modulo_usuario/InventoryView/editar.html', {'material': material})
 # Eliminar material (solo accesible por Jefe de Bodega)
 @login_required
 @user_passes_test(lambda u: has_role_id(u, JEFE_BODEGA), login_url='/access_denied/')
