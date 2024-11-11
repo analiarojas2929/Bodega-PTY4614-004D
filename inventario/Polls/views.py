@@ -316,49 +316,25 @@ def cobrar_ticket(request, ticket_id):
         return redirect('lista_tickets')
 
     try:
-        # Iniciar la transacción
         with transaction.atomic():
-            # Descontar el stock en la base de datos local
+            # Descontar el stock directamente en la base de datos
             material.cantidad_disponible -= ticket.cantidad
             material.save()
             print(f"[DEBUG] Stock actualizado en la base de datos local: {material.cantidad_disponible}")
 
-            # Configurar la solicitud para la API externa
-            api_url = f"{settings.API_BASE_URL}/materiales/{material.id}/"
-            headers = {
-                'Content-Type': 'application/json',
-                'Authorization': f"Bearer {settings.API_TOKEN}"  # Incluye tu token si es necesario
-            }
-            payload = {'cantidad_disponible': material.cantidad_disponible}
-
-            print(f"[DEBUG] Intentando actualizar la API en {api_url} con datos: {payload}")
-
-            # Actualizar el stock en la API externa
-            response = requests.patch(api_url, json=payload, headers=headers, timeout=10)
-
-            # Verificar la respuesta de la API
-            if response.status_code == 200:
-                # Cambiar el estado del ticket a 'cobrado'
-                ticket.estado = 'cobrado'
-                ticket.save()
-                messages.success(request, "Ticket cobrado exitosamente y stock actualizado.")
-                print("[DEBUG] Ticket cobrado y stock actualizado correctamente en la API.")
-            else:
-                print(f"[ERROR] Error al actualizar la API externa: {response.status_code} - {response.text}")
-                # Revertir cambios en la base de datos si falla la API
-                raise ValueError(f"Error al actualizar el stock en la API externa: {response.status_code} - {response.text}")
-
-    except requests.exceptions.RequestException as e:
-        # Manejar excepciones relacionadas con la API externa
-        messages.error(request, f"Error de conexión con la API: {e}")
-        print(f"[ERROR] Error de conexión con la API: {e}")
+            # Cambiar el estado del ticket a 'cobrado'
+            ticket.estado = 'cobrado'
+            ticket.save()
+            messages.success(request, "Ticket cobrado exitosamente.")
+            print("[DEBUG] Ticket cobrado y stock actualizado correctamente.")
 
     except Exception as e:
-        # Manejar cualquier otra excepción en la transacción
+        # Manejar cualquier excepción en la transacción
         messages.error(request, f"Error al cobrar el ticket: {str(e)}")
         print(f"[ERROR] Excepción al intentar cobrar el ticket: {e}")
 
     return redirect('lista_tickets')
+
 
 # Ver ticket (solo accesible por Jefe de Obra o Jefe de Bodega)
 @login_required
