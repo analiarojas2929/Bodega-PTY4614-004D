@@ -348,45 +348,99 @@ def lista_tickets(request):
 
 @login_required
 @user_passes_test(lambda u: has_role_id(u, JEFE_OBRA) or has_role_id(u, JEFE_BODEGA), login_url='/access_denied/')
+@login_required
+@user_passes_test(lambda u: has_role_id(u, JEFE_OBRA) or has_role_id(u, JEFE_BODEGA), login_url='/access_denied/')
 def cobrar_ticket(request, ticket_id):
     ticket = get_object_or_404(Ticket, id=ticket_id)
     material = ticket.material_solicitado
 
+    # Verificar si el ticket ya fue cobrado
     if ticket.estado == 'cobrado':
         messages.warning(request, "El ticket ya ha sido cobrado.")
         return redirect('lista_tickets')
 
+    # Verificar si hay suficiente stock disponible
     if material.cantidad_disponible < ticket.cantidad:
-        messages.error(request, 'No hay suficiente stock disponible.')
+        messages.error(request, 'No hay suficiente stock disponible para cobrar este ticket.')
         return redirect('lista_tickets')
 
     try:
+        # Actualizar la base de datos local dentro de una transacción atómica
         with transaction.atomic():
             material.cantidad_disponible -= ticket.cantidad
             material.save()
             ticket.estado = 'cobrado'
             ticket.save()
 
-            # Actualizar el archivo JSON
-            json_file_path = os.path.join(settings.BASE_DIR, 'api', 'materiales_data.json')
-            with open(json_file_path, 'r', encoding='utf-8') as file:
-                materiales_json = json.load(file)
+            # Actualizar el archivo JSON después de actualizar la base de datos
+            actualizar_json_material(material)
 
-            # Buscar y actualizar el material en el JSON
-            material_json = next((m for m in materiales_json if m['id'] == material.id), None)
-            if material_json:
-                material_json['cantidad_disponible'] = material.cantidad_disponible
-
-            # Guardar los cambios en el archivo JSON
-            with open(json_file_path, 'w', encoding='utf-8') as file:
-                json.dump(materiales_json, file, ensure_ascii=False, indent=4)
-
-            messages.success(request, "Ticket cobrado y stock actualizado correctamente.")
+        messages.success(request, "Ticket cobrado y stock actualizado correctamente.")
 
     except Exception as e:
         messages.error(request, f"Error al cobrar el ticket: {str(e)}")
 
     return redirect('lista_tickets')
+
+def actualizar_json_material(material):
+    """Función para actualizar el archivo JSON después de modificar un material."""
+    json_file_path = os.path.join(settings.BASE_DIR, 'api', 'materiales_data.json')
+    
+    try:
+        with open(json_file_path, 'r', encoding='utf-8') as file:
+            materiales_json = json.load(file)
+    except (FileNotFoundError, json.JSONDecodeError):
+        materiales_json = []
+
+    # Buscar el material en el archivo JSON y actualizarlo
+    material_json = next((m for m in materiales_json if m['id'] == material.id), None)
+    if material_json:
+        material_json['cantidad_disponible'] = material.cantidad_disponible
+    else:
+        # Si no está en el JSON, lo agregamos
+        materiales_json.append({
+            "id": material.id,
+            "nombre": material.nombre,
+            "descripcion": material.descripcion,
+            "unidad_medida": material.unidad_medida.descripcion,
+            "cantidad_disponible": material.cantidad_disponible,
+            "stock": material.stock,
+            "activo": material.activo
+        })
+
+    # Guardar los cambios en el archivo JSON
+    with open(json_file_path, 'w', encoding='utf-8') as file:
+        json.dump(materiales_json, file, ensure_ascii=False, indent=4)
+def actualizar_json_material(material):
+    """Función para actualizar el archivo JSON después de modificar un material."""
+    json_file_path = os.path.join(settings.BASE_DIR, 'api', 'materiales_data.json')
+    
+    try:
+        with open(json_file_path, 'r', encoding='utf-8') as file:
+            materiales_json = json.load(file)
+    except (FileNotFoundError, json.JSONDecodeError):
+        materiales_json = []
+
+    # Buscar el material en el archivo JSON y actualizarlo
+    material_json = next((m for m in materiales_json if m['id'] == material.id), None)
+    if material_json:
+        material_json['cantidad_disponible'] = material.cantidad_disponible
+    else:
+        # Si no está en el JSON, lo agregamos
+        materiales_json.append({
+            "id": material.id,
+            "nombre": material.nombre,
+            "descripcion": material.descripcion,
+            "unidad_medida": material.unidad_medida.descripcion,
+            "cantidad_disponible": material.cantidad_disponible,
+            "stock": material.stock,
+            "activo": material.activo
+        })
+
+    # Guardar los cambios en el archivo JSON
+    with open(json_file_path, 'w', encoding='utf-8') as file:
+        json.dump(materiales_json, file, ensure_ascii=False, indent=4)
+
 
 # Ver ticket (solo accesible por Jefe de Obra o Jefe de Bodega)
 @login_required
