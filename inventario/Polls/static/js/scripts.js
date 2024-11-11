@@ -91,18 +91,6 @@ document.addEventListener('DOMContentLoaded', function () {
     console.error("Botones de exportación no encontrados.");
   }
 
-  // Inicialización de DataTables
-  if ($('table').length > 0) {
-    $('table').DataTable({
-      "paging": true,
-      "searching": true,
-      "ordering": true
-    });
-  } else {
-    console.error("Tabla no encontrada para inicializar DataTables.");
-  }
-});
-
 window.onload = function() {
   document.getElementById('google-login-link').click();
 };

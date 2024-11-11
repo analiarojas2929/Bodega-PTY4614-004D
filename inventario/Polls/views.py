@@ -56,28 +56,25 @@ def inventory(request):
 
 # Obtener la ruta base del proyecto
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 @login_required
 @user_passes_test(lambda u: has_role_id(u, JEFE_BODEGA) or has_role_id(u, JEFE_OBRA), login_url='/access_denied/')
 def lista_view(request):
-    # Obtener materiales activos e inactivos desde la base de datos
-    materiales_activos = Material.objects.filter(activo=True)
-    materiales_inactivos = Material.objects.filter(activo=False)
+    materiales_json = []
+    json_file_path = os.path.join(settings.BASE_DIR, 'api', 'materiales_data.json')
 
-    # Obtener los datos de materiales desde la API
     try:
-        response = requests.get(f'{settings.API_BASE_URL}/materiales/')
-        materiales_json = response.json() if response.status_code == 200 else []
-    except requests.exceptions.RequestException:
-        materiales_json = []
-        messages.error(request, "Error al obtener la lista de materiales desde la API.")
-
-    # Pasar los materiales de la base de datos y de la API a la plantilla
+        with open(json_file_path, 'r', encoding='utf-8') as file:
+            materiales_json = json.load(file)
+    except FileNotFoundError:
+        messages.error(request, "Archivo JSON no encontrado.")
+    except json.JSONDecodeError:
+        messages.error(request, "Error al decodificar el archivo JSON.")
+    
     return render(request, 'Modulo_usuario/InventoryView/lista.html', {
-        'materiales': materiales_activos,
-        'inactivos': materiales_inactivos,
         'materiales_json': materiales_json
     })
+
+
 @login_required(login_url='/admin_login/')
 @user_passes_test(lambda u: has_role_id(u, ADMINISTRADOR_SISTEMA), login_url='/access_denied/')
 def home_admin(request):
@@ -198,36 +195,57 @@ def actualizar_stock(material_id, nueva_cantidad):
 JSON_FILE_PATH = os.path.join(settings.BASE_DIR, 'api', 'materiales_data.json')
 
 @login_required
-@user_passes_test(lambda u: u.roles.filter(id=JEFE_BODEGA).exists(), login_url='/access_denied/')
+@user_passes_test(lambda u: has_role_id(u, JEFE_BODEGA), login_url='/access_denied/')
 def editar_material(request, material_id):
-    # Leer el archivo JSON
-    try:
-        with open(JSON_FILE_PATH, 'r', encoding='utf-8') as file:
-            materiales = json.load(file)
-    except FileNotFoundError:
-        raise Http404("Archivo JSON no encontrado.")
-
-    # Buscar el material por ID en la lista
-    material = next((m for m in materiales if m['id'] == material_id), None)
-    if not material:
-        raise Http404("Material no encontrado.")
+    # Obtener el material de la base de datos
+    material_db = get_object_or_404(Material, id=material_id)
+    json_file_path = JSON_FILE_PATH
 
     if request.method == 'POST':
-        # Actualizar los datos del material con los valores enviados desde el formulario
-        material['nombre'] = request.POST.get('nombre', material['nombre'])
-        material['descripcion'] = request.POST.get('descripcion', material['descripcion'])
-        material['unidad_medida'] = request.POST.get('unidad_medida', material['unidad_medida'])
-        material['cantidad_disponible'] = int(request.POST.get('cantidad_disponible', material['cantidad_disponible']))
-        material['stock'] = int(request.POST.get('stock', material['stock']))
-        material['activo'] = request.POST.get('activo') == 'on'
+        form = MaterialForm(request.POST, instance=material_db)
+        if form.is_valid():
+            # Guardar en la base de datos
+            form.save()
 
-        # Guardar los cambios en el archivo JSON
-        with open(JSON_FILE_PATH, 'w', encoding='utf-8') as file:
-            json.dump(materiales, file, ensure_ascii=False, indent=4)
+            # Cargar el archivo JSON y actualizarlo
+            with open(json_file_path, 'r', encoding='utf-8') as file:
+                materiales_json = json.load(file)
 
-        return redirect('lista_view')
+            # Buscar y actualizar o agregar en el archivo JSON
+            material_json = next((m for m in materiales_json if m['id'] == material_id), None)
+            if material_json:
+                material_json.update({
+                    "nombre": form.cleaned_data['nombre'],
+                    "descripcion": form.cleaned_data['descripcion'],
+                    "unidad_medida": form.cleaned_data['unidad_medida'].descripcion,
+                    "cantidad_disponible": form.cleaned_data['cantidad_disponible'],
+                    "stock": form.cleaned_data['stock'],
+                    "activo": form.cleaned_data['activo']
+                })
+            else:
+                materiales_json.append({
+                    "id": material_id,
+                    "nombre": form.cleaned_data['nombre'],
+                    "descripcion": form.cleaned_data['descripcion'],
+                    "unidad_medida": form.cleaned_data['unidad_medida'].descripcion,
+                    "cantidad_disponible": form.cleaned_data['cantidad_disponible'],
+                    "stock": form.cleaned_data['stock'],
+                    "activo": form.cleaned_data['activo']
+                })
 
-    return render(request, 'Modulo_usuario/InventoryView/editar.html', {'material': material})
+            # Guardar los cambios en el archivo JSON
+            with open(json_file_path, 'w', encoding='utf-8') as file:
+                json.dump(materiales_json, file, ensure_ascii=False, indent=4)
+
+            return redirect('lista_view')
+
+    else:
+        form = MaterialForm(instance=material_db)
+
+    return render(request, 'Modulo_usuario/InventoryView/editar.html', {
+        'form': form,
+        'material': material_db
+    })
 # Eliminar material (solo accesible por Jefe de Bodega)
 @login_required
 @user_passes_test(lambda u: has_role_id(u, JEFE_BODEGA), login_url='/access_denied/')
@@ -236,13 +254,35 @@ def delete_material_view(request, id):
     if request.method == 'POST':
         material.activo = False
         material.save()
+
+        # Actualizar en el archivo JSON
+        try:
+            with open(JSON_FILE_PATH, 'r', encoding='utf-8') as file:
+                materiales = json.load(file)
+
+            for m in materiales:
+                if m['id'] == id:
+                    m['activo'] = False
+                    break
+
+            with open(JSON_FILE_PATH, 'w', encoding='utf-8') as file:
+                json.dump(materiales, file, ensure_ascii=False, indent=4)
+
+        except FileNotFoundError:
+            messages.error(request, "Archivo JSON no encontrado.")
+
+        # Actualizar en la API
+        api_url = f"{settings.API_BASE_URL}/materiales/{id}/"
+        response = requests.patch(api_url, json={'activo': False}, headers={'Content-Type': 'application/json'})
+        if response.status_code == 200:
+            messages.success(request, "Material desactivado correctamente en la API.")
+        else:
+            messages.error(request, f"Error al desactivar el material en la API: {response.status_code}")
+
         return redirect('lista_view')
+
     return render(request, 'Modulo_usuario/InventoryView/eliminar.html', {'material': material})
-
-
 # Crear ticket (solo accesible por Jefe de Obra o Jefe de Bodega)
-@login_required
-@user_passes_test(lambda u: has_role_id(u, JEFE_OBRA) or has_role_id(u, JEFE_BODEGA), login_url='/access_denied/')
 @login_required
 @user_passes_test(lambda u: has_role_id(u, JEFE_OBRA) or has_role_id(u, JEFE_BODEGA), login_url='/access_denied/')
 def crear_ticket(request):
@@ -309,49 +349,45 @@ def lista_tickets(request):
 @login_required
 @user_passes_test(lambda u: has_role_id(u, JEFE_OBRA) or has_role_id(u, JEFE_BODEGA), login_url='/access_denied/')
 def cobrar_ticket(request, ticket_id):
-    # Obtener el ticket y el material asociado
     ticket = get_object_or_404(Ticket, id=ticket_id)
     material = ticket.material_solicitado
 
-    # Verificar si el ticket ya fue cobrado
     if ticket.estado == 'cobrado':
         messages.warning(request, "El ticket ya ha sido cobrado.")
         return redirect('lista_tickets')
 
-    # Verificar si hay suficiente stock disponible
     if material.cantidad_disponible < ticket.cantidad:
-        messages.error(request, 'No hay suficiente stock disponible para cobrar este ticket.')
+        messages.error(request, 'No hay suficiente stock disponible.')
         return redirect('lista_tickets')
 
     try:
-        # Actualizar la base de datos local dentro de una transacción atómica
         with transaction.atomic():
             material.cantidad_disponible -= ticket.cantidad
             material.save()
             ticket.estado = 'cobrado'
             ticket.save()
-            messages.success(request, "Ticket cobrado exitosamente en la base de datos local.")
-        
-        # Hacer la actualización del stock en la API después de la transacción
-        api_url = f"{settings.API_BASE_URL}/materiales/{material.id}/"
-        response = requests.patch(
-            api_url,
-            json={'cantidad_disponible': material.cantidad_disponible},
-            headers={'Content-Type': 'application/json'}
-        )
 
-        # Verificar el estado de la respuesta de la API
-        if response.status_code == 200:
-            messages.success(request, "Stock actualizado exitosamente en la API.")
-        else:
-            # Registrar un mensaje si la API no se actualiza, pero no revertir en la base de datos local
-            messages.warning(request, f"El ticket fue cobrado localmente, pero falló la actualización en la API externa. Código de error: {response.status_code}")
+            # Actualizar el archivo JSON
+            json_file_path = os.path.join(settings.BASE_DIR, 'api', 'materiales_data.json')
+            with open(json_file_path, 'r', encoding='utf-8') as file:
+                materiales_json = json.load(file)
+
+            # Buscar y actualizar el material en el JSON
+            material_json = next((m for m in materiales_json if m['id'] == material.id), None)
+            if material_json:
+                material_json['cantidad_disponible'] = material.cantidad_disponible
+
+            # Guardar los cambios en el archivo JSON
+            with open(json_file_path, 'w', encoding='utf-8') as file:
+                json.dump(materiales_json, file, ensure_ascii=False, indent=4)
+
+            messages.success(request, "Ticket cobrado y stock actualizado correctamente.")
 
     except Exception as e:
-        # Manejar cualquier excepción en la transacción o en la llamada a la API
         messages.error(request, f"Error al cobrar el ticket: {str(e)}")
 
     return redirect('lista_tickets')
+
 # Ver ticket (solo accesible por Jefe de Obra o Jefe de Bodega)
 @login_required
 @user_passes_test(lambda u: has_role_id(u, JEFE_OBRA) or has_role_id(u, JEFE_BODEGA), login_url='/access_denied/')
