@@ -1,25 +1,44 @@
 {% extends 'Modulo_usuario/base/base.html' %}
 
+{% block title %}Crear Ticket{% endblock %}
+
 {% block content %}
-<div class="container my-5">
-    <h2 class="text-center mb-4">Crear Ticket</h2>
+<div class="container mt-5">
     <a href="{% url 'lista_tickets' %}" class="btn btn-secondary mt-3">Volver a la Lista</a>
+    <h2 class="text-center">Crear Nuevo Ticket</h2>
+    <hr>
+    
     <form method="POST">
         {% csrf_token %}
-        <div class="form-group mb-3">
-            <label for="usuario">Usuario</label>
-            <input type="text" id="usuario" name="usuario" class="form-control" required>
+
+        <!-- Usuario que crea el ticket (esto lo puedes establecer automáticamente con el usuario autenticado) -->
+        <input type="hidden" name="usuario" value="{{ request.user.id }}">
+
+        <div class="mb-3">
+            <label for="material_solicitado" class="form-label">Material Solicitado</label>
+            <select class="form-control" id="material_solicitado" name="material_solicitado" required>
+                <option value="">Selecciona un Material</option>
+                {% for material in materiales %}
+                    <option value="{{ material.id }}">{{ material.nombre }} (Stock: {{ material.cantidad_disponible }})</option>
+                {% endfor %}
+            </select>
         </div>
-        <div class="form-group mb-3">
-            <label for="material_solicitado">Material Solicitado</label>
-            <input type="text" id="material_solicitado" name="material_solicitado" class="form-control" required>
+
+        <div class="mb-3">
+            <label for="cantidad" class="form-label">Cantidad</label>
+            <input type="number" class="form-control" id="cantidad" name="cantidad" min="1" required>
         </div>
-        <div class="form-group mb-3">
-            <label for="cantidad">Cantidad</label>
-            <input type="number" id="cantidad" name="cantidad" class="form-control" required>
+
+        <div class="mb-3">
+            <label for="estado" class="form-label">Estado</label>
+            <select class="form-control" id="estado" name="estado" required>
+                <option value="pendiente">Pendiente</option>
+                <option value="cobrado">Cobrado</option>
+            </select>
         </div>
-        <button type="submit" class="btn btn-primary w-100">Crear Ticket</button>
-        
+
+        <button type="submit" class="btn btn-success">Crear Ticket</button>
+        <a href="{% url 'lista_tickets' %}" class="btn btn-secondary">Cancelar</a>
     </form>
 </div>
 {% endblock %}

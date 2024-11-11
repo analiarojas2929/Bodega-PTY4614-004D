@@ -3,41 +3,62 @@
 {% block content %}
 <div class="container my-5">
     <h2 class="text-center mb-4">Lista de Tickets</h2>
+    
+    <!-- Botón para crear un nuevo ticket -->
     <div class="d-flex justify-content-end mb-3">
-        <a href="{% url 'crear_ticket' %}" class="btn btn-primary">Crear Ticket</a>
+        <a href="{% url 'crear_ticket' %}" class="btn btn-success">Crear Ticket</a>
     </div>
     
-    <table class="table table-striped table-bordered" >
-        <thead>
+    <!-- Tabla para mostrar la lista de tickets -->
+    <table class="table table-hover table-bordered">
+        <thead class="table-dark">
             <tr>
-                <th>ID</th>
-                <th>Fecha</th>
-                <th>Solicitante</th>
-                <th>Estado</th>
-                <th>Material Solicitado</th>
+                <th>Material</th>
                 <th>Cantidad</th>
+                <th>Estado</th>
+                <th>Fecha de Creación</th>
                 <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
-            {% for ticket in tickets %}
-            <tr>
-                <td>{{ ticket.id }}</td>
-                <td>{{ ticket.fecha }}</td>
-                <td>{{ ticket.usuario }}</td>
-                <td>{{ ticket.estado }}</td>
-                <td>{{ ticket.material_solicitado }}</td>
-                <td>{{ ticket.cantidad }}</td>
-                <td>
-                    <a href="{% url 'ver_ticket' ticket.id %}" class="btn btn-info btn-sm">Ver</a>
-                    <a href="{% url 'eliminar_ticket' ticket.id %}" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas eliminar este ticket?');">Eliminar</a>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="7" class="text-center">No hay tickets disponibles.</td>
-            </tr>
-            {% endfor %}
+            {% if tickets %}
+                {% for ticket in tickets %}
+                <tr>
+                    <!-- Mostrar el nombre del material -->
+                    <td>{{ ticket.material_solicitado.nombre }}</td>
+                    
+                    <!-- Mostrar la cantidad solicitada -->
+                    <td>{{ ticket.cantidad }}</td>
+                    
+                    <!-- Mostrar el estado del ticket -->
+                    <td>
+                        {% if ticket.estado == 'pendiente' %}
+                            <span class="badge bg-warning text-dark">Pendiente</span>
+                        {% else %}
+                            <span class="badge bg-success">Cobrado</span>
+                        {% endif %}
+                    </td>
+                    
+                    <!-- Mostrar la fecha de creación del ticket -->
+                    <td>{{ ticket.fecha_creacion|date:"d/m/Y H:i" }}</td>
+                    
+                    <!-- Acciones disponibles para el ticket -->
+                    <td>
+                        {% if ticket.estado == 'pendiente' %}
+                            <a href="{% url 'cobrar_ticket' ticket.id %}" class="btn btn-sm btn-primary">
+                                Cobrar
+                            </a>
+                        {% else %}
+                            <span class="text-muted">N/A</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="5" class="text-center">No hay tickets disponibles.</td>
+                </tr>
+            {% endif %}
         </tbody>
     </table>
 </div>

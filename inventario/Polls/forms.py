@@ -59,3 +59,11 @@ class MaterialForm(forms.ModelForm):
     class Meta:
         model = Material
         fields = ['nombre', 'descripcion', 'unidad_medida', 'cantidad_disponible', 'stock_minimo', 'activo']
+
+        from django import forms
+from .models import Ticket, Material
+
+class TicketForm(forms.ModelForm):
+    class Meta:
+        model = Ticket
+        fields = ['material_solicitado', 'cantidad']

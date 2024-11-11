@@ -3,9 +3,9 @@ from django.db import models
 import os
 from django.http import JsonResponse
 from .models import Material, Ticket, CustomUser
-
+import requests
 from django.conf import settings
-from .forms import CustomUserForm
+from .forms import CustomUserForm, TicketForm
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.contrib.auth import logout,authenticate, login
@@ -23,6 +23,7 @@ from rest_framework import viewsets
 from .models import Question, Choice
 from .serializers import QuestionSerializer, ChoiceSerializer
 
+API_BASE_URL = "http://127.0.0.1:8000/api"
 
 def has_role_id(user, role_id):
     return user.roles.filter(id=role_id).exists()
@@ -235,22 +236,76 @@ def delete_material_view(request, id):
 @login_required
 @user_passes_test(lambda u: has_role_id(u, JEFE_OBRA) or has_role_id(u, JEFE_BODEGA), login_url='/access_denied/')
 def crear_ticket(request):
-    if request.method == 'POST':
-        Ticket.objects.create(
-            usuario=request.POST.get('usuario'),
-            material_solicitado=request.POST.get('material_solicitado'),
-            cantidad=request.POST.get('cantidad')
-        )
-        return redirect('lista_tickets')
-    return render(request, 'Modulo_usuario/tickets/crear.html')
+    # Obtener materiales desde la API
+    api_url = f"{settings.API_BASE_URL}/materiales/"
+    response = requests.get(api_url)
+    if response.status_code == 200:
+        materiales_json = response.json()
+    else:
+        materiales_json = []
 
+    if request.method == 'POST':
+        usuario = request.user
+        material_id = request.POST.get('material_solicitado')
+        cantidad = int(request.POST.get('cantidad'))
+        estado = request.POST.get('estado')
+
+        # Buscar el material en la respuesta de la API
+        material = next((m for m in materiales_json if m['id'] == int(material_id)), None)
+
+        if material:
+            if material['cantidad_disponible'] >= cantidad:
+                # Crear el ticket
+                nuevo_ticket = Ticket.objects.create(
+                    usuario=usuario,
+                    material_solicitado_id=material_id,
+                    cantidad=cantidad,
+                    estado=estado
+                )
+
+                # Actualizar el stock en la API
+                update_url = f"{settings.API_BASE_URL}/materiales/{material_id}/"
+                update_data = {
+                    'cantidad_disponible': material['cantidad_disponible'] - cantidad
+                }
+                update_response = requests.put(update_url, json=update_data)
+
+                if update_response.status_code == 200:
+                    messages.success(request, 'Ticket creado y stock actualizado.')
+                    return redirect('lista_tickets')
+                else:
+                    messages.error(request, 'Error al actualizar el stock en la API.')
+                    nuevo_ticket.delete()
+            else:
+                messages.error(request, 'No hay suficiente stock disponible.')
+        else:
+            messages.error(request, 'Material no encontrado.')
+
+    return render(request, 'Modulo_usuario/tickets/crear.html', {'materiales': materiales_json})
 
 # Lista de tickets (solo accesible por Jefe de Obra o Jefe de Bodega)
 @login_required
 @user_passes_test(lambda u: has_role_id(u, JEFE_OBRA) or has_role_id(u, JEFE_BODEGA), login_url='/access_denied/')
 def lista_tickets(request):
     tickets = Ticket.objects.all()
+
+    # Filtrar por estado
+    estado = request.GET.get('estado')
+    if estado:
+        tickets = tickets.filter(estado=estado)
+    
     return render(request, 'Modulo_usuario/tickets/lista.html', {'tickets': tickets})
+
+@login_required
+@user_passes_test(lambda u: has_role_id(u, JEFE_OBRA) or has_role_id(u, JEFE_BODEGA), login_url='/access_denied/')
+
+def cobrar_ticket(request, ticket_id):
+    ticket = get_object_or_404(Ticket, id=ticket_id)
+    ticket.estado = 'cobrado'
+    ticket.save()
+    messages.success(request, "Ticket cobrado exitosamente.")
+    return redirect('lista_tickets')
+
 
 # Ver ticket (solo accesible por Jefe de Obra o Jefe de Bodega)
 @login_required

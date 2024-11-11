@@ -1,5 +1,6 @@
 # views.py
 from rest_framework import viewsets
+from rest_framework import generics
 from .models import Material
 from .serializers import MaterialSerializer
 import os
@@ -79,3 +80,13 @@ def buscar_material_ajax(request):
 
     # Retornar los materiales filtrados como respuesta JSON
     return JsonResponse({'materiales': materiales_filtrados})
+
+class MaterialListView(generics.ListAPIView):
+    queryset = Material.objects.all()
+    serializer_class = MaterialSerializer
+
+class MaterialDetailView(generics.RetrieveUpdateAPIView):
+    queryset = Material.objects.all()
+    serializer_class = MaterialSerializer
+
+    

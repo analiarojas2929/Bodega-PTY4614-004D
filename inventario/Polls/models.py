@@ -46,22 +46,22 @@ class EstadoTicket(models.Model):
     def __str__(self):
         return self.descripcion
 
-# Modelo para los Tickets
+from django.utils.timezone import now
+
 class Ticket(models.Model):
     ESTADO_CHOICES = [
         ('pendiente', 'Pendiente'),
-        ('aprobado', 'Aprobado'),
-        ('rechazado', 'Rechazado'),
+        ('cobrado', 'Cobrado'),
     ]
-
-    fecha = models.DateTimeField(default=timezone.now)
+    
+    estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default='pendiente')
     usuario = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    estado_ticket = models.CharField(max_length=10, choices=ESTADO_CHOICES, default='pendiente')
-    material_solicitado = models.CharField(max_length=255, null=True, blank=True)
-    cantidad = models.IntegerField(default=0)
+    material_solicitado = models.ForeignKey(Material, on_delete=models.CASCADE)
+    cantidad = models.IntegerField()
+    fecha_creacion = models.DateTimeField(default=now)  # Cambiado para permitir un valor predeterminado
 
     def __str__(self):
-        return f'Ticket #{self.id} - {self.estado_ticket}'
+        return f"{self.material_solicitado.nombre} - {self.cantidad} unidades"
 
 # Modelo para los Proveedores
 class Proveedor(models.Model):
