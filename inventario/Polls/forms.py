@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.hashers import make_password
-from .models import CustomUser, Role
+from .models import CustomUser, Role, Material
 
 class CustomUserForm(forms.ModelForm):
     roles = forms.ModelChoiceField(
@@ -54,3 +54,8 @@ class CustomUserForm(forms.ModelForm):
             user.save()
             user.roles.set([self.cleaned_data['roles']])
         return user
+
+class MaterialForm(forms.ModelForm):
+    class Meta:
+        model = Material
+        fields = ['nombre', 'descripcion', 'unidad_medida', 'cantidad_disponible', 'stock_minimo', 'activo']

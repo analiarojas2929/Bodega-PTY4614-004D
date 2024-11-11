@@ -3,32 +3,11 @@
 {% block title %}Agregar Material{% endblock %}
 
 {% block content %}
-<div class="container-add-material">
-    <h2 class="text-center">Agregar Material</h2>
-    <!--cambios -->
-    <form method="POST" action="{% url 'add_material' %}">
-        {% csrf_token %}
-        <div class="form-group">
-            <label for="nombre">Nombre</label>
-            <input type="text" name="nombre" id="nombre" class="form-control" required>
-        </div>
-        <div class="form-group">
-            <label for="descripcion">Descripción</label>
-            <textarea name="descripcion" id="descripcion" class="form-control"></textarea>
-        </div>
-        <div class="form-group">
-            <label for="unidad_medida">Unidad de Medida</label>
-            <input type="text" name="unidad_medida" id="unidad_medida" class="form-control" required>
-        </div>
-        <div class="form-group">
-            <label for="cantidad_disponible">Cantidad Disponible</label>
-            <input type="number" name="cantidad_disponible" id="cantidad_disponible" class="form-control" required>
-        </div>
-        <div class="form-group">
-            <label for="stock_minimo">Stock Mínimo</label>
-            <input type="number" name="stock_minimo" id="stock_minimo" class="form-control" required>
-        </div>
-        <button type="submit" class="btn btn-primary">Agregar Material</button>
-    </form>
-</div>
+<h2>Agregar Material</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Agregar</button>
+</form>
+<a href="{% url 'lista_view' %}">Volver a la lista de materiales</a>
 {% endblock %}

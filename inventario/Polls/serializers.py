@@ -1,7 +1,13 @@
+# Polls/serializers.py
 from rest_framework import serializers
-from .models import Material
+from .models import Question, Choice
 
-class MaterialSerializer(serializers.ModelSerializer):
+class QuestionSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Material
-        fields = ['id', 'nombre', 'descripcion', 'unidad_medida', 'cantidad_disponible', 'stock_minimo', 'activo']
+        model = Question
+        fields = ['id', 'question_text', 'pub_date']
+
+class ChoiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Choice
+        fields = ['id', 'question', 'choice_text', 'votes']

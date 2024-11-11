@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db import models
+import os
 from .models import Material, Ticket, CustomUser
 from .forms import CustomUserForm
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -7,11 +8,18 @@ from django.contrib import messages
 from django.contrib.auth import logout,authenticate, login
 from .roles import ADMINISTRADOR_SISTEMA, ADMINISTRADOR_OBRA, JEFE_OBRA, CAPATAZ, JEFE_BODEGA
 from .models import Role
+from django.shortcuts import render, redirect
+from .models import Material
+from .forms import MaterialForm
 from .roles import ADMINISTRADOR_OBRA, JEFE_BODEGA, JEFE_OBRA
 from django.contrib.auth.models import User
 import pdb
 from django.contrib.auth.forms import AuthenticationForm
 import json
+from rest_framework import viewsets
+from .models import Question, Choice
+from .serializers import QuestionSerializer, ChoiceSerializer
+
 
 def has_role_id(user, role_id):
     return user.roles.filter(id=role_id).exists()
@@ -41,7 +49,9 @@ def inventory(request):
     return render(request, 'Modulo_usuario/InventoryView/inventory.html', context)
 
 
-# Lista de materiales activos e inactivos (solo accesible por Jefe de Bodega)
+# Obtener la ruta base del proyecto
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 @login_required
 @user_passes_test(lambda u: has_role_id(u, JEFE_BODEGA) or has_role_id(u, JEFE_OBRA), login_url='/access_denied/')
 def lista_view(request):
@@ -49,18 +59,20 @@ def lista_view(request):
     materiales_activos = Material.objects.filter(activo=True)
     materiales_inactivos = Material.objects.filter(activo=False)
 
-    # Leer el archivo JSON
-    json_file_path = 'Polls/materiales_data.json'
-    with open(json_file_path, 'r', encoding='utf-8') as file:
-        materiales_json = json.load(file)
+    # Leer el archivo JSON usando una ruta absoluta
+    json_file_path = os.path.join(BASE_DIR, 'api', 'materiales_data.json')
+    try:
+        with open(json_file_path, 'r', encoding='utf-8') as file:
+            materiales_json = json.load(file)
+    except FileNotFoundError:
+        materiales_json = []
 
     # Pasar los materiales de la base de datos y del JSON a la plantilla
     return render(request, 'Modulo_usuario/InventoryView/lista.html', {
         'materiales': materiales_activos,
         'inactivos': materiales_inactivos,
-        'materiales_json': materiales_json  # Añadir materiales desde el JSON
+        'materiales_json': materiales_json
     })
-
 @login_required(login_url='/admin_login/')
 @user_passes_test(lambda u: has_role_id(u, ADMINISTRADOR_SISTEMA), login_url='/access_denied/')
 def home_admin(request):
@@ -134,18 +146,40 @@ def restore_material_view(request, id):
 @user_passes_test(lambda u: has_role_id(u, JEFE_BODEGA), login_url='/access_denied/')
 def add_material_view(request):
     if request.method == 'POST':
-        material = Material(
-            nombre=request.POST.get('nombre'),
-            descripcion=request.POST.get('descripcion'),
-            unidad_medida=request.POST.get('unidad_medida'),
-            cantidad_disponible=request.POST.get('cantidad_disponible'),
-            stock_minimo=request.POST.get('stock_minimo')
-        )
-        material.save()
-        return redirect('lista_view')
-    return render(request, 'Modulo_usuario/InventoryView/agregar.html')
+        form = MaterialForm(request.POST)
+        if form.is_valid():
+            # Guardar en la base de datos
+            nuevo_material = form.save()
 
+            # Guardar en el archivo JSON
+            json_file_path = os.path.join(BASE_DIR, 'Polls', 'materiales_data.json')
+            material_data = {
+                "nombre": nuevo_material.nombre,
+                "descripcion": nuevo_material.descripcion,
+                "unidad_medida": nuevo_material.unidad_medida.descripcion,
+                "cantidad_disponible": nuevo_material.cantidad_disponible,
+                "stock_minimo": nuevo_material.stock_minimo,
+                "activo": nuevo_material.activo
+            }
 
+            # Leer el archivo JSON existente y agregar el nuevo material
+            if os.path.exists(json_file_path):
+                with open(json_file_path, 'r', encoding='utf-8') as file:
+                    materiales_json = json.load(file)
+            else:
+                materiales_json = []
+
+            materiales_json.append(material_data)
+
+            # Guardar de nuevo en el archivo JSON
+            with open(json_file_path, 'w', encoding='utf-8') as file:
+                json.dump(materiales_json, file, ensure_ascii=False, indent=4)
+
+            return redirect('lista_view')
+    else:
+        form = MaterialForm()
+
+    return render(request, 'Modulo_usuario/InventoryView/agregar.html', {'form': form})
 # Actualizar material (solo accesible por Jefe de Bodega)
 @login_required
 @user_passes_test(lambda u: has_role_id(u, JEFE_BODEGA), login_url='/access_denied/')
@@ -340,3 +374,11 @@ def activar_usuario(request, user_id):
     user.is_active = True
     user.save()
     return redirect('lista_usuarios')
+
+class QuestionViewSet(viewsets.ModelViewSet):
+    queryset = Question.objects.all()
+    serializer_class = QuestionSerializer
+
+class ChoiceViewSet(viewsets.ModelViewSet):
+    queryset = Choice.objects.all()
+    serializer_class = ChoiceSerializer

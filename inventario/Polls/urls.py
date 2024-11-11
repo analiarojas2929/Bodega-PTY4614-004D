@@ -2,6 +2,12 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 from . import views
 from django.contrib.auth import views as auth_views
+from .views import QuestionViewSet, ChoiceViewSet
+
+
+router = DefaultRouter()
+router.register(r'questions', QuestionViewSet, basename='question')
+router.register(r'choices', ChoiceViewSet, basename='choice')
 
 
 # Definir las rutas

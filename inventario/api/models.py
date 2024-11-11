@@ -8,7 +8,7 @@ from django.core.exceptions import ValidationError
 class Material(models.Model):
     nombre = models.CharField(max_length=100)
     descripcion = models.TextField(blank=True, null=True)
-    unidad_medida = models.ForeignKey('UnidadMedida', on_delete=models.CASCADE, default=1)
+    unidad_medida = models.ForeignKey('UnidadMedida', on_delete=models.CASCADE)
     cantidad_disponible = models.IntegerField()
     stock_minimo = models.IntegerField()
     activo = models.BooleanField(default=True)  # Campo para eliminación lógica

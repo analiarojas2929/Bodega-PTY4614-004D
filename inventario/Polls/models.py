@@ -18,7 +18,7 @@ class CustomUser(AbstractUser):
 class Material(models.Model):
     nombre = models.CharField(max_length=100)
     descripcion = models.TextField(blank=True, null=True)
-    unidad_medida = models.ForeignKey('UnidadMedida', on_delete=models.CASCADE, default=1)
+    unidad_medida = models.ForeignKey('UnidadMedida', on_delete=models.CASCADE)
     cantidad_disponible = models.IntegerField()
     stock_minimo = models.IntegerField()
     activo = models.BooleanField(default=True)  # Campo para eliminación lógica
@@ -112,3 +112,20 @@ class Reporte(models.Model):
         return f"Reporte {self.id} - {self.tipo_reporte.descripcion}"
 
 
+
+
+
+class Question(models.Model):
+    question_text = models.CharField(max_length=200)
+    pub_date = models.DateTimeField('date published')
+
+    def __str__(self):
+        return self.question_text
+
+class Choice(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    choice_text = models.CharField(max_length=200)
+    votes = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.choice_text
