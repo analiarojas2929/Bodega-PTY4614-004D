@@ -30,12 +30,23 @@ class Material(models.Model):
     def __str__(self):
         return self.nombre
 
-# Modelo para Unidad de Medida
+# Modelo para Unidad de Medida con descripción adicional
 class UnidadMedida(models.Model):
-    descripcion = models.CharField(max_length=50)
+    unidad_medida = models.CharField(max_length=10, choices=[
+        ('M2', 'M2'),
+        ('UN', 'UN'),
+        ('ROLLO', 'ROLLO'),
+        ('TARRO', 'TARRO'),
+        ('LITRO', 'LITRO'),
+    ],
+    default='UN')
+    descripcion = models.CharField(max_length=50, blank=True, null=True)
+
+    class Meta:
+        unique_together = ('unidad_medida', 'descripcion')  # Evita duplicados
 
     def __str__(self):
-        return self.descripcion
+        return f"{self.unidad_medida} - {self.descripcion}" if self.descripcion else self.unidad_medida
 
 # Modelo para Estado de Tickets
 class EstadoTicket(models.Model):

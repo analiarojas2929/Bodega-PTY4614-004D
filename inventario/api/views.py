@@ -16,7 +16,7 @@ BASE_DIR = settings.BASE_DIR
 class MaterialViewSet(viewsets.ModelViewSet):
     queryset = Material.objects.all()
     serializer_class = MaterialSerializer
-
+    http_method_names = ['get', 'post', 'patch', 'delete']
 # Vista para agregar material y guardar en archivo JSON
 def add_material_view(request):
     json_file_path = os.path.join(BASE_DIR, 'api', 'materiales_data.json')

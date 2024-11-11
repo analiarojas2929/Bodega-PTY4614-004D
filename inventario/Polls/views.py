@@ -64,15 +64,15 @@ def lista_view(request):
     materiales_activos = Material.objects.filter(activo=True)
     materiales_inactivos = Material.objects.filter(activo=False)
 
-    # Leer el archivo JSON usando una ruta absoluta
-    json_file_path = os.path.join(BASE_DIR, 'api', 'materiales_data.json')
+    # Obtener los datos de materiales desde la API
     try:
-        with open(json_file_path, 'r', encoding='utf-8') as file:
-            materiales_json = json.load(file)
-    except FileNotFoundError:
+        response = requests.get(f'{settings.API_BASE_URL}/materiales/')
+        materiales_json = response.json() if response.status_code == 200 else []
+    except requests.exceptions.RequestException:
         materiales_json = []
+        messages.error(request, "Error al obtener la lista de materiales desde la API.")
 
-    # Pasar los materiales de la base de datos y del JSON a la plantilla
+    # Pasar los materiales de la base de datos y de la API a la plantilla
     return render(request, 'Modulo_usuario/InventoryView/lista.html', {
         'materiales': materiales_activos,
         'inactivos': materiales_inactivos,
@@ -243,10 +243,15 @@ def delete_material_view(request, id):
 # Crear ticket (solo accesible por Jefe de Obra o Jefe de Bodega)
 @login_required
 @user_passes_test(lambda u: has_role_id(u, JEFE_OBRA) or has_role_id(u, JEFE_BODEGA), login_url='/access_denied/')
+@login_required
+@user_passes_test(lambda u: has_role_id(u, JEFE_OBRA) or has_role_id(u, JEFE_BODEGA), login_url='/access_denied/')
 def crear_ticket(request):
-    # Obtener materiales desde la API para autocompletar (opcional)
-    response = requests.get(f'{settings.API_BASE_URL}/materiales/')
-    materiales_json = response.json() if response.status_code == 200 else []
+    try:
+        response = requests.get(f'{settings.API_BASE_URL}/materiales/')
+        materiales_json = response.json() if response.status_code == 200 else []
+    except requests.exceptions.RequestException:
+        materiales_json = []
+        messages.error(request, "Error al obtener la lista de materiales desde la API.")
 
     if request.method == 'POST':
         usuario = request.user
@@ -254,17 +259,23 @@ def crear_ticket(request):
         cantidad = int(request.POST.get('cantidad'))
         estado = request.POST.get('estado')
 
-        # Buscar el material por nombre en la base de datos
-        try:
-            material = Material.objects.get(nombre=nombre_material)
-        except Material.DoesNotExist:
+        materiales = Material.objects.filter(nombre=nombre_material)
+
+        if not materiales.exists():
             messages.error(request, 'El material seleccionado no existe.')
             return redirect('crear_ticket')
 
-        # Verificar si hay suficiente stock disponible
-        if material.cantidad_disponible >= cantidad:
-            # Crear el ticket en la base de datos local
-            try:
+        material = materiales.first()
+
+        if material.cantidad_disponible < cantidad:
+            messages.error(request, 'No hay suficiente stock disponible.')
+            return redirect('crear_ticket')
+
+        try:
+            with transaction.atomic():
+                material.cantidad_disponible -= cantidad
+                material.save()
+
                 ticket = Ticket.objects.create(
                     usuario=usuario,
                     material_solicitado=material,
@@ -272,10 +283,11 @@ def crear_ticket(request):
                     estado=estado
                 )
                 messages.success(request, 'Ticket creado exitosamente.')
-            except Exception as e:
-                messages.error(request, f'Error al crear el ticket: {str(e)}')
-        else:
-            messages.error(request, 'No hay suficiente stock disponible.')
+                print(f"[DEBUG] Ticket creado: {ticket}")
+
+        except Exception as e:
+            messages.error(request, f'Error al crear el ticket: {str(e)}')
+            print(f"[ERROR] Excepción al crear el ticket: {e}")
 
         return redirect('lista_tickets')
 
@@ -297,12 +309,9 @@ def lista_tickets(request):
 @login_required
 @user_passes_test(lambda u: has_role_id(u, JEFE_OBRA) or has_role_id(u, JEFE_BODEGA), login_url='/access_denied/')
 def cobrar_ticket(request, ticket_id):
-    # Obtener el ticket y el material solicitado
+    # Obtener el ticket y el material asociado
     ticket = get_object_or_404(Ticket, id=ticket_id)
     material = ticket.material_solicitado
-
-    print(f"[DEBUG] Ticket encontrado: {ticket}")
-    print(f"[DEBUG] Material solicitado: {material}, Cantidad disponible: {material.cantidad_disponible}, Cantidad del ticket: {ticket.cantidad}")
 
     # Verificar si el ticket ya fue cobrado
     if ticket.estado == 'cobrado':
@@ -312,30 +321,37 @@ def cobrar_ticket(request, ticket_id):
     # Verificar si hay suficiente stock disponible
     if material.cantidad_disponible < ticket.cantidad:
         messages.error(request, 'No hay suficiente stock disponible para cobrar este ticket.')
-        print("[ERROR] Stock insuficiente para cobrar el ticket.")
         return redirect('lista_tickets')
 
     try:
+        # Actualizar la base de datos local dentro de una transacción atómica
         with transaction.atomic():
-            # Descontar el stock directamente en la base de datos
             material.cantidad_disponible -= ticket.cantidad
             material.save()
-            print(f"[DEBUG] Stock actualizado en la base de datos local: {material.cantidad_disponible}")
-
-            # Cambiar el estado del ticket a 'cobrado'
             ticket.estado = 'cobrado'
             ticket.save()
-            messages.success(request, "Ticket cobrado exitosamente.")
-            print("[DEBUG] Ticket cobrado y stock actualizado correctamente.")
+            messages.success(request, "Ticket cobrado exitosamente en la base de datos local.")
+        
+        # Hacer la actualización del stock en la API después de la transacción
+        api_url = f"{settings.API_BASE_URL}/materiales/{material.id}/"
+        response = requests.patch(
+            api_url,
+            json={'cantidad_disponible': material.cantidad_disponible},
+            headers={'Content-Type': 'application/json'}
+        )
+
+        # Verificar el estado de la respuesta de la API
+        if response.status_code == 200:
+            messages.success(request, "Stock actualizado exitosamente en la API.")
+        else:
+            # Registrar un mensaje si la API no se actualiza, pero no revertir en la base de datos local
+            messages.warning(request, f"El ticket fue cobrado localmente, pero falló la actualización en la API externa. Código de error: {response.status_code}")
 
     except Exception as e:
-        # Manejar cualquier excepción en la transacción
+        # Manejar cualquier excepción en la transacción o en la llamada a la API
         messages.error(request, f"Error al cobrar el ticket: {str(e)}")
-        print(f"[ERROR] Excepción al intentar cobrar el ticket: {e}")
 
     return redirect('lista_tickets')
-
-
 # Ver ticket (solo accesible por Jefe de Obra o Jefe de Bodega)
 @login_required
 @user_passes_test(lambda u: has_role_id(u, JEFE_OBRA) or has_role_id(u, JEFE_BODEGA), login_url='/access_denied/')
@@ -346,12 +362,21 @@ def ver_ticket(request, ticket_id):
 
 # Eliminar ticket (solo accesible por Jefe de Obra o Jefe de Bodega)
 @login_required
-@user_passes_test(lambda u: has_role_id(u, JEFE_OBRA) or has_role_id(u, JEFE_BODEGA), login_url='/access_denied/')
 def eliminar_ticket(request, ticket_id):
     ticket = get_object_or_404(Ticket, id=ticket_id)
-    ticket.delete()
-    return redirect('lista_tickets')
+    material = ticket.material_solicitado
 
+    try:
+        with transaction.atomic():
+            # Revertir la cantidad disponible
+            material.cantidad_disponible += ticket.cantidad
+            material.save()
+            ticket.delete()
+            messages.success(request, "Ticket eliminado y cantidad revertida correctamente.")
+    except Exception as e:
+        messages.error(request, f"Error al eliminar el ticket: {e}")
+
+    return redirect('lista_tickets')
 
 # Vista para alertas de stock (solo accesible por Administrador de Obra)
 @login_required
