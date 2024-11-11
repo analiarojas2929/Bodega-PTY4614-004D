@@ -5,6 +5,8 @@ from django.contrib.auth import views as auth_views
 from .views import QuestionViewSet, ChoiceViewSet
 
 
+from api.views import buscar_material_ajax
+from . import views
 router = DefaultRouter()
 router.register(r'questions', QuestionViewSet, basename='question')
 router.register(r'choices', ChoiceViewSet, basename='choice')
@@ -18,7 +20,6 @@ urlpatterns = [
     path('inventory/', views.inventory, name='inventory'),
     path('lista_view/', views.lista_view, name='lista_view'),
     path('add_material/', views.add_material_view, name='add_material'),
-    path('update_material/<int:id>/', views.update_material_view, name='update_material'),
     path('delete_material/<int:id>/', views.delete_material_view, name='delete_material'),
     path('restore_material/<int:id>/', views.restore_material_view, name='restore_material'),
     path('stock_alerts/', views.stock_alerts_view, name='stock_alerts'),
@@ -38,5 +39,7 @@ urlpatterns = [
     path('usuarios/inactivar/<int:user_id>/', views.inactivar_usuario, name='inactivar_usuario'),
     path('usuarios/editar/<int:user_id>/', views.editar_usuario, name='editar_usuario'),
     path('usuarios/crear/', views.crear_usuario, name='crear_usuario'),
+    path('editar_material/<int:material_id>/', views.edit_material_view, name='editar_material'),
+    path('buscar_material_ajax/', buscar_material_ajax, name='buscar_material_ajax'),
     path('usuarios/activar/<int:user_id>/', views.activar_usuario, name='activar_usuario'),  # Nueva URL para activar
 ]

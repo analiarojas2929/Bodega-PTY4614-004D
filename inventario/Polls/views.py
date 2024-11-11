@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db import models
 import os
+from django.http import JsonResponse
 from .models import Material, Ticket, CustomUser
+
+from django.conf import settings
 from .forms import CustomUserForm
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
@@ -150,7 +153,7 @@ def add_material_view(request):
         if form.is_valid():
             # Guardar en la base de datos
             nuevo_material = form.save()
-
+            
             # Guardar en el archivo JSON
             json_file_path = os.path.join(BASE_DIR, 'api', 'materiales_data.json')
             material_data = {
@@ -182,19 +185,19 @@ def add_material_view(request):
     return render(request, 'Modulo_usuario/InventoryView/agregar.html', {'form': form})
 # Actualizar material (solo accesible por Jefe de Bodega)
 @login_required
-@user_passes_test(lambda u: has_role_id(u, JEFE_BODEGA), login_url='/access_denied/')
-def update_material_view(request, id):
-    material = get_object_or_404(Material, id=id)
-    if request.method == 'POST':
-        material.nombre = request.POST.get('nombre')
-        material.descripcion = request.POST.get('descripcion')
-        material.unidad_medida = request.POST.get('unidad_medida')
-        material.cantidad_disponible = request.POST.get('cantidad_disponible')
-        material.stock_minimo = request.POST.get('stock_minimo')
-        material.save()
-        return redirect('lista_view')
-    return render(request, 'Modulo_usuario/InventoryView/editar.html', {'material': material})
+@user_passes_test(lambda u: u.roles.filter(id=JEFE_BODEGA).exists(), login_url='/access_denied/')
+def edit_material_view(request, material_id):
+    material = get_object_or_404(Material, id=material_id)
 
+    if request.method == 'POST':
+        form = MaterialForm(request.POST, instance=material)
+        if form.is_valid():
+            form.save()
+            return redirect('lista_view')
+    else:
+        form = MaterialForm(instance=material)
+
+    return render(request, 'Modulo_usuario/InventoryView/editar.html', {'form': form, 'material': material})
 
 # Eliminar material (solo accesible por Jefe de Bodega)
 @login_required
@@ -382,3 +385,28 @@ class QuestionViewSet(viewsets.ModelViewSet):
 class ChoiceViewSet(viewsets.ModelViewSet):
     queryset = Choice.objects.all()
     serializer_class = ChoiceSerializer
+
+
+@login_required
+@user_passes_test(lambda u: has_role_id(u, JEFE_BODEGA), login_url='/access_denied/')
+def buscar_material_ajax(request):
+    query = request.GET.get('q', '').lower()
+    json_file_path = os.path.join(settings.BASE_DIR, 'api', 'materiales_data.json')
+
+    # Verificar si el archivo JSON existe
+    if not os.path.exists(json_file_path):
+        return JsonResponse({'error': 'Archivo JSON no encontrado'}, status=404)
+
+    try:
+        with open(json_file_path, 'r', encoding='utf-8') as file:
+            materiales_json = json.load(file)
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Error al decodificar el archivo JSON'}, status=500)
+
+    # Filtrar los materiales según la consulta
+    materiales_filtrados = [
+        material for material in materiales_json
+        if query in material['nombre'].lower()
+    ] if query else []
+
+    return JsonResponse({'materiales': materiales_filtrados})

@@ -1,34 +1,38 @@
 {% extends 'Modulo_usuario/base/base.html' %}
+{% load custom_filters %}
 
-{% block title %}Actualizar Material{% endblock %}
+{% block title %}Editar Material{% endblock %}
 
 {% block content %}
-<div class="container-edit-material my-5">
-    <h2 class="text-center mb-4">Actualizar Material</h2>
-    <form method="POST" action="{% url 'update_material' material.id %}">
+<div class="container my-5">
+    <h2 class="text-center mb-4">Editar Material</h2>
+    <form method="post" class="form">
         {% csrf_token %}
         <div class="form-group">
-            <label for="nombre">Nombre</label>
-            <input type="text" name="nombre" id="nombre" class="form-control" value="{{ material.nombre }}" required>
+            <label for="id_nombre">Nombre:</label>
+            {{ form.nombre|add_class:"form-control" }}
         </div>
         <div class="form-group">
-            <label for="descripcion">Descripción</label>
-            <textarea name="descripcion" id="descripcion" class="form-control">{{ material.descripcion }}</textarea>
+            <label for="id_descripcion">Descripción:</label>
+            {{ form.descripcion|add_class:"form-control" }}
         </div>
         <div class="form-group">
-            <label for="unidad_medida">Unidad de Medida</label>
-            <input type="text" name="unidad_medida" id="unidad_medida" class="form-control" value="{{ material.unidad_medida }}" required>
+            <label for="id_unidad_medida">Unidad de Medida:</label>
+            {{ form.unidad_medida|add_class:"form-control" }}
         </div>
         <div class="form-group">
-            <label for="cantidad_disponible">Cantidad Disponible</label>
-            <input type="number" step="0.01" name="cantidad_disponible" id="cantidad_disponible" class="form-control" value="{{ material.cantidad_disponible }}" required>
+            <label for="id_cantidad_disponible">Cantidad Disponible:</label>
+            {{ form.cantidad_disponible|add_class:"form-control" }}
         </div>
         <div class="form-group">
-            <label for="stock_minimo">Stock Mínimo</label>
-            <input type="number" step="0.01" name="stock_minimo" id="stock_minimo" class="form-control" value="{{ material.stock_minimo }}" required>
+            <label for="id_stock_minimo">Stock Mínimo:</label>
+            {{ form.stock_minimo|add_class:"form-control" }}
         </div>
-        <button type="submit" class="btn btn-warning">Actualizar Material</button>
+        <div class="form-check">
+            {{ form.activo|add_class:"form-check-input" }}
+            <label for="id_activo" class="form-check-label">Activo</label>
+        </div>
+        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
     </form>
-    
 </div>
 {% endblock %}

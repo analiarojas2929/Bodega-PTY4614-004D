@@ -1,52 +1,95 @@
-{% extends 'Modulo_usuario/base/base.html' %}
-{% load custom_filters %}
-
-{% block title %}Agregar Material{% endblock %}
+{% extends 'Modulo_usuario/base/base.html' %} 
+{% load custom_filters %} 
+{% block title %}Agregar Material{% endblock %} 
 
 {% block content %}
 <div class="container">
-    <div class="material-card">
-        <div class="material-card-header">
-            <h2>Agregar Nuevo Material</h2>
-        </div>
-        <div class="material-card-body">
-            <form method="post" class="material-form">
-                {% csrf_token %}
-                
-                <div class="form-group">
-                    <label for="id_nombre">Nombre:</label>
-                    {{ form.nombre|add_class:"form-control" }}
-                </div>
-                
-                <div class="form-group">
-                    <label for="id_descripcion">Descripción:</label>
-                    {{ form.descripcion|add_class:"form-control" }}
-                </div>
-                
-                <div class="form-group">
-                    <label for="id_unidad_medida">Unidad de Medida:</label>
-                    {{ form.unidad_medida|add_class:"form-control" }}
-                </div>
-                
-                <div class="form-group">
-                    <label for="id_cantidad_disponible">Cantidad Disponible:</label>
-                    {{ form.cantidad_disponible|add_class:"form-control" }}
-                </div>
-                
-                <div class="form-group">
-                    <label for="id_stock_minimo">Stock Mínimo:</label>
-                    {{ form.stock_minimo|add_class:"form-control" }}
-                </div>
-                
-                <div class="form-check">
-                    {{ form.activo|add_class:"form-check-input" }}
-                    <label for="id_activo" class="form-check-label">Activo</label>
-                </div>
-                
-                <button type="submit" class="btn-submit">Agregar Material</button>
-            </form>
-            <a href="{% url 'lista_view' %}" class="btn-back">Volver a la lista de materiales</a>
-        </div>
+  <div class="material-card">
+    <div class="material-card-header">
+      <h2>Agregar Nuevo Material</h2>
     </div>
+    <div class="material-card-body">
+      <form method="post" class="material-form">
+        {% csrf_token %}
+
+        <div class="form-group">
+          <label for="id_nombre">Nombre:</label>
+          {{ form.nombre|add_class:"form-control" }}
+          <!-- Aquí se mostrarán las sugerencias -->
+          <div id="materialSuggestions" class="suggestions"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="id_descripcion">Descripción:</label>
+          {{ form.descripcion|add_class:"form-control" }}
+        </div>
+
+        <div class="form-group">
+          <label for="id_unidad_medida">Unidad de Medida:</label>
+          {{ form.unidad_medida|add_class:"form-control" }}
+        </div>
+
+        <div class="form-group">
+          <label for="id_cantidad_disponible">Cantidad Disponible:</label>
+          {{ form.cantidad_disponible|add_class:"form-control" }}
+        </div>
+
+        <div class="form-group">
+          <label for="id_stock_minimo">Stock Mínimo:</label>
+          {{ form.stock_minimo|add_class:"form-control" }}
+        </div>
+
+        <div class="form-check">
+          {{ form.activo|add_class:"form-check-input" }}
+          <label for="id_activo" class="form-check-label">Activo</label>
+        </div>
+
+        <button type="submit" class="btn-submit">Agregar Material</button>
+      </form>
+      <a href="{% url 'lista_view' %}" class="btn-back"
+        >Volver a la lista de materiales</a
+      >
+    </div>
+  </div>
 </div>
+
+<script>
+  document.getElementById("id_nombre").addEventListener("input", function () {
+    const query = this.value.toLowerCase();
+
+    if (query.length > 2) {
+      fetch(`/buscar_material_ajax/?q=${encodeURIComponent(query)}`)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Error en la respuesta de la API");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          const suggestions = document.getElementById("materialSuggestions");
+          suggestions.innerHTML = "";
+
+          data.materiales.forEach((material) => {
+            const div = document.createElement("div");
+            div.className = "suggestion-item";
+            div.textContent = `${material.nombre} - Unidad: ${material.unidad_medida}`;
+            div.addEventListener("click", function () {
+              document.getElementById("id_nombre").value = material.nombre;
+              suggestions.innerHTML = "";
+            });
+            suggestions.appendChild(div);
+          });
+
+          if (data.materiales.length === 0) {
+            suggestions.innerHTML =
+              "<p>No se encontraron materiales similares.</p>";
+          }
+        })
+        .catch((error) => console.error("Error al cargar materiales:", error));
+    } else {
+      document.getElementById("materialSuggestions").innerHTML = "";
+    }
+  });
+</script>
+
 {% endblock %}
