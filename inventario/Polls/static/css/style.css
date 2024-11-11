@@ -459,6 +459,8 @@ body.dark .nav_bar {
   text-align: center;
 }
 
+
+
 .card:hover {
   transform: translateY(-10px);
   box-shadow: 0 16px 32px rgba(0, 0, 0, 0.2);
@@ -1182,4 +1184,104 @@ div.alert.alert-error {
   color: #721c24;
   border: 1px solid #f5c6cb;
   padding: 15px;
+}
+
+/* Contenedor principal para el formulario */
+.container {
+  max-width: 650px;
+  margin: 50px auto;
+  padding: 20px;
+}
+
+/* Tarjeta personalizada para el formulario */
+.material-card {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.material-card-header {
+  background-color: #3a7bd5; /* Color de encabezado */
+  color: white;
+  padding: 15px;
+  text-align: center;
+  font-size: 1.6rem;
+  font-weight: bold;
+}
+
+.material-card-body {
+  padding: 30px;
+}
+
+/* Estilos del formulario */
+.material-form .form-group {
+  margin-bottom: 20px;
+}
+
+.material-form label {
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.material-form .form-control {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.material-form .form-control:focus {
+  border-color: #3a7bd5;
+  box-shadow: 0 0 5px rgba(58, 123, 213, 0.2);
+}
+
+/* Estilos para el botón */
+.btn-submit {
+  background-color: #3a7bd5;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 20px;
+  width: 100%;
+}
+
+.btn-submit:hover {
+  background-color: #2a5b9d;
+}
+
+.btn-back {
+  display: inline-block;
+  margin-top: 20px;
+  text-align: center;
+  color: #3a7bd5;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.btn-back:hover {
+  text-decoration: underline;
+  color: #2a5b9d;
+}
+
+/* Checkbox personalizado */
+.form-check {
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.form-check-input {
+  margin-right: 10px;
+}
+
+.form-check-label {
+  font-weight: 500;
+  color: #333;
 }

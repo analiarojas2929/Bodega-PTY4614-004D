@@ -152,7 +152,7 @@ def add_material_view(request):
             nuevo_material = form.save()
 
             # Guardar en el archivo JSON
-            json_file_path = os.path.join(BASE_DIR, 'Polls', 'materiales_data.json')
+            json_file_path = os.path.join(BASE_DIR, 'api', 'materiales_data.json')
             material_data = {
                 "nombre": nuevo_material.nombre,
                 "descripcion": nuevo_material.descripcion,

@@ -798,5 +798,13 @@
         "cantidad_disponible": 100,
         "stock_minimo": 20,
         "activo": true
+    },
+    {
+        "nombre": "madera",
+        "descripcion": "madera",
+        "unidad_medida": "Sin especificar",
+        "cantidad_disponible": 21,
+        "stock_minimo": 12,
+        "activo": true
     }
 ]
