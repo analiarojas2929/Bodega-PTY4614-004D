@@ -36,8 +36,13 @@
                     {% endif %}
                 </td>
                 <td>
-                    <a href="{% url 'editar_material' material.id %}" class="btn btn-primary btn-sm">Editar</a>
+                    {% if material.id %}
+                        <a href="{% url 'editar_material' material.id %}" class="btn btn-primary btn-sm">Editar</a>
+                    {% else %}
+                        <span class="text-muted">No disponible</span>
+                    {% endif %}
                 </td>
+                
             </tr>
             {% empty %}
             <tr>

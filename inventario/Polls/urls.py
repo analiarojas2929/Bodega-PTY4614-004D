@@ -40,7 +40,7 @@ urlpatterns = [
     path('usuarios/inactivar/<int:user_id>/', views.inactivar_usuario, name='inactivar_usuario'),
     path('usuarios/editar/<int:user_id>/', views.editar_usuario, name='editar_usuario'),
     path('usuarios/crear/', views.crear_usuario, name='crear_usuario'),
-    path('editar_material/<int:material_id>/', views.edit_material_view, name='editar_material'),
+    path('editar_material/<int:material_id>/', views.editar_material, name='editar_material'),
     path('buscar_material_ajax/', buscar_material_ajax, name='buscar_material_ajax'),
     path('usuarios/activar/<int:user_id>/', views.activar_usuario, name='activar_usuario'),  # Nueva URL para activar
 ]

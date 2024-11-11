@@ -159,6 +159,7 @@ def add_material_view(request):
             # Guardar en el archivo JSON
             json_file_path = os.path.join(BASE_DIR, 'api', 'materiales_data.json')
             material_data = {
+                "id": nuevo_material.id,
                 "nombre": nuevo_material.nombre,
                 "descripcion": nuevo_material.descripcion,
                 "unidad_medida": nuevo_material.unidad_medida.descripcion,
@@ -192,7 +193,7 @@ JSON_FILE_PATH = os.path.join(settings.BASE_DIR, 'api', 'materiales_data.json')
 
 @login_required
 @user_passes_test(lambda u: u.roles.filter(id=JEFE_BODEGA).exists(), login_url='/access_denied/')
-def edit_material_view(request, material_id):
+def editar_material(request, material_id):
     # Leer el archivo JSON
     try:
         with open(JSON_FILE_PATH, 'r', encoding='utf-8') as file:
