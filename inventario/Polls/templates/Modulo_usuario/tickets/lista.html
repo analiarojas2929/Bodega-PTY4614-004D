@@ -41,13 +41,13 @@
                     </td>
                     
                     <!-- Mostrar la fecha de creación del ticket -->
-                    <td>{{ ticket.fecha_creacion|date:"d/m/Y H:i" }}</td>
+                    <td>{{ ticket.fecha_creacion|date:"d/m/Y" }}</td>
                     
                     <!-- Acción para cobrar el ticket si está pendiente -->
                     <td>
                         {% if ticket.estado == 'pendiente' %}
                             <a href="{% url 'cobrar_ticket' ticket.id %}" class="btn btn-sm btn-primary" onclick="return confirm('¿Estás seguro de cobrar este ticket?');">
-                                Cobrar
+                                Entregar
                             </a>
                         {% else %}
                             <span class="text-muted">N/A</span>
