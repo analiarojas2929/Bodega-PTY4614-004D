@@ -5,34 +5,57 @@
 {% block content %}
 <div class="container my-5">
     <h2 class="text-center mb-4">Editar Material</h2>
+    
+    <!-- Mostrar mensajes de error o éxito -->
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}" role="alert">
+            {{ message }}
+        </div>
+        {% endfor %}
+    {% endif %}
+    
     <form method="POST">
         {% csrf_token %}
         
+        <!-- Nombre -->
         <label for="nombre">Nombre:</label>
         <input type="text" id="nombre" name="nombre" class="form-control" value="{{ material.nombre }}" required><br>
-
+        
+        <!-- Descripción -->
         <label for="descripcion">Descripción:</label>
         <textarea id="descripcion" name="descripcion" class="form-control">{{ material.descripcion }}</textarea><br>
-
+        
+        <!-- Unidad de Medida -->
         <label for="unidad_medida">Unidad de Medida:</label>
         <select id="unidad_medida" name="unidad_medida" class="form-control" required>
-            <option value="M2" {% if material.unidad_medida == 'M2' %}selected{% endif %}>M2</option>
-            <option value="UN" {% if material.unidad_medida == 'UN' %}selected{% endif %}>UN</option>
-            <option value="ROLLO" {% if material.unidad_medida == 'ROLLO' %}selected{% endif %}>ROLLO</option>
-            <option value="TARRO" {% if material.unidad_medida == 'TARRO' %}selected{% endif %}>TARRO</option>
-            <option value="LITRO" {% if material.unidad_medida == 'LITRO' %}selected{% endif %}>LITRO</option>
+            <option value="">Seleccione una unidad de medida</option>
+            {% for unidad in form.fields.unidad_medida.queryset %}
+                <option value="{{ unidad.id }}" {% if material.unidad_medida.id == unidad.id %}selected{% endif %}>
+                    {{ unidad.unidad_medida }} - {{ unidad.descripcion }}
+                </option>
+            {% endfor %}
         </select>
+
+
+        
+        <!-- Cantidad Disponible -->
         <label for="cantidad_disponible">Cantidad Disponible:</label>
         <input type="number" id="cantidad_disponible" name="cantidad_disponible" class="form-control" value="{{ material.cantidad_disponible }}" required><br>
-
+        
+        <!-- Stock Mínimo -->
         <label for="stock">Stock Mínimo:</label>
         <input type="number" id="stock" name="stock" class="form-control" value="{{ material.stock }}" required><br>
-
+        
+        <!-- Activo (Checkbox) -->
         <div class="form-check">
-            <input type="checkbox" id="activo" name="activo" class="form-check-input" {% if material.activo %}checked{% endif %}>
+            <!-- Campo oculto para asegurar que se envíe un valor si el checkbox está desmarcado -->
+            <input type="hidden" name="activo" value="false">
+            <input type="checkbox" id="activo" name="activo" class="form-check-input" value="true" {% if material.activo %}checked{% endif %}>
             <label for="activo" class="form-check-label">Activo</label>
         </div>
-
+        
+        <!-- Botón para guardar -->
         <button type="submit" class="btn btn-primary mt-3">Guardar Cambios</button>
     </form>
 </div>

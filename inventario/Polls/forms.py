@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.hashers import make_password
-from .models import CustomUser, Role, Material,Ticket
+from .models import CustomUser, Role, Material,Ticket,UnidadMedida
 
 class CustomUserForm(forms.ModelForm):
     roles = forms.ModelChoiceField(
@@ -56,10 +56,15 @@ class CustomUserForm(forms.ModelForm):
         return user
 
 class MaterialForm(forms.ModelForm):
+    unidad_medida = forms.ModelChoiceField(
+        queryset=UnidadMedida.objects.all(),
+        label="Unidad de Medida",
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+
     class Meta:
         model = Material
         fields = ['nombre', 'descripcion', 'unidad_medida', 'cantidad_disponible', 'stock', 'activo']
-
 
 class TicketForm(forms.ModelForm):
     class Meta:

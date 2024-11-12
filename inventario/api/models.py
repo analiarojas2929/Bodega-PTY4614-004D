@@ -30,11 +30,11 @@ class UnidadMedida(models.Model):
         ('TARRO', 'TARRO'),
         ('LITRO', 'LITRO'),
     ],
-    default='UN')
+    default='')
     descripcion = models.CharField(max_length=50, blank=True, null=True)
 
     class Meta:
         unique_together = ('unidad_medida', 'descripcion')  # Evita duplicados
 
     def __str__(self):
-        return f"{self.unidad_medida} - {self.descripcion}" if self.descripcion else self.unidad_medida
+        return self.descripcion

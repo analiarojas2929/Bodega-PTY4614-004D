@@ -50,9 +50,11 @@
                                 Entregar
                             </a>
                         {% else %}
-                            <span class="text-muted">N/A</span>
+                            <span class="text-muted">Cobrado</span>
                         {% endif %}
-                    </td>
+                    </td>                    
+                    
+                    
                     
                     <!-- Acción para eliminar el ticket -->
                     <td>
@@ -71,4 +73,42 @@
         </tbody>
     </table>
 </div>
+
+<script>
+    function cobrarTicket(ticketId) {
+        if (confirm('¿Estás seguro de cobrar este ticket?')) {
+            // Realizar una solicitud AJAX para cobrar el ticket
+            fetch(`/cobrar_ticket/${ticketId}/`, {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Actualizar el estado en la tabla si la respuesta es exitosa
+                    const row = document.getElementById(`ticket-${ticketId}`);
+                    const estadoCell = row.querySelector('.ticket-estado');
+                    estadoCell.innerHTML = '<span class="badge bg-success">Cobrado</span>';
+                    
+                    // Deshabilitar el botón de "Entregar"
+                    const button = row.querySelector('.cobrar-ticket');
+                    if (button) {
+                        button.outerHTML = '<span class="text-muted">N/A</span>';
+                    }
+                    
+                    alert('Ticket cobrado exitosamente.');
+                } else {
+                    alert(data.error || 'Error al cobrar el ticket.');
+                }
+            })
+            .catch(error => {
+                console.error('Error al procesar la solicitud:', error);
+                alert('Ocurrió un error al intentar cobrar el ticket.');
+            });
+        }
+    }
+</script>
+
 {% endblock %}

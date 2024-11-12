@@ -1,5 +1,14 @@
 [
     {
+        "id": 1,
+        "nombre": "POLIETILENO 0,2MM",
+        "descripcion": "Lámina impermeabilizante.",
+        "unidad_medida": "UN",
+        "cantidad_disponible": 106,
+        "stock": 20,
+        "activo": true
+    },
+    {
         "id": 2,
         "nombre": "CALUGA H° 50MM",
         "descripcion": "Pieza de hormigón de 50mm.",
@@ -580,7 +589,7 @@
         "nombre": "VIGA MADERA 2X8 IMPREGNADA (3,20MT)",
         "descripcion": "Viga madera 2x8.",
         "unidad_medida": "UN",
-        "cantidad_disponible": 100,
+        "cantidad_disponible": 96,
         "stock": 20,
         "activo": true
     },

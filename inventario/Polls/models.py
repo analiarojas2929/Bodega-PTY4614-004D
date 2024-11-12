@@ -39,14 +39,14 @@ class UnidadMedida(models.Model):
         ('TARRO', 'TARRO'),
         ('LITRO', 'LITRO'),
     ],
-    default='UN')
+    default='')
     descripcion = models.CharField(max_length=50, blank=True, null=True)
 
     class Meta:
         unique_together = ('unidad_medida', 'descripcion')  # Evita duplicados
 
     def __str__(self):
-        return f"{self.unidad_medida} - {self.descripcion}" if self.descripcion else self.unidad_medida
+        return self.descripcion
 
 # Modelo para Estado de Tickets
 class EstadoTicket(models.Model):
@@ -57,7 +57,6 @@ class EstadoTicket(models.Model):
     def __str__(self):
         return self.descripcion
 
-from django.utils.timezone import now
 
 class Ticket(models.Model):
     ESTADO_CHOICES = [
@@ -68,7 +67,7 @@ class Ticket(models.Model):
     usuario = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     material_solicitado = models.ForeignKey(Material, on_delete=models.CASCADE)
     cantidad = models.IntegerField()
-    estado = models.CharField(max_length=20)
+    estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default='pendiente')
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return f"{self.material_solicitado.nombre} - {self.cantidad} unidades"
