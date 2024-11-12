@@ -24,6 +24,7 @@
                     <th>Stock Mínimo</th>
                     <th>Estado</th>
                     <th>Acciones</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -45,7 +46,9 @@
                     <td>
                         <a href="{% url 'editar_material' material.id %}" class="btn btn-primary btn-sm">Editar</a>
                     </td>
-                    
+                    <td>
+                        <a href="{% url 'delete_material' material.id %}" class="btn btn-primary btn-sm">eliminar</a>
+                    </td>
                 </tr>
                 {% empty %}
                 <tr>

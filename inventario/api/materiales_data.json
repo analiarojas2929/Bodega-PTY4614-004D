@@ -898,15 +898,5 @@
         "cantidad_disponible": 100,
         "stock": 20,
         "activo": true
-    },
-    {
-    "id": 101,
-    "nombre": "madera",
-    "descripcion": "madera normal",
-    "unidad_medida": "9",
-    "cantidad_disponible": 21,
-    "stock": 30,
-    "activo": true
     }
-
 ]

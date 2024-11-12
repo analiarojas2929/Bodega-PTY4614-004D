@@ -250,34 +250,33 @@ def editar_material(request, material_id):
 @login_required
 @user_passes_test(lambda u: has_role_id(u, JEFE_BODEGA), login_url='/access_denied/')
 def delete_material_view(request, id):
+    """
+    Vista para eliminar definitivamente un material tanto de la base de datos como del archivo JSON.
+    """
+    # Obtener el material de la base de datos
     material = get_object_or_404(Material, id=id)
+    
     if request.method == 'POST':
-        material.activo = False
-        material.save()
+        # Eliminar el material de la base de datos
+        material.delete()
 
-        # Actualizar en el archivo JSON
+        # Eliminar del archivo JSON
         try:
-            with open(JSON_FILE_PATH, 'r', encoding='utf-8') as file:
-                materiales = json.load(file)
+            # Leer el archivo JSON existente
+            if os.path.exists(JSON_FILE_PATH):
+                with open(JSON_FILE_PATH, 'r', encoding='utf-8') as file:
+                    materiales_json = json.load(file)
+                
+                # Filtrar el material que queremos eliminar
+                materiales_json = [m for m in materiales_json if m['id'] != id]
 
-            for m in materiales:
-                if m['id'] == id:
-                    m['activo'] = False
-                    break
-
-            with open(JSON_FILE_PATH, 'w', encoding='utf-8') as file:
-                json.dump(materiales, file, ensure_ascii=False, indent=4)
-
-        except FileNotFoundError:
-            messages.error(request, "Archivo JSON no encontrado.")
-
-        # Actualizar en la API
-        api_url = f"{settings.API_BASE_URL}/materiales/{id}/"
-        response = requests.patch(api_url, json={'activo': False}, headers={'Content-Type': 'application/json'})
-        if response.status_code == 200:
-            messages.success(request, "Material desactivado correctamente en la API.")
-        else:
-            messages.error(request, f"Error al desactivar el material en la API: {response.status_code}")
+                # Guardar la lista actualizada en el archivo JSON
+                with open(JSON_FILE_PATH, 'w', encoding='utf-8') as file:
+                    json.dump(materiales_json, file, ensure_ascii=False, indent=4)
+            
+            messages.success(request, "Material eliminado definitivamente.")
+        except (FileNotFoundError, json.JSONDecodeError) as e:
+            messages.error(request, f"Error al actualizar el archivo JSON: {e}")
 
         return redirect('lista_view')
 
