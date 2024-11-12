@@ -454,15 +454,12 @@ def ver_ticket(request, ticket_id):
 @login_required
 def eliminar_ticket(request, ticket_id):
     ticket = get_object_or_404(Ticket, id=ticket_id)
-    material = ticket.material_solicitado
-
+    
     try:
         with transaction.atomic():
-            # Revertir la cantidad disponible
-            material.cantidad_disponible += ticket.cantidad
-            material.save()
+            # Remove the line that reverts the material quantity
             ticket.delete()
-            messages.success(request, "Ticket eliminado y cantidad revertida correctamente.")
+            messages.success(request, "Ticket eliminado correctamente.")
     except Exception as e:
         messages.error(request, f"Error al eliminar el ticket: {e}")
 
