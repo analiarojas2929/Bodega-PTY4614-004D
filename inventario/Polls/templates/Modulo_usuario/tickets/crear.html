@@ -10,19 +10,30 @@
 
     <form method="POST">
         {% csrf_token %}
-        <!-- Usuario que crea el ticket (esto lo puedes establecer automáticamente con el usuario autenticado) -->
         <input type="hidden" name="usuario" value="{{ request.user.id }}">
 
-
         <!-- Campo para Nombre con Sugerencias -->
-        <div class="form-group mb-3">
+        <div class="form-group mb-3 position-relative">
             <label for="id_nombre">Material solicitado:</label>
             <input type="text" name="nombre" id="id_nombre" class="form-control" autocomplete="off">
-            <!-- Aquí se mostrarán las sugerencias -->
-            <div id="materialSuggestions" class="suggestions"></div>
+            
+            <!-- Contenedor para la tabla de sugerencias -->
+            <div id="materialSuggestions" class="table-responsive" style="position: absolute; z-index: 10; width: 100%; max-height: 200px; overflow-y: auto;">
+                <table class="table table-hover table-bordered" style="display: none;">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Unidad Medida</th>
+                            <th>Cantidad Disponible</th>
+                        </tr>
+                    </thead>
+                    <tbody id="suggestionsBody">
+                        <!-- Suggestion rows will be dynamically added here -->
+                    </tbody>
+                </table>
+            </div>
         </div>
 
-        
         <div class="mb-3">
             <label for="cantidad" class="form-label">Cantidad</label>
             <input type="number" class="form-control" id="cantidad" name="cantidad" min="1" required>
@@ -41,43 +52,77 @@
     </form>
 </div>
 
-<!-- JavaScript para mostrar sugerencias -->
+<!-- JavaScript para mostrar sugerencias de materiales en una tabla -->
 <script>
-    document.getElementById("id_nombre").addEventListener("input", function () {
-        const query = this.value.toLowerCase();
+    const API_URL = 'http://127.0.0.1:8000/api/materiales/';
 
-        if (query.length > 2) {
-            fetch(`/buscar_material_ajax/?q=${encodeURIComponent(query)}`)
-                .then((response) => {
-                    if (!response.ok) {
-                        throw new Error("Error en la respuesta de la API");
-                    }
-                    return response.json();
-                })
-                .then((data) => {
-                    const suggestions = document.getElementById("materialSuggestions");
-                    suggestions.innerHTML = "";
+document.getElementById("id_nombre").addEventListener("input", async function () {
+    const query = this.value.trim().toLowerCase();
+    const suggestionsContainer = document.getElementById("materialSuggestions");
+    const suggestionsTable = suggestionsContainer.querySelector("table");
+    const suggestionsBody = document.getElementById("suggestionsBody");
 
-                    data.materiales.forEach((material) => {
-                        const div = document.createElement("div");
-                        div.className = "suggestion-item";
-                        div.textContent = `${material.nombre} - Unidad: ${material.unidad_medida}`;
-                        div.addEventListener("click", function () {
-                            document.getElementById("id_nombre").value = material.nombre;
-                            suggestions.innerHTML = "";
-                        });
-                        suggestions.appendChild(div);
+    // Limpiar sugerencias anteriores
+    suggestionsBody.innerHTML = "";
+
+    // Validar que haya al menos 2 caracteres antes de buscar
+    if (query.length > 1) {
+        try {
+            // Hacer la solicitud a la API con el término de búsqueda
+            const response = await fetch(API_URL);
+            const data = await response.json();
+            
+            // Log the data to check the structure
+            console.log("API response:", data);
+
+            // Filtrar los resultados en JavaScript
+            const filteredData = data.filter(material =>
+                material.nombre.toLowerCase().includes(query)
+            );
+
+            // Si hay datos, mostrar sugerencias en la tabla
+            if (filteredData.length > 0) {
+                suggestionsTable.style.display = "table"; // Mostrar la tabla
+
+                filteredData.forEach(material => {
+                    const row = document.createElement("tr");
+
+                    row.innerHTML = `
+                        <td>${material.nombre}</td>
+                        <td>${material.unidad_medida}</td>
+                        <td>${material.cantidad_disponible}</td>
+                    `;
+
+                    // Autocompletar el campo al hacer clic en una fila
+                    row.addEventListener("click", function () {
+                        document.getElementById("id_nombre").value = material.nombre;
+                        suggestionsBody.innerHTML = "";
+                        suggestionsTable.style.display = "none"; // Ocultar la tabla después de seleccionar
                     });
 
-                    if (data.materiales.length === 0) {
-                        suggestions.innerHTML = "<p>No se encontraron materiales similares.</p>";
-                    }
-                })
-                .catch((error) => console.error("Error al cargar materiales:", error));
-        } else {
-            document.getElementById("materialSuggestions").innerHTML = "";
+                    suggestionsBody.appendChild(row);
+                });
+            } else {
+                suggestionsTable.style.display = "none"; // Ocultar la tabla si no hay resultados
+            }
+        } catch (error) {
+            console.error("Error al obtener datos de la API:", error);
         }
-    });
+    } else {
+        suggestionsTable.style.display = "none"; // Ocultar la tabla si la consulta es demasiado corta
+    }
+});
+
+// Ocultar sugerencias cuando se hace clic fuera del campo de entrada
+document.addEventListener("click", function (event) {
+    const inputField = document.getElementById("id_nombre");
+    const suggestionsContainer = document.getElementById("materialSuggestions");
+
+    if (!inputField.contains(event.target) && !suggestionsContainer.contains(event.target)) {
+        suggestionsContainer.querySelector("table").style.display = "none";
+    }
+});
+
 </script>
 
 {% endblock %}

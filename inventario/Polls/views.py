@@ -605,28 +605,64 @@ class ChoiceViewSet(viewsets.ModelViewSet):
     queryset = Choice.objects.all()
     serializer_class = ChoiceSerializer
 
-
 @login_required
 @user_passes_test(lambda u: has_role_id(u, JEFE_BODEGA), login_url='/access_denied/')
 def buscar_material_ajax(request):
+    """
+    Vista AJAX para buscar materiales por nombre desde la API externa.
+    """
     query = request.GET.get('q', '').lower()
-    json_file_path = os.path.join(settings.BASE_DIR, 'api', 'materiales_data.json')
+    api_url = f"{settings.API_BASE_URL}/materiales/"
 
-    # Verificar si el archivo JSON existe
-    if not os.path.exists(json_file_path):
-        return JsonResponse({'error': 'Archivo JSON no encontrado'}, status=404)
+    print(f"Consulta de búsqueda: {query}")  # Para depuración
 
     try:
-        with open(json_file_path, 'r', encoding='utf-8') as file:
-            materiales_json = json.load(file)
-    except json.JSONDecodeError:
-        return JsonResponse({'error': 'Error al decodificar el archivo JSON'}, status=500)
+        response = requests.get(api_url, timeout=5)
+        response.raise_for_status()  # Esto lanzará un error si la respuesta no es 200 OK
+        materiales_json = response.json()
 
-    # Filtrar los materiales según la consulta
-    materiales_filtrados = [
-        material for material in materiales_json
-        if query in material['nombre'].lower()
-    ] if query else []
+        print(f"Datos de la API: {materiales_json}")  # Para depuración
 
-    return JsonResponse({'materiales': materiales_filtrados})
+        # Filtrar los materiales que coinciden con la consulta
+        materiales_filtrados = [
+            {
+                'id': material['id'],
+                'nombre': material['nombre'],
+                'unidad_medida': material['unidad_medida'],
+                'cantidad_disponible': material['cantidad_disponible']
+            }
+            for material in materiales_json if query in material['nombre'].lower()
+        ]
+
+        print(f"Materiales filtrados: {materiales_filtrados}")  # Para depuración
+
+        return JsonResponse({'materiales': materiales_filtrados})
     
+    except requests.exceptions.RequestException as e:
+        print(f"Error al obtener datos de la API: {e}")
+        return JsonResponse({'error': 'No se pudo obtener la lista de materiales desde la API'}, status=500)
+    
+from django.http import JsonResponse
+from .models import Material
+
+def materiales_list(request):
+    query = request.GET.get('search', '').strip().lower()
+
+    # Filtrar los materiales que comienzan con el término de búsqueda
+    if query:
+        materiales = Material.objects.filter(nombre__istartswith=query, activo=True)
+    else:
+        materiales = Material.objects.none()  # No devolver nada si no hay consulta
+
+    # Convertir los resultados a JSON
+    materiales_filtrados = [
+        {
+            'id': material.id,
+            'nombre': material.nombre,
+            'unidad_medida': material.unidad_medida.descripcion,
+            'cantidad_disponible': material.cantidad_disponible
+        }
+        for material in materiales
+    ]
+
+    return JsonResponse(materiales_filtrados, safe=False)

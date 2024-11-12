@@ -118,7 +118,13 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',  # Agrega esta línea
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
+
+INSTALLED_APPS += ['corsheaders']
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'inventario.urls'
 

@@ -5,8 +5,6 @@ from django.conf import settings
 
 API_URL = f"{settings.API_BASE_URL}/materiales/"
 
-# Lista de materiales a excluir
-MATERIALES_EXCLUIDOS = ['madera', 'palo']
 
 class Command(BaseCommand):
     help = 'Sincronizar materiales con la API'
@@ -26,10 +24,7 @@ class Command(BaseCommand):
                 nombre_normalizado = material_data['nombre'].strip().lower()
 
                 # Excluir materiales no deseados
-                if nombre_normalizado in [m.lower() for m in MATERIALES_EXCLUIDOS]:
-                    print(f"Material excluido: {material_data['nombre']}")
-                    continue
-
+                
                 # Validar la unidad de medida
                 if not material_data.get('unidad_medida'):
                     print(f"Material '{material_data['nombre']}' tiene una unidad de medida inválida.")
