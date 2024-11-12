@@ -151,43 +151,58 @@ def restore_material_view(request, id):
 @login_required
 @user_passes_test(lambda u: has_role_id(u, JEFE_BODEGA), login_url='/access_denied/')
 def add_material_view(request):
+    """
+    Vista para agregar un nuevo material.
+    Se guarda en la base de datos, en la API y en el archivo JSON.
+    """
     if request.method == 'POST':
         form = MaterialForm(request.POST)
         if form.is_valid():
-            # Guardar en la base de datos
-            nuevo_material = form.save()
-            
-            # Guardar en el archivo JSON
-            json_file_path = os.path.join(BASE_DIR, 'api', 'materiales_data.json')
-            material_data = {
-                "id": nuevo_material.id,
-                "nombre": nuevo_material.nombre,
-                "descripcion": nuevo_material.descripcion,
-                "unidad_medida": nuevo_material.unidad_medida.descripcion,
-                "cantidad_disponible": nuevo_material.cantidad_disponible,
-                "stock": nuevo_material.stock,
-                "activo": nuevo_material.activo
-            }
+            try:
+                with transaction.atomic():
+                    # Guardar en la base de datos
+                    nuevo_material = form.save()
 
-            # Leer el archivo JSON existente y agregar el nuevo material
-            if os.path.exists(json_file_path):
-                with open(json_file_path, 'r', encoding='utf-8') as file:
-                    materiales_json = json.load(file)
-            else:
-                materiales_json = []
+                    # Estructura de datos para el nuevo material
+                    material_data = {
+                        "id": nuevo_material.id,
+                        "nombre": nuevo_material.nombre,
+                        "descripcion": nuevo_material.descripcion,
+                        "unidad_medida": nuevo_material.unidad_medida.descripcion,
+                        "cantidad_disponible": nuevo_material.cantidad_disponible,
+                        "stock": nuevo_material.stock,
+                        "activo": nuevo_material.activo
+                    }
 
-            materiales_json.append(material_data)
+                    # Guardar en la API
+                    api_url = f"{settings.API_BASE_URL}/materiales/"
+                    headers = {'Content-Type': 'application/json'}
+                    response = requests.post(api_url, json=material_data, headers=headers)
 
-            # Guardar de nuevo en el archivo JSON
-            with open(json_file_path, 'w', encoding='utf-8') as file:
-                json.dump(materiales_json, file, ensure_ascii=False, indent=4)
+                    if response.status_code == 201:  # Material creado exitosamente en la API
+                        # Actualizar el archivo JSON
+                        if os.path.exists(JSON_FILE_PATH):
+                            with open(JSON_FILE_PATH, 'r', encoding='utf-8') as file:
+                                materiales_json = json.load(file)
+                        else:
+                            materiales_json = []
 
-            return redirect('lista_view')
+                        materiales_json.append(material_data)
+                        with open(JSON_FILE_PATH, 'w', encoding='utf-8') as file:
+                            json.dump(materiales_json, file, ensure_ascii=False, indent=4)
+
+                        messages.success(request, "Material agregado correctamente.")
+                    else:
+                        messages.error(request, "Error al guardar el material en la API.")
+
+                return redirect('lista_view')
+
+            except Exception as e:
+                form.add_error(None, f"Error al guardar el material: {e}")
     else:
         form = MaterialForm()
 
     return render(request, 'Modulo_usuario/InventoryView/agregar.html', {'form': form})
-
 def actualizar_stock(material_id, nueva_cantidad):
     url = f"{settings.API_BASE_URL}/materiales/{material_id}/"
     data = {'cantidad_disponible': nueva_cantidad}
@@ -281,7 +296,7 @@ def delete_material_view(request, id):
         return redirect('lista_view')
 
     return render(request, 'Modulo_usuario/InventoryView/eliminar.html', {'material': material})
-# Crear ticket (solo accesible por Jefe de Obra o Jefe de Bodega)
+# Crear ticket (solo accesible por Jefe de Obra  Jefe de Bodega)
 @login_required
 @user_passes_test(lambda u: has_role_id(u, JEFE_OBRA) or has_role_id(u, JEFE_BODEGA), login_url='/access_denied/')
 def crear_ticket(request):
