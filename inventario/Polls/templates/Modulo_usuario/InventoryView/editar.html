@@ -32,7 +32,7 @@
             <option value="">Seleccione una unidad de medida</option>
             {% for unidad in form.fields.unidad_medida.queryset %}
                 <option value="{{ unidad.id }}" {% if material.unidad_medida.id == unidad.id %}selected{% endif %}>
-                    {{ unidad.unidad_medida }} - {{ unidad.descripcion }}
+                     {{ unidad.descripcion }}
                 </option>
             {% endfor %}
         </select>
