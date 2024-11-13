@@ -68,9 +68,10 @@ class Ticket(models.Model):
     material_solicitado = models.ForeignKey(Material, on_delete=models.CASCADE)
     cantidad = models.IntegerField()
     estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default='pendiente')
-    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    fecha_creacion = models.DateField(auto_now_add=True)
+    
     def __str__(self):
-        return f"{self.material_solicitado.nombre} - {self.cantidad} unidades"
+        return self.fecha_creacion.strftime('%d-%m-%Y')
 
 # Modelo para los Proveedores
 class Proveedor(models.Model):

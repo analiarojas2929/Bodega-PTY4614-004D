@@ -537,9 +537,9 @@ def reports_view(request):
         # Validar y convertir las fechas ingresadas
         try:
             if start_date:
-                start_date = make_aware(datetime.strptime(start_date, '%Y-%m-%d'))
+                start_date = make_aware(datetime.strptime(start_date, '%d-%m-%Y'))
             if end_date:
-                end_date = make_aware(datetime.strptime(end_date, '%Y-%m-%d'))
+                end_date = make_aware(datetime.strptime(end_date, '%d-%m-%Y'))
         except ValueError:
             return JsonResponse({'error': 'Formato de fecha incorrecto'}, status=400)
 
@@ -548,7 +548,7 @@ def reports_view(request):
             materiales = Material.objects.select_related('unidad_medida').values(
                 'id', 'nombre', 'descripcion', 'cantidad_disponible', 'stock', 'unidad_medida__descripcion', 'activo'
             )
-            return JsonResponse({'reportData': list(materiales)})
+            return JsonResponse({'reportData': list(materiales)}, safe=False)
 
         # Manejo para "Alertas de Stock Bajo"
         elif report_type == 'Alertas de Stock bajo':
@@ -566,10 +566,13 @@ def reports_view(request):
                 }
                 for material in materiales if material['cantidad_disponible'] < material['stock']
             ]
-            return JsonResponse({'reportData': report_data})
+            return JsonResponse({'reportData': report_data}, safe=False)
 
         # Manejo para "Movimientos de Stock"
         elif report_type == 'Movimientos de stock':
+            if not start_date or not end_date:
+                return JsonResponse({'error': 'Rango de fechas requerido para este reporte'}, status=400)
+
             tickets = Ticket.objects.filter(
                 estado='cobrado',
                 fecha_creacion__range=[start_date, end_date]
@@ -580,12 +583,15 @@ def reports_view(request):
                     'material': ticket['material_solicitado__nombre'],
                     'cantidad': ticket['cantidad'],
                     'estado': ticket['estado'],
-                    'fecha_creacion': ticket['fecha_creacion'].strftime('%Y-%m-%d ')
+                    'fecha_creacion': ticket['fecha_creacion'].strftime('%d-%m-%Y')
                 }
                 for ticket in tickets
             ]
-            return JsonResponse({'reportData': report_data})
+            return JsonResponse({'reportData': report_data}, safe=False)
 
+        return JsonResponse({'error': 'Tipo de reporte no válido'}, status=400)
+
+    # Renderizar la página de reportes si el método no es POST
     return render(request, 'Modulo_usuario/ReportsView/reports.html')
 def user_login(request):
     form = AuthenticationForm(request, data=request.POST or None)
@@ -770,11 +776,11 @@ def materiales_list(request):
     return JsonResponse(materiales_filtrados, safe=False)
 
 def format_date(date_str):
+    """Convierte una fecha en formato d-m-Y a un objeto datetime."""
     try:
         return datetime.strptime(date_str, "%d-%m-%Y")
     except ValueError:
         return None
-
 
 @login_required
 def export_to_pdf(request):
@@ -918,7 +924,7 @@ def export_to_excel(request):
                 ticket.material_solicitado.nombre,
                 ticket.cantidad,
                 ticket.estado,
-                ticket.fecha_creacion.strftime('%Y-%m-%d')
+                ticket.fecha_creacion.strftime('%d-%m-%Y')
             ]
             sheet.append(row)
 
@@ -945,10 +951,10 @@ def movimientos_view(request):
     end_date = request.GET.get('endDate')
 
     if start_date:
-        start_date = make_aware(datetime.strptime(start_date, '%Y-%m-%d'))
+        start_date = make_aware(datetime.strptime(start_date, '%d-%m-%Y'))
         movimientos = movimientos.filter(fecha_creacion__gte=start_date)
     if end_date:
-        end_date = make_aware(datetime.strptime(end_date, '%Y-%m-%d'))
+        end_date = make_aware(datetime.strptime(end_date, '%d-%m-%Y'))
         movimientos = movimientos.filter(fecha_creacion__lte=end_date)
 
     context = {

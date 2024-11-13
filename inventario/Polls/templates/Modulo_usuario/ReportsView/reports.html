@@ -2,8 +2,12 @@
 
 {% block content %}
 <div class="container my-5">
-    <h2 class="text-center mb-4">Panel de Reportes</h2>
-
+    <div class="text-center mb-5">
+        <h1 class="display-5">📊 Panel de Reportes</h1>
+        <p class="text-muted">Genera informes detallados para optimizar la gestión de inventario</p>
+    </div>
+    <div class="carta shadow-lg p-4 mb-5">
+        <h3 class="text-center text-primary mb-4">📝 Generar Reporte</h3>
     <!-- Formulario para generar reportes -->
     <form id="reportForm" onsubmit="generateReport(event)">
         {% csrf_token %}
@@ -15,19 +19,27 @@
                 <option value="Alertas de Stock bajo">Alertas de Stock Bajo</option>
             </select>
         </div>
-        <div class="form-group mb-3" id="dateRange">
-            <label for="startDate">Fecha de Inicio</label>
-            <input type="date" id="startDate" name="startDate" class="form-control datepicker">
-        </div>
-        <div class="form-group mb-3" id="dateRangeEnd">
-            <label for="endDate">Fecha de Fin</label>
-            <input type="date" id="endDate" name="endDate" class="form-control datepicker">
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="startDate">Fecha de Inicio</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                    <input type="text" id="startDate" name="startDate" class="form-control datepicker" placeholder="Seleccione la fecha">
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="endDate">Fecha de Fin</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                    <input type="text" id="endDate" name="endDate" class="form-control datepicker" placeholder="Seleccione la fecha">
+                </div>
+            </div>
         </div>
         <button type="submit" class="btn btn-primary w-100">Generar Reporte</button>
     </form>
     <a id="exportToPDF" href="#" class="btn btn-danger mt-3">Exportar a PDF</a>
     <a id="exportToExcel" href="#" class="btn btn-success mt-3">Exportar a Excel</a>
-
+    </div>
 
     <div class="container mt-5">
         <h3 class="text-center">Gráfico de Reportes</h3>
@@ -36,4 +48,46 @@
     <!-- Vista Previa del Reporte -->
     <div id="reportPreview" class="mt-5"></div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        flatpickr("#startDate", {
+            dateFormat: "d-m-Y",
+            allowInput: true,
+            altInput: true,
+            altFormat: "d-m-Y",
+            locale: "es"
+        });
+
+        flatpickr("#endDate", {
+            dateFormat: "d-m-Y",
+            allowInput: true,
+            altInput: true,
+            altFormat: "d-m-Y",
+            locale: "es"
+        });
+    });
+</script>
+<style>
+    body {
+        background-color: #f5f7fa;
+    }
+    .carta {
+        border-radius: 15px;
+        background-color: #ffffff;
+    }
+    .btn {
+        transition: all 0.3s ease-in-out;
+    }
+    .btn:hover {
+        transform: translateY(-3px);
+    }
+    .table thead {
+        background-color: #007bff;
+        color: #ffffff;
+    }
+    .table {
+        border-radius: 10px;
+        overflow: hidden;
+    }
+</style>
 {% endblock %}

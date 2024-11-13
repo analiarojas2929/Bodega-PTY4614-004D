@@ -155,6 +155,9 @@ WSGI_APPLICATION = 'inventario.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
+# Configuración del formato de fecha
+DATE_INPUT_FORMATS = ['%d-%m-%Y']
+DATE_FORMAT = 'd-m-Y'
 
 
 DATABASES = {
