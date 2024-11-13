@@ -1,34 +1,30 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.db import models
+from datetime import datetime
 import os
-from django.http import JsonResponse,HttpResponse
-from .models import Material, Ticket, CustomUser
+import requests
+import json
+import openpyxl
+from .utils import format_date
+from openpyxl.styles import Font, Alignment, PatternFill
+from django.db import models
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse, HttpResponse
 from django.db import transaction
 from django.utils.timezone import make_aware
+from django.conf import settings
+from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required, user_passes_test
+
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 
-import requests
-from django.conf import settings
-from .forms import CustomUserForm, TicketForm
-from django.contrib.auth.decorators import login_required, user_passes_test
-from django.contrib import messages
-from django.contrib.auth import logout,authenticate, login
-from .roles import ADMINISTRADOR_SISTEMA, ADMINISTRADOR_OBRA, JEFE_OBRA, CAPATAZ, JEFE_BODEGA
-from .models import Role
-from django.shortcuts import render, redirect
-from .models import Material
-from .forms import MaterialForm
-from .roles import ADMINISTRADOR_OBRA, JEFE_BODEGA, JEFE_OBRA
-from django.contrib.auth.models import User
-import pdb
-from django.contrib.auth.forms import AuthenticationForm
-import json
-from rest_framework import viewsets
-from .models import Question, Choice
+from .models import Material, Ticket, CustomUser, Role, Question, Choice
+from .forms import CustomUserForm, TicketForm, MaterialForm
 from .serializers import QuestionSerializer, ChoiceSerializer
-import csv
-from datetime import datetime
+from .roles import ADMINISTRADOR_SISTEMA, ADMINISTRADOR_OBRA, JEFE_OBRA, CAPATAZ, JEFE_BODEGA
+
+from rest_framework import viewsets
+from django.contrib.auth.forms import AuthenticationForm
 
 API_BASE_URL = "http://127.0.0.1:8000/api"
 
@@ -563,7 +559,7 @@ def reports_view(request):
                     'material': ticket['material_solicitado__nombre'],
                     'cantidad': ticket['cantidad'],
                     'estado': ticket['estado'],
-                    'fecha_creacion': ticket['fecha_creacion'].strftime('%Y-%m-%d %H:%M:%S')
+                    'fecha_creacion': ticket['fecha_creacion'].strftime('%Y-%m-%d ')
                 }
                 for ticket in tickets
             ]
@@ -729,8 +725,6 @@ def buscar_material_ajax(request):
         print(f"Error al obtener datos de la API: {e}")
         return JsonResponse({'error': 'No se pudo obtener la lista de materiales desde la API'}, status=500)
     
-from django.http import JsonResponse
-from .models import Material
 
 def materiales_list(request):
     query = request.GET.get('search', '').strip().lower()
@@ -754,16 +748,8 @@ def materiales_list(request):
 
     return JsonResponse(materiales_filtrados, safe=False)
 
-from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen import canvas
-from django.http import HttpResponse
-from django.utils.timezone import make_aware
-from datetime import datetime
-from .models import Material, Ticket
-
 @login_required
 def export_to_pdf(request):
-    # Obtener los parámetros del formulario desde la URL
     report_type = request.GET.get('reportType')
     start_date = request.GET.get('startDate')
     end_date = request.GET.get('endDate')
@@ -775,41 +761,18 @@ def export_to_pdf(request):
     p.setFont("Helvetica", 12)
     y = 750
 
-    # Validar y convertir las fechas ingresadas
-    try:
-        if start_date:
-            start_date = make_aware(datetime.strptime(start_date, '%Y-%m-%d'))
-        if end_date:
-            end_date = make_aware(datetime.strptime(end_date, '%Y-%m-%d'))
-    except ValueError:
+    # Convertir las fechas utilizando la función auxiliar
+    start_date = format_date(start_date)
+    end_date = format_date(end_date)
+
+    # Validar que las fechas se hayan convertido correctamente
+    if not start_date or not end_date:
         p.drawString(50, y, 'Formato de fecha incorrecto')
         p.save()
         return response
 
     # Generar el contenido del PDF basado en el tipo de reporte
-    if report_type == 'Inventario Actual':
-        materiales = Material.objects.all()
-        p.drawString(50, y, 'Reporte de Inventario Actual')
-        y -= 30
-        for material in materiales:
-            p.drawString(50, y, f"{material.nombre} - {material.cantidad_disponible} disponibles")
-            y -= 20
-            if y < 50:
-                p.showPage()
-                y = 750
-
-    elif report_type == 'Alertas de Stock bajo':
-        materiales = Material.objects.filter(cantidad_disponible__lt=models.F('stock'))
-        p.drawString(50, y, 'Reporte de Alertas de Stock Bajo')
-        y -= 30
-        for material in materiales:
-            p.drawString(50, y, f"{material.nombre} - {material.cantidad_disponible} disponibles (Stock mínimo: {material.stock})")
-            y -= 20
-            if y < 50:
-                p.showPage()
-                y = 750
-
-    elif report_type == 'Movimientos de stock':
+    if report_type == 'Movimientos de stock':
         tickets = Ticket.objects.filter(
             estado='cobrado',
             fecha_creacion__range=[start_date, end_date]
@@ -822,9 +785,123 @@ def export_to_pdf(request):
             if y < 50:
                 p.showPage()
                 y = 750
-
     else:
         p.drawString(50, y, 'Tipo de reporte no válido')
 
     p.save()
+    return response
+@login_required
+def export_to_excel(request):
+    # Obtener los parámetros del formulario desde la URL
+    report_type = request.GET.get('reportType')
+    start_date = request.GET.get('startDate')
+    end_date = request.GET.get('endDate')
+
+    # Crear un archivo de Excel y una hoja activa
+    workbook = openpyxl.Workbook()
+    sheet = workbook.active
+    sheet.title = report_type
+
+    # Configurar el nombre del archivo descargable
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = f'attachment; filename={report_type}_report.xlsx'
+
+    # Convertir las fechas utilizando la función auxiliar
+    start_date = format_date(start_date)
+    end_date = format_date(end_date)
+
+    # Validar que las fechas sean válidas
+    if not start_date or not end_date:
+        sheet.append(['Formato de fecha incorrecto'])
+        workbook.save(response)
+        return response
+
+    # Estilos para el encabezado
+    header_font = Font(bold=True, color="FFFFFF")
+    header_fill = PatternFill(start_color="4F81BD", end_color="4F81BD", fill_type="solid")
+    alignment_center = Alignment(horizontal="center", vertical="center")
+
+    # Definir encabezados según el tipo de reporte
+    if report_type == 'Inventario Actual':
+        headers = ['ID', 'Nombre', 'Descripción', 'Unidad de Medida', 'Cantidad Disponible', 'Stock Mínimo', 'Estado']
+        materiales = Material.objects.all()
+
+        # Agregar encabezados
+        sheet.append(headers)
+        for cell in sheet[1]:
+            cell.font = header_font
+            cell.fill = header_fill
+            cell.alignment = alignment_center
+
+        # Agregar datos
+        for material in materiales:
+            estado = 'Activo' if material.activo else 'Inactivo'
+            row = [
+                material.id,
+                material.nombre,
+                material.descripcion,
+                material.unidad_medida.descripcion,
+                material.cantidad_disponible,
+                material.stock,
+                estado
+            ]
+            sheet.append(row)
+
+    elif report_type == 'Alertas de Stock bajo':
+        headers = ['Material', 'Cantidad Disponible', 'Stock Mínimo', 'Unidad de Medida', 'Alerta']
+        materiales = Material.objects.filter(cantidad_disponible__lt=models.F('stock'))
+
+        # Agregar encabezados
+        sheet.append(headers)
+        for cell in sheet[1]:
+            cell.font = header_font
+            cell.fill = header_fill
+            cell.alignment = alignment_center
+
+        # Agregar datos
+        for material in materiales:
+            alerta = 'Stock Bajo' if material.cantidad_disponible < material.stock else 'Ok'
+            row = [
+                material.nombre,
+                material.cantidad_disponible,
+                material.stock,
+                material.unidad_medida.descripcion,
+                alerta
+            ]
+            sheet.append(row)
+
+    elif report_type == 'Movimientos de stock':
+        headers = ['Material', 'Cantidad', 'Estado', 'Fecha de Creación']
+        tickets = Ticket.objects.filter(
+            estado='cobrado',
+            fecha_creacion__range=[start_date, end_date]
+        )
+
+        # Agregar encabezados
+        sheet.append(headers)
+        for cell in sheet[1]:
+            cell.font = header_font
+            cell.fill = header_fill
+            cell.alignment = alignment_center
+
+        # Agregar datos
+        for ticket in tickets:
+            row = [
+                ticket.material_solicitado.nombre,
+                ticket.cantidad,
+                ticket.estado,
+                ticket.fecha_creacion.strftime('%Y-%m-%d')
+            ]
+            sheet.append(row)
+
+    else:
+        sheet.append(['Tipo de reporte no válido'])
+
+    # Ajustar el ancho de las columnas
+    for column in sheet.columns:
+        max_length = max(len(str(cell.value)) for cell in column) + 2
+        sheet.column_dimensions[column[0].column_letter].width = max_length
+
+    # Guardar el archivo Excel
+    workbook.save(response)
     return response

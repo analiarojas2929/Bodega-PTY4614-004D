@@ -185,3 +185,23 @@ document.getElementById('exportToPDF').addEventListener('click', function (event
     // Redirigir al usuario para descargar el PDF
     window.location.href = url;
 });
+
+// Función para exportar a Excel
+document.getElementById('exportToExcel').addEventListener('click', function (event) {
+    event.preventDefault();
+    
+    const reportType = document.getElementById('reportType').value;
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+
+    if (!reportType) {
+        alert("Por favor, selecciona un tipo de reporte.");
+        return;
+    }
+
+    let url = `/export_to_excel/?reportType=${encodeURIComponent(reportType)}`;
+    if (startDate) url += `&startDate=${encodeURIComponent(startDate)}`;
+    if (endDate) url += `&endDate=${encodeURIComponent(endDate)}`;
+
+    window.location.href = url;
+});
