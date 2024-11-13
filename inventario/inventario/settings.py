@@ -143,7 +143,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.request',
-                'Polls.context_processors.role_context',
+                'Polls.context_processors.get_role_context',
             ],
         },
     },
@@ -192,7 +192,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+USE_TZ = True
+TIME_ZONE = 'America/Santiago'  # Ajusta según tu zona horaria
 
 USE_I18N = True
 

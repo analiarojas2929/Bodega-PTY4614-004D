@@ -8,14 +8,14 @@
     <h2 class="text-center">Crear Nuevo Ticket</h2>
     <hr>
 
-    <form method="POST">
+    <form id="ticketForm" method="POST">
         {% csrf_token %}
         <input type="hidden" name="usuario" value="{{ request.user.id }}">
 
         <!-- Campo para Nombre con Sugerencias -->
         <div class="form-group mb-3 position-relative">
             <label for="id_nombre">Material solicitado:</label>
-            <input type="text" name="nombre" id="id_nombre" class="form-control" autocomplete="off">
+            <input type="text" id="id_nombre" class="form-control" autocomplete="off">
             
             <!-- Contenedor para la tabla de sugerencias -->
             <div id="materialSuggestions" class="table-responsive" style="position: absolute; z-index: 10; width: 100%; max-height: 200px; overflow-y: auto;">
@@ -27,102 +27,157 @@
                             <th>Cantidad Disponible</th>
                         </tr>
                     </thead>
-                    <tbody id="suggestionsBody">
-                        <!-- Suggestion rows will be dynamically added here -->
-                    </tbody>
+                    <tbody id="suggestionsBody"></tbody>
                 </table>
             </div>
         </div>
 
+        <!-- Cantidad y Estado -->
         <div class="mb-3">
             <label for="cantidad" class="form-label">Cantidad</label>
-            <input type="number" class="form-control" id="cantidad" name="cantidad" min="1" required>
+            <input type="number" class="form-control" id="cantidad" min="1">
         </div>
-
         <div class="mb-3">
             <label for="estado" class="form-label">Estado</label>
-            <select class="form-control" id="estado" name="estado" required>
+            <select class="form-control" id="estado">
                 <option value="pendiente">Pendiente</option>
                 <option value="cobrado">Cobrado</option>
             </select>
         </div>
+
+        <button type="button" class="btn btn-primary mb-3" onclick="agregarMaterial()">Agregar Material</button>
+
+        <!-- Tabla de materiales agregados -->
+        <h3>Materiales Seleccionados</h3>
+        <table class="table table-bordered" id="materialesTable">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Unidad Medida</th>
+                    <th>Cantidad</th>
+                    <th>Estado</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody id="materialesBody"></tbody>
+        </table>
 
         <button type="submit" class="btn btn-success">Crear Ticket</button>
         <a href="{% url 'lista_tickets' %}" class="btn btn-secondary">Cancelar</a>
     </form>
 </div>
 
-<!-- JavaScript para mostrar sugerencias de materiales en una tabla -->
+<!-- JavaScript para la funcionalidad -->
 <script>
-    const API_URL = 'http://127.0.0.1:8000/api/materiales/';
+const API_URL = 'http://127.0.0.1:8000/api/materiales/';
+let materialesSeleccionados = [];
 
+// Buscar materiales en la API y mostrar sugerencias
 document.getElementById("id_nombre").addEventListener("input", async function () {
     const query = this.value.trim().toLowerCase();
     const suggestionsContainer = document.getElementById("materialSuggestions");
     const suggestionsTable = suggestionsContainer.querySelector("table");
     const suggestionsBody = document.getElementById("suggestionsBody");
 
-    // Limpiar sugerencias anteriores
     suggestionsBody.innerHTML = "";
-
-    // Validar que haya al menos 2 caracteres antes de buscar
     if (query.length > 1) {
         try {
-            // Hacer la solicitud a la API con el término de búsqueda
             const response = await fetch(API_URL);
             const data = await response.json();
-            
-            // Log the data to check the structure
-            console.log("API response:", data);
 
-            // Filtrar los resultados en JavaScript
-            const filteredData = data.filter(material =>
-                material.nombre.toLowerCase().includes(query)
-            );
-
-            // Si hay datos, mostrar sugerencias en la tabla
+            const filteredData = data.filter(material => material.nombre.toLowerCase().includes(query));
             if (filteredData.length > 0) {
-                suggestionsTable.style.display = "table"; // Mostrar la tabla
-
+                suggestionsTable.style.display = "table";
                 filteredData.forEach(material => {
                     const row = document.createElement("tr");
-
                     row.innerHTML = `
                         <td>${material.nombre}</td>
                         <td>${material.unidad_medida}</td>
                         <td>${material.cantidad_disponible}</td>
                     `;
-
-                    // Autocompletar el campo al hacer clic en una fila
                     row.addEventListener("click", function () {
                         document.getElementById("id_nombre").value = material.nombre;
+                        document.getElementById("id_nombre").dataset.unidad = material.unidad_medida;
                         suggestionsBody.innerHTML = "";
-                        suggestionsTable.style.display = "none"; // Ocultar la tabla después de seleccionar
+                        suggestionsTable.style.display = "none";
                     });
-
                     suggestionsBody.appendChild(row);
                 });
             } else {
-                suggestionsTable.style.display = "none"; // Ocultar la tabla si no hay resultados
+                suggestionsTable.style.display = "none";
             }
         } catch (error) {
             console.error("Error al obtener datos de la API:", error);
         }
     } else {
-        suggestionsTable.style.display = "none"; // Ocultar la tabla si la consulta es demasiado corta
+        suggestionsTable.style.display = "none";
     }
 });
 
-// Ocultar sugerencias cuando se hace clic fuera del campo de entrada
-document.addEventListener("click", function (event) {
-    const inputField = document.getElementById("id_nombre");
-    const suggestionsContainer = document.getElementById("materialSuggestions");
+// Agregar material a la tabla
+function agregarMaterial() {
+    const nombre = document.getElementById("id_nombre").value;
+    const cantidad = document.getElementById("cantidad").value;
+    const estado = document.getElementById("estado").value;
+    const unidadMedida = document.getElementById("id_nombre").dataset.unidad;
 
-    if (!inputField.contains(event.target) && !suggestionsContainer.contains(event.target)) {
-        suggestionsContainer.querySelector("table").style.display = "none";
+    if (nombre && cantidad > 0) {
+        const material = { nombre, cantidad, estado, unidadMedida };
+        materialesSeleccionados.push(material);
+        actualizarTabla();
+        limpiarCampos();
     }
-});
+}
 
+// Actualizar la tabla de materiales seleccionados
+function actualizarTabla() {
+    const materialesBody = document.getElementById("materialesBody");
+    materialesBody.innerHTML = "";
+
+    materialesSeleccionados.forEach((material, index) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td>${material.nombre}</td>
+            <td>${material.unidadMedida}</td>
+            <td>${material.cantidad}</td>
+            <td>${material.estado}</td>
+            <td><button type="button" class="btn btn-danger" onclick="eliminarMaterial(${index})">Eliminar</button></td>
+        `;
+        materialesBody.appendChild(row);
+    });
+}
+
+// Eliminar material de la lista
+function eliminarMaterial(index) {
+    materialesSeleccionados.splice(index, 1);
+    actualizarTabla();
+}
+
+// Limpiar campos
+function limpiarCampos() {
+    document.getElementById("id_nombre").value = "";
+    document.getElementById("cantidad").value = "";
+    document.getElementById("estado").value = "pendiente";
+}
+
+// Enviar datos del formulario
+document.getElementById("ticketForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    fetch("{% url 'crear_ticket' %}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}"
+        },
+        body: JSON.stringify({ materiales: materialesSeleccionados, usuario: "{{ request.user.id }}" })
+    }).then(response => {
+        if (response.ok) {
+            window.location.href = "{% url 'lista_tickets' %}";
+        } else {
+            console.error("Error al crear ticket");
+        }
+    });
+});
 </script>
-
 {% endblock %}

@@ -30,7 +30,17 @@
         {% endif %}
         {% if is_jefe_obra %}
         {% endif %}
-       
+        {% if is_jefe_bodega %}
+        <div class="card">
+            <div class="card-content">
+                <i class="fas fa-file-alt fa-3x"></i>
+                <h3>Tickets</h3>
+                <p>Solicitudes materiales para retiro.</p>
+                <a href="{% url 'lista_tickets' %}" class="card-link">Solicitar Retiro Ticket</a>
+            </div>
+        </div>
+        {% endif %}
+        {% if can_access_ticket %}
         <div class="card">
             <div class="card-content">
                 <i class="fas fa-file-alt fa-3x"></i>
@@ -39,6 +49,7 @@
                 <a href="{% url 'crear_ticket' %}" class="card-link">Solicitar Retiro</a>
             </div>
         </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

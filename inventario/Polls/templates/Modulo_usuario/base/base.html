@@ -70,8 +70,15 @@
             {% endif %}
             {% if can_access_reportes %}
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'reports' %}"
+              <a class="nav-link" href="{% url 'reports_view' %}"
                 ><i class="fas fa-chart-line"></i> Reportes</a
+              >
+            </li>
+            {% endif %}
+            {% if can_access_list_ticket %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'lista_tickets' %}"
+                ><i class="fas fa-file-alt"></i> Lista Ticket</a
               >
             </li>
             {% endif %}
@@ -82,6 +89,7 @@
               >
             </li>
             {% endif %}
+      
             <li class="nav-item">
               <a class="nav-link" href="{% url 'logout' %}">
                 <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
@@ -114,11 +122,18 @@
           {% endif %}
           {% if can_access_reportes %}
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'reports' %}"
+            <a class="nav-link" href="{% url 'reports_view' %}"
               ><i class="fas fa-chart-line"></i> <span>Reportes</span></a
             >
           </li>
           {% endif %}
+          {% if can_access_list_ticket %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'lista_tickets' %}"
+              ><i class="fas fa-file-alt"></i> <span>Lista Ticket</span></a
+            >
+          </li>
+            {% endif %}
           {% if can_access_ticket %}
           <li class="nav-item">
             <a class="nav-link" href="{% url 'crear_ticket' %}"

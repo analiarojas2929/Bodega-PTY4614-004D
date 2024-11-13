@@ -4,6 +4,8 @@ import os
 from django.http import JsonResponse
 from .models import Material, Ticket, CustomUser
 from django.db import transaction
+from django.utils.timezone import make_aware
+
 import requests
 from django.conf import settings
 from .forms import CustomUserForm, TicketForm
@@ -23,6 +25,8 @@ import json
 from rest_framework import viewsets
 from .models import Question, Choice
 from .serializers import QuestionSerializer, ChoiceSerializer
+import csv
+from datetime import datetime
 
 API_BASE_URL = "http://127.0.0.1:8000/api"
 
@@ -38,11 +42,13 @@ def get_role_context(user):
     return {
         'is_jefe_bodega': user.roles.filter(id=JEFE_BODEGA).exists(),
         'is_jefe_obra': user.roles.filter(id=JEFE_OBRA).exists(),
-        'can_access_ticket': user.roles.filter(id=JEFE_BODEGA).exists() or user.roles.filter(id=JEFE_OBRA).exists(),
+        'is_capataz': user.roles.filter(id=CAPATAZ).exists(),
+        'can_access_ticket': user.roles.filter(id=CAPATAZ).exists() or user.roles.filter(id=JEFE_OBRA).exists(),
         'can_access_inventario': user.roles.filter(id=JEFE_BODEGA).exists() or user.roles.filter(id=JEFE_OBRA).exists(),
         'can_access_reportes': user.roles.filter(id=ADMINISTRADOR_OBRA).exists(),
         'is_administrador_obra': user.roles.filter(id=ADMINISTRADOR_OBRA).exists(),
         'is_administrador_sistema': user.roles.filter(id=ADMINISTRADOR_SISTEMA).exists(),
+        'can_access_list_ticket': user.roles.filter(id=JEFE_BODEGA).exists(),
     }
 
 
@@ -307,9 +313,10 @@ def delete_material_view(request, id):
     return render(request, 'Modulo_usuario/InventoryView/eliminar.html', {'material': material})
 # Crear ticket (solo accesible por Jefe de Obra  Jefe de Bodega)
 @login_required
-@user_passes_test(lambda u: has_role_id(u, JEFE_OBRA) or has_role_id(u, JEFE_BODEGA), login_url='/access_denied/')
+@user_passes_test(lambda u: has_role_id(u, JEFE_OBRA) or has_role_id(u, CAPATAZ), login_url='/access_denied/')
 def crear_ticket(request):
     try:
+        # Obtener la lista de materiales desde la API
         response = requests.get(f'{settings.API_BASE_URL}/materiales/')
         materiales_json = response.json() if response.status_code == 200 else []
     except requests.exceptions.RequestException:
@@ -318,39 +325,65 @@ def crear_ticket(request):
 
     if request.method == 'POST':
         usuario = request.user
-        nombre_material = request.POST.get('nombre')
-        cantidad = int(request.POST.get('cantidad'))
-        materiales = Material.objects.filter(nombre=nombre_material)
-
-        if not materiales.exists():
-            messages.error(request, 'El material seleccionado no existe.')
-            return redirect('crear_ticket')
-
-        material = materiales.first()
-
-        if material.cantidad_disponible < cantidad:
-            messages.error(request, 'No hay suficiente stock disponible.')
-            return redirect('crear_ticket')
-
-        # Crear el ticket con estado 'pendiente' sin descontar stock
         try:
-            ticket = Ticket.objects.create(
-                usuario=usuario,
-                material_solicitado=material,
-                cantidad=cantidad,
-                estado='pendiente'
-            )
+            # Obtener la lista de materiales del formulario
+            materiales_data = json.loads(request.body).get('materiales', [])
+
+            # Validar que haya materiales seleccionados
+            if not materiales_data:
+                messages.error(request, 'No se han seleccionado materiales.')
+                return JsonResponse({'success': False}, status=400)
+
+            # Crear un ticket por cada material seleccionado
+            for material_data in materiales_data:
+                nombre_material = material_data.get('nombre')
+                cantidad = int(material_data.get('cantidad'))
+                estado = material_data.get('estado')
+
+                # Validar que el material existe en la base de datos
+                materiales = Material.objects.filter(nombre=nombre_material)
+                if not materiales.exists():
+                    messages.error(request, f'El material "{nombre_material}" no existe.')
+                    continue
+
+                material = materiales.first()
+
+                # Validar si hay suficiente stock disponible
+                if material.cantidad_disponible < cantidad and estado == 'cobrado':
+                    messages.error(request, f'No hay suficiente stock para "{nombre_material}".')
+                    continue
+
+                # Crear el ticket con el estado correspondiente
+                Ticket.objects.create(
+                    usuario=usuario,
+                    material_solicitado=material,
+                    cantidad=cantidad,
+                    estado=estado
+                )
+
+                # Descontar stock solo si el estado es "cobrado"
+                if estado == 'cobrado':
+                    material.cantidad_disponible -= cantidad
+                    material.save()
+
             messages.success(request, 'Ticket creado exitosamente.')
+            return JsonResponse({'success': True})
+
+        except json.JSONDecodeError:
+            messages.error(request, 'Error al procesar los datos del formulario.')
+            return JsonResponse({'success': False}, status=400)
         except Exception as e:
             messages.error(request, f'Error al crear el ticket: {str(e)}')
-
-        return redirect('lista_tickets')
+            return JsonResponse({'success': False}, status=500)
 
     return render(request, 'Modulo_usuario/tickets/crear.html', {'materiales': materiales_json})
 
 # Lista de tickets (solo accesible por Jefe de Obra o Jefe de Bodega)
+def has_any_role(user, roles):
+    return any(user.roles.filter(id=role).exists() for role in roles)
+
 @login_required
-@user_passes_test(lambda u: has_role_id(u, JEFE_OBRA) or has_role_id(u, JEFE_BODEGA), login_url='/access_denied/')
+@user_passes_test(lambda u: has_any_role(u, [JEFE_OBRA, JEFE_BODEGA, CAPATAZ]), login_url='/access_denied/')
 def lista_tickets(request):
     tickets = Ticket.objects.all()
 
@@ -477,9 +510,64 @@ def stock_alerts_view(request):
 @login_required
 @user_passes_test(lambda u: has_role_id(u, ADMINISTRADOR_OBRA), login_url='/access_denied/')
 def reports_view(request):
-    reportes = []  # Aquí podrías cargar los reportes desde la base de datos
-    return render(request, 'Modulo_usuario/ReportsView/reports.html', {'reportes': reportes})
+    if request.method == 'POST':
+        report_type = request.POST.get('reportType')
+        start_date = request.POST.get('startDate')
+        end_date = request.POST.get('endDate')
 
+        # Validar y convertir las fechas ingresadas
+        try:
+            if start_date:
+                start_date = make_aware(datetime.strptime(start_date, '%Y-%m-%d'))
+            if end_date:
+                end_date = make_aware(datetime.strptime(end_date, '%Y-%m-%d'))
+        except ValueError:
+            return JsonResponse({'error': 'Formato de fecha incorrecto'}, status=400)
+
+        # Manejo para "Inventario Actual"
+        if report_type == 'Inventario Actual':
+            materiales = Material.objects.select_related('unidad_medida').values(
+                'id', 'nombre', 'descripcion', 'cantidad_disponible', 'stock', 'unidad_medida__descripcion', 'activo'
+            )
+            return JsonResponse({'reportData': list(materiales)})
+
+        # Manejo para "Alertas de Stock Bajo"
+        elif report_type == 'Alertas de Stock bajo':
+            materiales = Material.objects.select_related('unidad_medida').values(
+                'nombre', 'descripcion', 'cantidad_disponible', 'stock', 'unidad_medida__descripcion'
+            )
+            report_data = [
+                {
+                    'material': material['nombre'],
+                    'descripcion': material['descripcion'],
+                    'cantidad_disponible': material['cantidad_disponible'],
+                    'stock': material['stock'],
+                    'unidad_medida': material['unidad_medida__descripcion'],
+                    'alerta_stock': material['cantidad_disponible'] < material['stock']
+                }
+                for material in materiales if material['cantidad_disponible'] < material['stock']
+            ]
+            return JsonResponse({'reportData': report_data})
+
+        # Manejo para "Movimientos de Stock"
+        elif report_type == 'Movimientos de stock':
+            tickets = Ticket.objects.filter(
+                estado='cobrado',
+                fecha_creacion__range=[start_date, end_date]
+            ).values('material_solicitado__nombre', 'cantidad', 'estado', 'fecha_creacion')
+
+            report_data = [
+                {
+                    'material': ticket['material_solicitado__nombre'],
+                    'cantidad': ticket['cantidad'],
+                    'estado': ticket['estado'],
+                    'fecha_creacion': ticket['fecha_creacion'].strftime('%Y-%m-%d %H:%M:%S')
+                }
+                for ticket in tickets
+            ]
+            return JsonResponse({'reportData': report_data})
+
+    return render(request, 'Modulo_usuario/ReportsView/reports.html')
 def user_login(request):
     form = AuthenticationForm(request, data=request.POST or None)
     if request.method == 'POST':
@@ -513,7 +601,7 @@ def create_user(request):
         if form.is_valid():
             form.save()
             messages.success(request, "Usuario creado con éxito.")
-            return redirect('login_admin')  # Cambia esto por el nombre de la vista a la que deseas redirigir
+            return redirect('Modulo_administrador/usuarios/login_admin.html')  # Cambia esto por el nombre de la vista a la que deseas redirigir
     else:
         form = CustomUserForm()
     

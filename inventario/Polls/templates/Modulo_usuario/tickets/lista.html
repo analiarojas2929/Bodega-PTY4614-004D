@@ -16,68 +16,68 @@
                 <th>Material</th>
                 <th>Cantidad</th>
                 <th>Estado</th>
+                <th>Creado por</th>
                 <th>Fecha de Creación</th>
-                <th>Acciones</th>
-                <th>Eliminar</th>
+                
+                <!-- Mostrar columnas "Acciones" y "Eliminar" solo si el usuario no es Jefe de Obra -->
+                <!-- Mostrar columnas "Acciones" y "Eliminar" solo si el usuario no es ni Jefe de Obra ni Capataz -->
+                {% if not is_jefe_obra %}
+                    <th>Acciones</th>
+                    <th>Eliminar</th>
+                {% endif %}
             </tr>
         </thead>
         <tbody>
             {% if tickets %}
                 {% for ticket in tickets %}
-                <tr>
-                    <!-- Mostrar el nombre del material -->
+                <tr id="ticket-{{ ticket.id }}">
                     <td>{{ ticket.material_solicitado.nombre }}</td>
-                    
-                    <!-- Mostrar la cantidad solicitada -->
                     <td>{{ ticket.cantidad }}</td>
-                    
-                    <!-- Mostrar el estado del ticket -->
-                    <td>
+                    <td class="ticket-estado">
                         {% if ticket.estado == 'pendiente' %}
                             <span class="badge bg-warning text-dark">Pendiente</span>
                         {% else %}
                             <span class="badge bg-success">Cobrado</span>
                         {% endif %}
                     </td>
-                    
-                    <!-- Mostrar la fecha de creación del ticket -->
+                    <td>{{ ticket.usuario.username }}</td>
                     <td>{{ ticket.fecha_creacion|date:"d/m/Y" }}</td>
-                    
-                    <!-- Acción para cobrar el ticket si está pendiente -->
-                    <td>
-                        {% if ticket.estado == 'pendiente' %}
-                            <a href="{% url 'cobrar_ticket' ticket.id %}" class="btn btn-sm btn-primary" onclick="return confirm('¿Estás seguro de cobrar este ticket?');">
-                                Entregar
-                            </a>
-                        {% else %}
-                            <span class="text-muted">Cobrado</span>
-                        {% endif %}
-                    </td>                    
-                    
-                    
-                    
-                    <!-- Acción para eliminar el ticket -->
-                    <td>
-                        <form action="{% url 'eliminar_ticket' ticket.id %}" method="POST" style="display:inline;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de eliminar este ticket?');">Eliminar</button>
-                        </form>
-                    </td>
+
+                    <!-- Mostrar acciones solo si el usuario no es Jefe de Obra -->
+                    {% if not is_jefe_obra%}
+                        <td>
+                            {% if is_jefe_bodega and ticket.estado == 'pendiente' %}
+                                <a href="{% url 'cobrar_ticket' ticket.id %}" class="btn btn-sm btn-primary" onclick="return confirm('¿Estás seguro de cobrar este ticket?');">
+                                    Entregar
+                                </a>
+                            {% else %}
+                                <span class="text-muted">N/A</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if is_jefe_bodega %}
+                            <form action="{% url 'eliminar_ticket' ticket.id %}" method="POST" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de eliminar este ticket?');">Eliminar</button>
+                            </form>
+                            {% endif %}
+                        </td>
+                    {% endif %}
                 </tr>
                 {% endfor %}
             {% else %}
                 <tr>
-                    <td colspan="6" class="text-center">No hay tickets disponibles.</td>
+                    <td colspan="7" class="text-center">No hay tickets disponibles.</td>
                 </tr>
             {% endif %}
         </tbody>
     </table>
 </div>
 
+<!-- JavaScript para gestionar el cobro de tickets -->
 <script>
     function cobrarTicket(ticketId) {
         if (confirm('¿Estás seguro de cobrar este ticket?')) {
-            // Realizar una solicitud AJAX para cobrar el ticket
             fetch(`/cobrar_ticket/${ticketId}/`, {
                 method: 'GET',
                 headers: {
@@ -91,7 +91,7 @@
                     const row = document.getElementById(`ticket-${ticketId}`);
                     const estadoCell = row.querySelector('.ticket-estado');
                     estadoCell.innerHTML = '<span class="badge bg-success">Cobrado</span>';
-                    
+
                     // Deshabilitar el botón de "Entregar"
                     const button = row.querySelector('.cobrar-ticket');
                     if (button) {
@@ -110,5 +110,4 @@
         }
     }
 </script>
-
 {% endblock %}
