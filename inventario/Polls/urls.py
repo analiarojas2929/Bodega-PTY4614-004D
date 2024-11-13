@@ -43,4 +43,5 @@ urlpatterns = [
     path('editar_material/<int:material_id>/', views.editar_material, name='editar_material'),
     path('buscar_material_ajax/', buscar_material_ajax, name='buscar_material_ajax'),
     path('usuarios/activar/<int:user_id>/', views.activar_usuario, name='activar_usuario'),  # Nueva URL para activar
+    path('export_to_pdf/', views.export_to_pdf, name='export_to_pdf'),
 ]

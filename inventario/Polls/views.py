@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db import models
 import os
-from django.http import JsonResponse
+from django.http import JsonResponse,HttpResponse
 from .models import Material, Ticket, CustomUser
 from django.db import transaction
 from django.utils.timezone import make_aware
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
 
 import requests
 from django.conf import settings
@@ -751,3 +753,78 @@ def materiales_list(request):
     ]
 
     return JsonResponse(materiales_filtrados, safe=False)
+
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from django.http import HttpResponse
+from django.utils.timezone import make_aware
+from datetime import datetime
+from .models import Material, Ticket
+
+@login_required
+def export_to_pdf(request):
+    # Obtener los parámetros del formulario desde la URL
+    report_type = request.GET.get('reportType')
+    start_date = request.GET.get('startDate')
+    end_date = request.GET.get('endDate')
+
+    # Configurar el PDF
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename={report_type}_report.pdf'
+    p = canvas.Canvas(response, pagesize=letter)
+    p.setFont("Helvetica", 12)
+    y = 750
+
+    # Validar y convertir las fechas ingresadas
+    try:
+        if start_date:
+            start_date = make_aware(datetime.strptime(start_date, '%Y-%m-%d'))
+        if end_date:
+            end_date = make_aware(datetime.strptime(end_date, '%Y-%m-%d'))
+    except ValueError:
+        p.drawString(50, y, 'Formato de fecha incorrecto')
+        p.save()
+        return response
+
+    # Generar el contenido del PDF basado en el tipo de reporte
+    if report_type == 'Inventario Actual':
+        materiales = Material.objects.all()
+        p.drawString(50, y, 'Reporte de Inventario Actual')
+        y -= 30
+        for material in materiales:
+            p.drawString(50, y, f"{material.nombre} - {material.cantidad_disponible} disponibles")
+            y -= 20
+            if y < 50:
+                p.showPage()
+                y = 750
+
+    elif report_type == 'Alertas de Stock bajo':
+        materiales = Material.objects.filter(cantidad_disponible__lt=models.F('stock'))
+        p.drawString(50, y, 'Reporte de Alertas de Stock Bajo')
+        y -= 30
+        for material in materiales:
+            p.drawString(50, y, f"{material.nombre} - {material.cantidad_disponible} disponibles (Stock mínimo: {material.stock})")
+            y -= 20
+            if y < 50:
+                p.showPage()
+                y = 750
+
+    elif report_type == 'Movimientos de stock':
+        tickets = Ticket.objects.filter(
+            estado='cobrado',
+            fecha_creacion__range=[start_date, end_date]
+        )
+        p.drawString(50, y, 'Reporte de Movimientos de Stock')
+        y -= 30
+        for ticket in tickets:
+            p.drawString(50, y, f"{ticket.material_solicitado.nombre} - {ticket.cantidad} unidades - {ticket.estado}")
+            y -= 20
+            if y < 50:
+                p.showPage()
+                y = 750
+
+    else:
+        p.drawString(50, y, 'Tipo de reporte no válido')
+
+    p.save()
+    return response
