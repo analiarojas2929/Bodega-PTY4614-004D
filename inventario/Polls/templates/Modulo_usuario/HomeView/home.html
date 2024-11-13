@@ -1,88 +1,82 @@
-{% extends 'Modulo_usuario/base/base.html' %} 
-{% block title %}Panel de Control de Bodega{% endblock %} 
+{% extends 'Modulo_usuario/base/base.html' %}
+{% block title %}Panel de Control de Bodega{% endblock %}
 {% block content %}
-<div
-  class="dashboard-container"
-  style="
-    background-size: cover;
-  "
->
-  <h1>Panel de Control de Bodega</h1>
+<div class="dashboard-container">
+    <h1>Panel de Control de Bodega</h1>
 
-  <!-- Visión General del Inventario -->
-  <div class="overview">
-    <div class="overview-item">
-      <h2>Total de Materiales</h2>
-      <p>1500</p>
-      <!-- Este valor sería dinámico -->
+    <!-- Visión General del Inventario -->
+    <div class="overview">
+        <div class="overview-item">
+            <h2>Total de Materiales</h2>
+            <p>{{ total_materiales }}</p>
+        </div>
+        <div class="overview-item">
+            <h2>Materiales Disponibles</h2>
+            <p>{{ materiales_disponibles }}</p>
+        </div>
+        <div class="overview-item">
+            <h2>Materiales en Movimiento</h2>
+            <p>{{ materiales_en_movimiento }}</p>
+        </div>
     </div>
-    <div class="overview-item">
-      <h2>Materiales Disponibles</h2>
-      <p>1350</p>
+
+    <!-- Movimientos Recientes -->
+    <div class="recent-movements">
+        <h2>Movimientos Recientes</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Material</th>
+                    <th>Cantidad</th>
+                    <th>Tipo de Movimiento</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for movimiento in movimientos_recientes %}
+                <tr>
+                    <td>{{ movimiento.fecha_creacion|date:"Y-m-d" }}</td>
+                    <td>{{ movimiento.material_solicitado.nombre }}</td>
+                    <td>{{ movimiento.cantidad }}</td>
+                    <td>{{ movimiento.estado }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4">No hay movimientos recientes</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
-    <div class="overview-item">
-      <h2>Materiales en Movimiento</h2>
-      <p>150</p>
+
+    <!-- Alertas de Stock Bajo -->
+    <div class="stock-alerts">
+        <h2>Alertas de Stock Bajo</h2>
+        <ul>
+            {% for alerta in alertas_stock %}
+            <li>{{ alerta.nombre }} - {{ alerta.cantidad_disponible }} unidades restantes</li>
+            {% empty %}
+            <li>No hay alertas de stock bajo</li>
+            {% endfor %}
+        </ul>
     </div>
-  </div>
 
-  <!-- Movimientos Recientes -->
-  <div class="recent-movements">
-    <h2>Movimientos Recientes</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Fecha</th>
-          <th>Material</th>
-          <th>Cantidad</th>
-          <th>Tipo de Movimiento</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Datos de ejemplo -->
-        <tr>
-          <td>2024-08-29</td>
-          <td>Cemento</td>
-          <td>50</td>
-          <td>Entrada</td>
-        </tr>
-        <tr>
-          <td>2024-08-28</td>
-          <td>Grava</td>
-          <td>100</td>
-          <td>Salida</td>
-        </tr>
-        <!-- Datos dinámicos se cargarían aquí -->
-      </tbody>
-    </table>
-  </div>
+    <!-- Solicitudes de Materiales -->
+    <div class="material-requests">
+        <h2>Solicitudes de Materiales</h2>
+        <ul>
+            {% for solicitud in solicitudes_recientes %}
+            <li>Solicitud #{{ solicitud.id }} - {{ solicitud.estado }}</li>
+            {% empty %}
+            <li>No hay solicitudes pendientes</li>
+            {% endfor %}
+        </ul>
+    </div>
 
-  <!-- Alertas de Stock Bajo -->
-  <div class="stock-alerts">
-    <h2>Alertas de Stock Bajo</h2>
-    <ul>
-      <li>Cemento - 20 unidades restantes</li>
-      <li>Arena - 15 unidades restantes</li>
-      <!-- Datos dinámicos se cargarían aquí -->
-    </ul>
-  </div>
-
-  <!-- Solicitudes de Materiales -->
-  <div class="material-requests">
-    <h2>Solicitudes de Materiales</h2>
-    <ul>
-      <li>Solicitud #123 - Pendiente</li>
-      <li>Solicitud #124 - Aprobada</li>
-      <!-- Datos dinámicos se cargarían aquí -->
-    </ul>
-  </div>
-
-  <!-- Reportes Rápidos -->
-  <div class="quick-reports">
-    <h2>Generar Reportes Rápidos</h2>
-    <a href="{% url 'stock_alerts' %}" class="report-link">Reporte de Stock</a>
-    <a href="#" class="report-link">Reporte de Movimientos</a>
-    <a href="#" class="report-link">Reporte de Alertas</a>
-  </div>
+    <!-- Reportes Rápidos -->
+    <div class="quick-reports">
+        <h2>Generar Reportes Rápidos</h2>
+        <a href="{% url 'stock_alerts' %}" class="report-link">Reporte de Inventario</a>
+        <a href="{% url 'movimientos' %}" class="report-link">Reporte de Movimientos</a>
+        <a href="{% url 'reports_view' %}" class="report-link">Reporte de Alertas</a>
+    </div>
 </div>
 {% endblock %}

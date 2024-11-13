@@ -1,0 +1,63 @@
+{% extends 'Modulo_usuario/base/base.html' %}
+
+{% block title %}Historial de Movimientos{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="text-center mb-4">Historial de Movimientos</h2>
+
+    <!-- Formulario de filtros -->
+    <form method="get" class="mb-4">
+        <div class="row">
+            <div class="col-md-3">
+                <label for="startDate">Fecha de Inicio:</label>
+                <input type="date" id="startDate" name="startDate" value="{{ start_date|date:'Y-m-d' }}" class="form-control">
+            </div>
+            <div class="col-md-3">
+                <label for="endDate">Fecha de Fin:</label>
+                <input type="date" id="endDate" name="endDate" value="{{ end_date|date:'Y-m-d' }}" class="form-control">
+            </div>
+            <div class="col-md-3">
+                <label for="tipoMovimiento">Tipo de Movimiento:</label>
+                <select id="tipoMovimiento" name="tipoMovimiento" class="form-control">
+                    <option value="">Todos</option>
+                    <option value="entrada" {% if tipo_movimiento == 'entrada' %}selected{% endif %}>Entrada</option>
+                    <option value="salida" {% if tipo_movimiento == 'salida' %}selected{% endif %}>Salida</option>
+                    <option value="cobrado" {% if tipo_movimiento == 'cobrado' %}selected{% endif %}>Cobrado</option>
+                </select>
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Tabla de movimientos -->
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Material</th>
+                <th>Cantidad</th>
+                <th>Tipo de Movimiento</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for movimiento in movimientos %}
+            <tr>
+                <td>{{ movimiento.fecha_creacion|date:"Y-m-d " }}</td>
+                <td>{{ movimiento.material_solicitado.nombre }}</td>
+                <td>{{ movimiento.cantidad }}</td>
+                <td>{{ movimiento.estado }}</td>
+                <td>{{ movimiento.estado|title }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center">No se encontraron movimientos</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

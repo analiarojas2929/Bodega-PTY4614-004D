@@ -17,7 +17,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
-
+from django.db.models import Sum, F
 from .models import Material, Ticket, CustomUser, Role, Question, Choice
 from .forms import CustomUserForm, TicketForm, MaterialForm
 from .serializers import QuestionSerializer, ChoiceSerializer
@@ -34,6 +34,27 @@ def has_role_id(user, role_id):
 # Vista principal
 def home_view(request):
     context = get_role_context(request.user)
+    total_materiales = Material.objects.count()
+    materiales_disponibles = Material.objects.aggregate(total=Sum('cantidad_disponible'))['total'] or 0
+    materiales_en_movimiento = Ticket.objects.filter(estado='pendiente').aggregate(total=Sum('cantidad'))['total'] or 0
+
+    # Obtener los movimientos recientes (últimos 5)
+    movimientos_recientes = Ticket.objects.order_by('-fecha_creacion')[:5]
+
+    # Obtener alertas de stock bajo
+    alertas_stock = Material.objects.filter(cantidad_disponible__lt=F('stock')).order_by('cantidad_disponible')[:5]
+
+    # Obtener solicitudes recientes
+    solicitudes_recientes = Ticket.objects.filter(estado='pendiente').order_by('-fecha_creacion')[:5]
+
+    context = {
+        'total_materiales': total_materiales,
+        'materiales_disponibles': materiales_disponibles,
+        'materiales_en_movimiento': materiales_en_movimiento,
+        'movimientos_recientes': movimientos_recientes,
+        'alertas_stock': alertas_stock,
+        'solicitudes_recientes': solicitudes_recientes,
+    }
     return render(request, 'Modulo_usuario/HomeView/home.html', context)
 
 def get_role_context(user):
@@ -748,6 +769,13 @@ def materiales_list(request):
 
     return JsonResponse(materiales_filtrados, safe=False)
 
+def format_date(date_str):
+    try:
+        return datetime.strptime(date_str, "%d-%m-%Y")
+    except ValueError:
+        return None
+
+
 @login_required
 def export_to_pdf(request):
     report_type = request.GET.get('reportType')
@@ -905,3 +933,27 @@ def export_to_excel(request):
     # Guardar el archivo Excel
     workbook.save(response)
     return response
+
+@login_required
+@user_passes_test(lambda u: u.is_authenticated)
+def movimientos_view(request):
+    # Obtener todos los movimientos de stock (tickets) de la base de datos
+    movimientos = Ticket.objects.select_related('material_solicitado').order_by('-fecha_creacion')
+
+    # Filtros por fecha si se envían en la solicitud
+    start_date = request.GET.get('startDate')
+    end_date = request.GET.get('endDate')
+
+    if start_date:
+        start_date = make_aware(datetime.strptime(start_date, '%Y-%m-%d'))
+        movimientos = movimientos.filter(fecha_creacion__gte=start_date)
+    if end_date:
+        end_date = make_aware(datetime.strptime(end_date, '%Y-%m-%d'))
+        movimientos = movimientos.filter(fecha_creacion__lte=end_date)
+
+    context = {
+        'movimientos': movimientos,
+        'start_date': start_date,
+        'end_date': end_date
+    }
+    return render(request, 'Modulo_usuario/ReportsView/movimientos.html', context)

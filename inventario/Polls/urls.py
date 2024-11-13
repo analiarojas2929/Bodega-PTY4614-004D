@@ -45,4 +45,6 @@ urlpatterns = [
     path('usuarios/activar/<int:user_id>/', views.activar_usuario, name='activar_usuario'),  # Nueva URL para activar
     path('export_to_pdf/', views.export_to_pdf, name='export_to_pdf'),
     path('export_to_excel/', views.export_to_excel, name='export_to_excel'),
+    path('movimientos/', views.movimientos_view, name='movimientos'),
+    
 ]
