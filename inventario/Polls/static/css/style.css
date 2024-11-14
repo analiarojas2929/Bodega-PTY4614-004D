@@ -1347,7 +1347,6 @@ div.alert.alert-error {
 }
 
 .overview-item {
-  background-color: #007bff;
   color: white;
   padding: 20px;
   border-radius: 10px;
@@ -1375,7 +1374,6 @@ ul {
 }
 
 ul li {
-  background-color: #ffc107;
   padding: 10px;
   margin-bottom: 5px;
   border-radius: 5px;
@@ -1404,7 +1402,6 @@ ul li {
 
     #reportChart {
         max-height: 300px;
-        margin: auto;
     }
 
     #reportPreview {

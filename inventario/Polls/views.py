@@ -5,6 +5,15 @@ import json
 import openpyxl
 from .utils import format_date
 from openpyxl.styles import Font, Alignment, PatternFill
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.units import cm
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.pdfbase import pdfmetrics
+from datetime import datetime
+from django.http import HttpResponse, JsonResponse
 from django.db import models
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse, HttpResponse
@@ -548,7 +557,7 @@ def reports_view(request):
             materiales = Material.objects.select_related('unidad_medida').values(
                 'id', 'nombre', 'descripcion', 'cantidad_disponible', 'stock', 'unidad_medida__descripcion', 'activo'
             )
-            return JsonResponse({'reportData': list(materiales)}, safe=False)
+            return JsonResponse({'reportData': list(materiales)})
 
         # Manejo para "Alertas de Stock Bajo"
         elif report_type == 'Alertas de Stock bajo':
@@ -566,13 +575,10 @@ def reports_view(request):
                 }
                 for material in materiales if material['cantidad_disponible'] < material['stock']
             ]
-            return JsonResponse({'reportData': report_data}, safe=False)
+            return JsonResponse({'reportData': report_data})
 
         # Manejo para "Movimientos de Stock"
         elif report_type == 'Movimientos de stock':
-            if not start_date or not end_date:
-                return JsonResponse({'error': 'Rango de fechas requerido para este reporte'}, status=400)
-
             tickets = Ticket.objects.filter(
                 estado='cobrado',
                 fecha_creacion__range=[start_date, end_date]
@@ -587,11 +593,8 @@ def reports_view(request):
                 }
                 for ticket in tickets
             ]
-            return JsonResponse({'reportData': report_data}, safe=False)
+            return JsonResponse({'reportData': report_data})
 
-        return JsonResponse({'error': 'Tipo de reporte no válido'}, status=400)
-
-    # Renderizar la página de reportes si el método no es POST
     return render(request, 'Modulo_usuario/ReportsView/reports.html')
 def user_login(request):
     form = AuthenticationForm(request, data=request.POST or None)
@@ -781,49 +784,98 @@ def format_date(date_str):
         return datetime.strptime(date_str, "%d-%m-%Y")
     except ValueError:
         return None
-
 @login_required
 def export_to_pdf(request):
-    report_type = request.GET.get('reportType')
-    start_date = request.GET.get('startDate')
-    end_date = request.GET.get('endDate')
+    report_type = request.GET.get('reportType', None)
+    start_date_str = request.GET.get('startDate', None)
+    end_date_str = request.GET.get('endDate', None)
 
-    # Configurar el PDF
+    # Validar los parámetros
+    if not report_type or not start_date_str or not end_date_str:
+        return JsonResponse({'error': 'Faltan parámetros para generar el reporte'}, status=400)
+
+    # Convertir fechas al formato correcto
+    start_date = format_date(start_date_str)
+    end_date = format_date(end_date_str)
+    if not start_date or not end_date:
+        return JsonResponse({'error': 'Formato de fecha incorrecto'}, status=400)
+
+    # Crear el archivo PDF
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename={report_type}_report.pdf'
-    p = canvas.Canvas(response, pagesize=letter)
-    p.setFont("Helvetica", 12)
-    y = 750
+    pdf = canvas.Canvas(response, pagesize=A4)
+    width, height = A4
 
-    # Convertir las fechas utilizando la función auxiliar
-    start_date = format_date(start_date)
-    end_date = format_date(end_date)
+    # Encabezado del PDF
+    pdf.setFont("Helvetica-Bold", 16)
+    pdf.setFillColor(colors.HexColor("#007bff"))
+    pdf.drawString(2 * cm, height - 2 * cm, f"📊 Reporte de {report_type}")
+    pdf.setFont("Helvetica", 12)
+    pdf.setFillColor(colors.black)
+    pdf.drawString(2 * cm, height - 3 * cm, f"Desde: {start_date_str}  Hasta: {end_date_str}")
 
-    # Validar que las fechas se hayan convertido correctamente
-    if not start_date or not end_date:
-        p.drawString(50, y, 'Formato de fecha incorrecto')
-        p.save()
-        return response
+    # Línea de separación
+    pdf.setStrokeColor(colors.HexColor("#007bff"))
+    pdf.setLineWidth(1)
+    pdf.line(2 * cm, height - 3.5 * cm, width - 2 * cm, height - 3.5 * cm)
 
-    # Generar el contenido del PDF basado en el tipo de reporte
-    if report_type == 'Movimientos de stock':
+    # Contenido según el tipo de reporte
+    y_position = height - 5 * cm
+    pdf.setFont("Helvetica", 11)
+
+    if report_type == 'Inventario Actual':
+        pdf.setFillColor(colors.HexColor("#4caf50"))
+        pdf.drawString(2 * cm, y_position, "ID    |    Nombre    |    Descripción    |    Unidad de Medida    |    Cantidad    |    Estado")
+        y_position -= 1 * cm
+        materiales = Material.objects.all()
+        for material in materiales:
+            estado = 'Activo' if material.activo else 'Inactivo'
+            pdf.setFillColor(colors.black)
+            pdf.drawString(2 * cm, y_position, f"{material.id}  |  {material.nombre}  |  {material.descripcion}  |  {material.unidad_medida.descripcion}  |  {material.cantidad_disponible}  |  {estado}")
+            y_position -= 0.8 * cm
+            if y_position < 2 * cm:
+                pdf.showPage()
+                y_position = height - 3 * cm
+
+    elif report_type == 'Alertas de Stock bajo':
+        pdf.setFillColor(colors.HexColor("#e53935"))
+        pdf.drawString(2 * cm, y_position, "Material    |    Cantidad Disponible    |    Stock Mínimo    |    Alerta")
+        y_position -= 1 * cm
+        materiales = Material.objects.filter(cantidad_disponible__lt=models.F('stock'))
+        for material in materiales:
+            alerta = 'Stock Bajo' if material.cantidad_disponible < material.stock else 'Ok'
+            pdf.setFillColor(colors.black)
+            pdf.drawString(2 * cm, y_position, f"{material.nombre}  |  {material.cantidad_disponible}  |  {material.stock}  |  {alerta}")
+            y_position -= 0.8 * cm
+            if y_position < 2 * cm:
+                pdf.showPage()
+                y_position = height - 3 * cm
+
+    elif report_type == 'Movimientos de stock':
+        pdf.setFillColor(colors.HexColor("#3f51b5"))
+        pdf.drawString(2 * cm, y_position, "Material    |    Cantidad    |    Estado    |    Fecha")
+        y_position -= 1 * cm
         tickets = Ticket.objects.filter(
             estado='cobrado',
             fecha_creacion__range=[start_date, end_date]
         )
-        p.drawString(50, y, 'Reporte de Movimientos de Stock')
-        y -= 30
         for ticket in tickets:
-            p.drawString(50, y, f"{ticket.material_solicitado.nombre} - {ticket.cantidad} unidades - {ticket.estado}")
-            y -= 20
-            if y < 50:
-                p.showPage()
-                y = 750
-    else:
-        p.drawString(50, y, 'Tipo de reporte no válido')
+            pdf.setFillColor(colors.black)
+            pdf.drawString(2 * cm, y_position, f"{ticket.material_solicitado.nombre}  |  {ticket.cantidad}  |  {ticket.estado}  |  {ticket.fecha_creacion.strftime('%d-%m-%Y')}")
+            y_position -= 0.8 * cm
+            if y_position < 2 * cm:
+                pdf.showPage()
+                y_position = height - 3 * cm
 
-    p.save()
+    # Pie de página
+    pdf.setFillColor(colors.HexColor("#007bff"))
+    pdf.setFont("Helvetica-Oblique", 10)
+    pdf.drawString(2 * cm, 1.5 * cm, "Generado por el Sistema de Gestión de Inventario - Empresa Constructora")
+
+    # Guardar y cerrar el PDF
+    pdf.save()
     return response
+
 @login_required
 def export_to_excel(request):
     # Obtener los parámetros del formulario desde la URL
@@ -951,10 +1003,10 @@ def movimientos_view(request):
     end_date = request.GET.get('endDate')
 
     if start_date:
-        start_date = make_aware(datetime.strptime(start_date, '%d-%m-%Y'))
+        start_date = make_aware(datetime.strptime(start_date, '%Y-%m-%d'))
         movimientos = movimientos.filter(fecha_creacion__gte=start_date)
     if end_date:
-        end_date = make_aware(datetime.strptime(end_date, '%d-%m-%Y'))
+        end_date = make_aware(datetime.strptime(end_date, '%Y-%m-%d'))
         movimientos = movimientos.filter(fecha_creacion__lte=end_date)
 
     context = {
