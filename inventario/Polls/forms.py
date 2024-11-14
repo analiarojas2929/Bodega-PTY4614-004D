@@ -3,13 +3,20 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.hashers import make_password
 from .models import CustomUser, Role, Material, Ticket, UnidadMedida
 
-# Formulario personalizado para la creación y edición de usuarios
+from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.hashers import make_password
+from .models import CustomUser, Role, Material, Ticket, UnidadMedida
+
 class CustomUserForm(forms.ModelForm):
-    roles = forms.ModelChoiceField(
+    roles = forms.ModelMultipleChoiceField(
         queryset=Role.objects.all(),
-        widget=forms.Select(attrs={'class': 'form-control'}),
+        widget=forms.SelectMultiple(attrs={
+            'class': 'form-control select-multiple',
+            'style': 'height: auto; min-height: 120px;'
+        }),
         required=True,
-        label="Rol"
+        label="Roles"
     )
     new_password = forms.CharField(
         widget=forms.PasswordInput(attrs={'class': 'form-control'}),
@@ -51,7 +58,8 @@ class CustomUserForm(forms.ModelForm):
 
         if commit:
             user.save()
-            user.roles.set([self.cleaned_data['roles']])
+            # Actualizar los roles seleccionados
+            user.roles.set(self.cleaned_data['roles'])
         return user
 
 # Formulario para la creación y edición de materiales
