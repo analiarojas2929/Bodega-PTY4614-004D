@@ -9,10 +9,24 @@ class Role(models.Model):
         return self.name
 
 class CustomUser(AbstractUser):
-    roles = models.ManyToManyField(Role,  related_name='users') 
+    email = models.EmailField(unique=True)
+    roles = models.ManyToManyField('Role', related_name='users', blank=True)
+
+    # Campos obligatorios adicionales
+    REQUIRED_FIELDS = ['email']
+
     def __str__(self):
-        return self.username 
-    
+        return self.username
+
+    def clean(self):
+        # Validación de correo electrónico único
+        if CustomUser.objects.filter(email=self.email).exclude(id=self.id).exists():
+            raise ValidationError(_('El correo electrónico ya está registrado.'))
+
+        # Validación de nombre de usuario único
+        if CustomUser.objects.filter(username=self.username).exclude(id=self.id).exists():
+            raise ValidationError(_('El nombre de usuario ya está en uso.'))
+
 
 # Modelo para los Materiales
 class Material(models.Model):
@@ -68,7 +82,7 @@ class Ticket(models.Model):
     material_solicitado = models.ForeignKey(Material, on_delete=models.CASCADE)
     cantidad = models.IntegerField()
     estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default='pendiente')
-    fecha_creacion = models.DateField(auto_now_add=True)
+    fecha_creacion = models.DateTimeField(default=timezone.now, null=False, blank=False)
     
     def __str__(self):
         return self.fecha_creacion.strftime('%d-%m-%Y')

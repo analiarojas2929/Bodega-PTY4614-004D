@@ -701,7 +701,7 @@ def crear_usuario(request):
             return redirect('lista_usuarios')
     else:
         form = CustomUserForm()
-    return render(request, 'Modulo_administrador/usuarios/create_user.html', {'form': form})
+    return render(request, 'crear_usuario.html', {'form': form})
 
 @login_required
 def activar_usuario(request, user_id):
