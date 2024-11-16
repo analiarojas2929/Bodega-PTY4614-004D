@@ -1444,3 +1444,10 @@ ul li {
   .input-group-text i {
       font-size: 1.2rem;
   }
+
+.loading-message {
+  display: none;
+  color: green;
+  font-weight: bold;
+  margin-bottom: 15px;
+}

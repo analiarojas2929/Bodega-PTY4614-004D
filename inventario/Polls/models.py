@@ -21,11 +21,11 @@ class CustomUser(AbstractUser):
     def clean(self):
         # Validación de correo electrónico único
         if CustomUser.objects.filter(email=self.email).exclude(id=self.id).exists():
-            raise ValidationError(_('El correo electrónico ya está registrado.'))
+            raise ValidationError(('El correo electrónico ya está registrado.'))
 
         # Validación de nombre de usuario único
         if CustomUser.objects.filter(username=self.username).exclude(id=self.id).exists():
-            raise ValidationError(_('El nombre de usuario ya está en uso.'))
+            raise ValidationError(('El nombre de usuario ya está en uso.'))
 
 
 # Modelo para los Materiales

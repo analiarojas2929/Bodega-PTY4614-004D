@@ -155,19 +155,6 @@ def redirect_home_administrador(request):
         'mensaje': 'Bienvenido a la vista restringida'
     }
     return render(request, 'Modulo_administrador/usuarios/restricted_view.html', context)
-def custom_login_view(request):
-    if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            if has_role_id(user, ADMINISTRADOR_SISTEMA):  # Verifica el rol
-                return redirect('admin_user_list')  # Redirige al menú de administrador
-            else:
-                return redirect('home')  # Redirige a la página de inicio para otros roles
-    else:
-        form = AuthenticationForm()
-    return render(request, 'Modulo_administrador/usuarios/login_admin.html', {'form': form})
 
 # Restaurar material inactivo (solo accesible por Jefe de Bodega)
 @login_required
@@ -598,6 +585,14 @@ def reports_view(request):
     return render(request, 'Modulo_usuario/ReportsView/reports.html')
 def user_login(request):
     form = AuthenticationForm(request, data=request.POST or None)
+    
+    # Verificar si el usuario acaba de cerrar sesión
+    logout_message = request.COOKIES.get('logout_success', False)
+    show_logout_message = False
+
+    if logout_message:
+        show_logout_message = True
+
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -610,8 +605,11 @@ def user_login(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                messages.success(request, 'Inicio de sesión exitoso.')
                 
+                # Mostrar el mensaje de éxito solo si no proviene de un cierre de sesión
+                if not show_logout_message:
+                    messages.success(request, 'Inicio de sesión exitoso.')
+
                 # Redirigir según el rol del usuario
                 if has_role_id(user, ADMINISTRADOR_SISTEMA):
                     return redirect('admin_user_list')
@@ -620,7 +618,18 @@ def user_login(request):
             else:
                 messages.error(request, 'Contraseña incorrecta.')
 
-    return render(request, 'Modulo_usuario/usuarios/login.html', {'form': form})
+    response = render(request, 'Modulo_usuario/usuarios/login.html', {
+        'form': form,
+        'show_logout_message': show_logout_message
+    })
+
+    # Limpiar la cookie de logout después de mostrarla
+    if show_logout_message:
+        response.delete_cookie('logout_success')
+
+    return response
+
+
 # Crear usuario
 # En views.py del administrador de sistema
 def create_user(request):
@@ -636,8 +645,14 @@ def create_user(request):
     return render(request, 'Modulo_administrador/usuarios/create_user.html', {'form': form})  # Asegúrate de cambiar 'tu_template.html' por el nombre real de tu plantilla
 # Cerrar sesión y redirigir al login
 def custom_logout_view(request):
+    """
+    Cierra la sesión del usuario y redirige al formulario de inicio de sesión.
+    """
     logout(request)
-    return redirect('login')
+    # Redirigir con una cookie que indica que se cerró la sesión
+    response = redirect('login')
+    response.set_cookie('logout_success', 'true', max_age=5)  # Cookie válida por 5 segundos
+    return response
 
 
 # Vista de acceso denegado
@@ -701,7 +716,7 @@ def crear_usuario(request):
             return redirect('lista_usuarios')
     else:
         form = CustomUserForm()
-    return render(request, 'crear_usuario.html', {'form': form})
+    return render(request, 'Modulo_administrador/usuarios/create_user.html', {'form': form})
 
 @login_required
 def activar_usuario(request, user_id):

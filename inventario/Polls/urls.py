@@ -16,7 +16,6 @@ router.register(r'choices', ChoiceViewSet, basename='choice')
 urlpatterns = [
     path('', views.user_login, name='login'),
     path('home', views.home_view, name='home'),
-    path('admin_login/', views.custom_login_view, name='admin_login'),
     path('inventory/', views.inventory, name='inventory'),
     path('lista_view/', views.lista_view, name='lista_view'),
     path('add_material/', views.add_material_view, name='add_material'),

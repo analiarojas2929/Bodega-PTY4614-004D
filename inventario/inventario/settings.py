@@ -149,6 +149,19 @@ TEMPLATES = [
     },
 ]
 
+MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
+
+
+# Duración de la cookie en segundos
+SESSION_COOKIE_AGE = 1209600  # 2 semanas por defecto
+
+# Configurar la cookie como segura (solo en producción)
+SESSION_COOKIE_SECURE = False  # Cambiar a True en producción
+
+# Habilitar HttpOnly para mayor seguridad
+SESSION_COOKIE_HTTPONLY = True
+
+
 
 WSGI_APPLICATION = 'inventario.wsgi.application'
 
