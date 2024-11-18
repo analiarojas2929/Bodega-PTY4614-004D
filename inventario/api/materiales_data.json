@@ -733,7 +733,7 @@
         "nombre": "FIELTRO 15 LB (ROLLO 40M2)",
         "descripcion": "Fieltro de 15 lb.",
         "unidad_medida": "ROLLO",
-        "cantidad_disponible": 100,
+        "cantidad_disponible": 95,
         "stock": 20,
         "activo": true
     },
@@ -906,6 +906,15 @@
         "unidad_medida": "UN",
         "cantidad_disponible": 43,
         "stock": 56,
+        "activo": true
+    },
+    {
+        "id": 115,
+        "nombre": "material 2",
+        "descripcion": "material",
+        "unidad_medida": "M2",
+        "cantidad_disponible": 15,
+        "stock": 200,
         "activo": true
     }
 ]

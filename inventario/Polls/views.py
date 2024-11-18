@@ -416,73 +416,90 @@ def cobrar_ticket(request, ticket_id):
     ticket = get_object_or_404(Ticket, id=ticket_id)
     material = ticket.material_solicitado
 
+    # Verificar si el ticket ya fue cobrado
     if ticket.estado == 'cobrado':
         messages.warning(request, "El ticket ya ha sido cobrado anteriormente.")
         return redirect('lista_tickets')
 
+    # Verificar si hay suficiente stock disponible
     if material.cantidad_disponible < ticket.cantidad:
         messages.error(request, 'No hay suficiente stock disponible para cobrar este ticket.')
         return redirect('lista_tickets')
 
     try:
         with transaction.atomic():
+            # Descontar stock
+            print(f"Stock actual de {material.nombre}: {material.cantidad_disponible}")
             material.cantidad_disponible -= ticket.cantidad
             material.save()
+            print(f"Nuevo stock de {material.nombre}: {material.cantidad_disponible}")
+
+            # Cambiar estado del ticket
             ticket.estado = 'cobrado'
             ticket.save(update_fields=['estado'])
 
-            # Actualizar el archivo JSON
-            actualizar_json_material(material)
+            # Actualizar archivo JSON
+            if actualizar_json_material(material):
+                print(f"Material {material.nombre} actualizado en JSON correctamente.")
+            else:
+                print(f"[ERROR] No se pudo actualizar el material {material.nombre} en el JSON.")
 
         messages.success(request, "Ticket cobrado y stock actualizado correctamente.")
-    
+
     except Exception as e:
-        messages.error(request, f"Error al cobrar el ticket: {str(e)}")
+        print(f"[ERROR] Error al cobrar el ticket: {e}")
+        messages.error(request, f"Error al cobrar el ticket: {e}")
 
     return redirect('lista_tickets')
 
-
 def actualizar_json_material(material):
     try:
-        json_file_path = settings.MATERIALES_JSON_PATH
-        if not os.path.exists(json_file_path):
-            print(f"[ERROR] Archivo JSON no encontrado: {json_file_path}")
+        if not os.path.exists(JSON_FILE_PATH):
+            print(f"[ERROR] Archivo JSON no encontrado: {JSON_FILE_PATH}")
             return False
 
-        with open(json_file_path, 'r+', encoding='utf-8') as file:
-            materiales_json = json.load(file)
+        with open(JSON_FILE_PATH, 'r+', encoding='utf-8') as file:
+            try:
+                materiales_json = json.load(file)
+            except json.JSONDecodeError:
+                print(f"[ERROR] Archivo JSON mal formado.")
+                return False
 
             # Buscar y actualizar el material en el JSON
+            material_actualizado = False
             for m in materiales_json:
                 if m['id'] == material.id:
                     m.update({
                         "nombre": material.nombre,
                         "descripcion": material.descripcion,
-                        "unidad_medida": material.unidad_medida.id,
+                        "unidad_medida": material.unidad_medida.descripcion,
                         "cantidad_disponible": material.cantidad_disponible,
                         "stock": material.stock,
-                        "activo": material.activo
+                        "activo": material.activo,
                     })
+                    material_actualizado = True
                     break
-            else:
-                # Si no se encuentra, agregar el nuevo material
+
+            if not material_actualizado:
+                print(f"[INFO] Material {material.nombre} no encontrado en JSON. Agregando nuevo.")
                 materiales_json.append({
                     "id": material.id,
                     "nombre": material.nombre,
                     "descripcion": material.descripcion,
-                    "unidad_medida": material.unidad_medida.id,
+                    "unidad_medida": material.unidad_medida.descripcion,
                     "cantidad_disponible": material.cantidad_disponible,
                     "stock": material.stock,
-                    "activo": material.activo
+                    "activo": material.activo,
                 })
 
+            # Sobrescribir el archivo JSON
             file.seek(0)
             json.dump(materiales_json, file, ensure_ascii=False, indent=4)
             file.truncate()
-        
+
         return True
 
-    except (FileNotFoundError, json.JSONDecodeError, Exception) as e:
+    except Exception as e:
         print(f"[ERROR] Error al actualizar el archivo JSON: {e}")
         return False
 
