@@ -600,10 +600,7 @@ body.dark .nav_bar {
     width: 100%; /* Asegurar que el contenido use todo el ancho */
   }
 
-  .dashboard-container {
-    margin: 0; /* Eliminar márgenes en pantallas pequeñas */
-    padding: 10px; /* Ajustar el padding */
-  }
+
 
   /* Estilo para las tarjetas de la visión general */
   .overview {
@@ -640,11 +637,6 @@ body.dark .nav_bar {
   }
 }
 
-.dashboard-container {
-  padding: 20px;
-  max-width: 1200px;
-  margin: 50px;
-}
 
 h1 {
   text-align: center;
@@ -1333,12 +1325,7 @@ div.alert.alert-error {
 }
 
 
-.dashboard-container {
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 10px;
-  margin-top: 20px;
-}
+
 
 .overview {
   display: flex;
@@ -1450,4 +1437,138 @@ ul li {
   color: green;
   font-weight: bold;
   margin-bottom: 15px;
+}
+
+/* CSS Mejorado para componentes más pequeños */
+.dashboard-container {
+  padding: 15px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
+
+.page-title {
+  text-align: center;
+  font-size: 1.8rem;
+  color: #2c3e50;
+  margin-bottom: 20px;
+}
+
+.overview {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.overview-item {
+  padding: 20px;
+  border-radius: 10px;
+  width: 30%;
+  text-align: center;
+  background-color: #3498db;
+  color: white;
+  transition: transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.overview-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.overview-item h2 {
+  font-size: 1.2rem;
+}
+
+.overview-item i {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.overview-count {
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.chart-container {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th, .data-table td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.data-table th {
+  background-color: #4070f4;
+  color: white;
+}
+
+.stock-alerts ul {
+  list-style: none;
+  padding: 0;
+}
+
+.alert-item {
+  background-color: #f8d7da;
+  padding: 8px;
+  margin-bottom: 8px;
+  border-radius: 5px;
+  color: #721c24;
+  display: flex;
+  align-items: center;
+}
+
+.alert-item i {
+  margin-right: 8px;
+  color: #ba1c2c;
+}
+
+.report-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.report-link {
+  display: inline-block;
+  background-color: #4070f4;
+  color: white;
+  padding: 10px 15px;
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.report-link:hover {
+  background-color: #305cbf;
+}
+
+@media (max-width: 768px) {
+  .overview {
+      flex-direction: column;
+  }
+
+  .overview-item {
+      width: 100%;
+  }
+
+  .report-buttons {
+      flex-direction: column;
+      align-items: center;
+  }
+
+  .report-link {
+      margin-bottom: 8px;
+  }
 }

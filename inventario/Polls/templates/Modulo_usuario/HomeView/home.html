@@ -1,29 +1,40 @@
 {% extends 'Modulo_usuario/base/base.html' %}
+
 {% block title %}Panel de Control de Bodega{% endblock %}
+
 {% block content %}
 <div class="dashboard-container">
-    <h1>Panel de Control de Bodega</h1>
+    <h1 class="page-title">Panel de Control de Bodega</h1>
 
-    <!-- Visión General del Inventario -->
+    <!-- Estadísticas de Inventario -->
     <div class="overview">
-        <div class="overview-item">
+        <div class="overview-item total-materiales">
+            <i class="fas fa-boxes"></i>
             <h2>Total de Materiales</h2>
-            <p>{{ total_materiales }}</p>
+            <p class="overview-count">{{ total_materiales }}</p>
         </div>
-        <div class="overview-item">
+        <div class="overview-item disponibles">
+            <i class="fas fa-warehouse"></i>
             <h2>Materiales Disponibles</h2>
-            <p>{{ materiales_disponibles }}</p>
+            <p class="overview-count">{{ materiales_disponibles }}</p>
         </div>
-        <div class="overview-item">
+        <div class="overview-item movimiento">
+            <i class="fas fa-exchange-alt"></i>
             <h2>Materiales en Movimiento</h2>
-            <p>{{ materiales_en_movimiento }}</p>
+            <p class="overview-count">{{ materiales_en_movimiento }}</p>
         </div>
+    </div>
+
+    <!-- Gráfico de Stock Disponible vs Stock Mínimo -->
+    <div class="chart-container">
+        <h2>Stock Disponible vs Stock Mínimo</h2>
+        <canvas id="stockChart"></canvas>
     </div>
 
     <!-- Movimientos Recientes -->
     <div class="recent-movements">
         <h2>Movimientos Recientes</h2>
-        <table>
+        <table class="data-table">
             <thead>
                 <tr>
                     <th>Fecha</th>
@@ -52,7 +63,10 @@
         <h2>Alertas de Stock Bajo</h2>
         <ul>
             {% for alerta in alertas_stock %}
-            <li>{{ alerta.nombre }} - {{ alerta.cantidad_disponible }} unidades restantes</li>
+            <li class="alert-item">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>{{ alerta.nombre }} - {{ alerta.cantidad_disponible }} unidades restantes</span>
+            </li>
             {% empty %}
             <li>No hay alertas de stock bajo</li>
             {% endfor %}
@@ -74,9 +88,43 @@
     <!-- Reportes Rápidos -->
     <div class="quick-reports">
         <h2>Generar Reportes Rápidos</h2>
-        <a href="{% url 'stock_alerts' %}" class="report-link">Reporte de Inventario</a>
-        <a href="{% url 'movimientos' %}" class="report-link">Reporte de Movimientos</a>
-        <a href="{% url 'reports_view' %}" class="report-link">Reporte de Alertas</a>
+        <div class="report-buttons">
+            <a href="{% url 'stock_alerts' %}" class="report-link">Reporte de Inventario</a>
+            <a href="{% url 'movimientos' %}" class="report-link">Reporte de Movimientos</a>
+            <a href="{% url 'reports_view' %}" class="report-link">Reporte de Alertas</a>
+        </div>
     </div>
 </div>
+
+<script>
+// Gráfico de Stock Disponible vs Stock Mínimo
+const ctx = document.getElementById('stockChart').getContext('2d');
+const stockChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ['Cemento', 'Arena', 'Grava', 'Ladrillos'], // Ejemplo de etiquetas
+        datasets: [{
+            label: 'Stock Disponible',
+            data: [200, 150, 300, 180], // Ejemplo de datos de stock disponible
+            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
+        }, {
+            label: 'Stock Mínimo',
+            data: [100, 90, 150, 120], // Ejemplo de datos de stock mínimo
+            backgroundColor: 'rgba(255, 99, 132, 0.6)',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+</script>
 {% endblock %}
