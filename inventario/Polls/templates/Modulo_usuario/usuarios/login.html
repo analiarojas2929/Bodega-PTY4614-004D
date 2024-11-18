@@ -1,8 +1,6 @@
 {% load static %}
-{% load socialaccount %}
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8" />
@@ -41,7 +39,6 @@
             margin-bottom: 15px;
         }
 
-        /* Ocultar mensajes que tengan la clase .hide-on-logout si la cookie está presente */
         .hide-on-logout {
             display: none;
         }
@@ -56,20 +53,20 @@
             </div>
             <h3>Iniciar Sesión</h3>
 
+            <!-- Mostrar mensajes de Django -->
             {% if messages %}
                 {% for message in messages %}
-                    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} {% if message.tags == 'success' %}hide-on-logout{% endif %}">
+                    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} {% if message.tags == 'success' %}hide-on-logout{% endif %}" id="message-{{ forloop.counter }}">
                         {{ message }}
                     </div>
                 {% endfor %}
             {% endif %}
 
             <!-- Mensaje de carga -->
-            <div id="loadingMessage" style="display: none; color: green;">Iniciando sesión...</div>
+            <div id="loadingMessage" class="loading-message">Iniciando sesión...</div>
 
             <!-- Mensaje de cierre de sesión -->
             <div id="logoutMessage" class="alert alert-info" style="display: none;">Has cerrado sesión exitosamente.</div>
-
 
             <!-- Formulario de inicio de sesión -->
             <form method="post" onsubmit="return showLoadingMessage()">
@@ -78,63 +75,54 @@
                     <label for="username" class="form-label">Usuario</label>
                     <input type="text" name="username" class="form-control" placeholder="Ingresa tu usuario" required />
                 </div>
-
                 <div class="form-group mb-3">
                     <label for="password" class="form-label">Contraseña</label>
-                    <input type="password" name="password" class="form-control" placeholder="Ingresa tu contraseña"
-                        required />
+                    <input type="password" name="password" class="form-control" placeholder="Ingresa tu contraseña" required />
                 </div>
-
                 <button type="submit" class="btn btn-primary btn-block mt-3">Iniciar Sesión</button>
             </form>
         </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Función para mostrar el mensaje de carga al enviar el formulario
-            function showLoadingMessage() {
+        document.addEventListener('DOMContentLoaded', function () {
+            // Mostrar mensaje de carga al enviar el formulario
+            window.showLoadingMessage = function () {
                 const loadingMessage = document.getElementById('loadingMessage');
                 if (loadingMessage) {
                     loadingMessage.style.display = 'block';
                 }
                 return true;
-            }
-    
-            // Asignar la función al formulario (si lo estás usando en tu formulario de inicio de sesión)
-            const form = document.querySelector('form');
-            if (form) {
-                form.onsubmit = showLoadingMessage;
-            }
-    
+            };
+
             // Función para obtener el valor de una cookie
             function getCookie(name) {
                 const value = `; ${document.cookie}`;
                 const parts = value.split(`; ${name}=`);
                 if (parts.length === 2) return parts.pop().split(';').shift();
             }
-    
+
             // Verificar si la cookie 'logout_success' está presente
             const logoutSuccess = getCookie('logout_success');
-            
+
             if (logoutSuccess) {
-                // Mostrar mensaje de cierre de sesión
+                // Mostrar el mensaje de cierre de sesión
                 const logoutMessage = document.getElementById('logoutMessage');
                 if (logoutMessage) {
                     logoutMessage.style.display = 'block';
                 }
-    
+
                 // Ocultar todos los elementos con la clase 'hide-on-logout'
                 const successMessages = document.querySelectorAll('.hide-on-logout');
                 successMessages.forEach(msg => {
                     msg.style.display = 'none';
                 });
-    
+
                 // Eliminar la cookie después de mostrar el mensaje
                 document.cookie = 'logout_success=; Max-Age=0; path=/';
             }
         });
-    </script>    
+    </script>
 </body>
 
 </html>

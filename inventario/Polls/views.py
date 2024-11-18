@@ -644,16 +644,12 @@ def create_user(request):
     
     return render(request, 'Modulo_administrador/usuarios/create_user.html', {'form': form})  # Asegúrate de cambiar 'tu_template.html' por el nombre real de tu plantilla
 # Cerrar sesión y redirigir al login
-def custom_logout_view(request):
-    """
-    Cierra la sesión del usuario y redirige al formulario de inicio de sesión.
-    """
-    logout(request)
-    # Redirigir con una cookie que indica que se cerró la sesión
-    response = redirect('login')
-    response.set_cookie('logout_success', 'true', max_age=5)  # Cookie válida por 5 segundos
-    return response
+from django.contrib import messages
 
+def logout_view(request):
+    logout(request)
+    messages.info(request, "Has cerrado sesión exitosamente.")
+    return redirect('login')  # Redirige a la página de inicio de sesión
 
 # Vista de acceso denegado
 def access_denied_view(request):
@@ -672,8 +668,7 @@ def create_roles(request):
     
     for role_data in roles:
         Role.objects.get_or_create(id=role_data['id'], defaults={'name': role_data['name']})
-    
-    return redirect('home')
+        pass
 
 
 # Vista para listar usuarios con sus roles en el menú de administrador

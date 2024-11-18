@@ -32,7 +32,7 @@ urlpatterns = [
     path('restricted/', views.redirect_home_administrador, name='restricted_view'),  # Vista restringida, solo una vez
     path('accounts/', include('allauth.urls')),  # Para el login de terceros (Google, etc.)
     path('access_denied/', views.access_denied_view, name='access_denied'),  # Vista para acceso denegado
-    path('logout/', views.custom_logout_view, name='logout'),
+    path('logout/', views.logout_view, name='logout'),
     path('admin-user-list/', views.admin_user_list, name='admin_user_list'),
     path('home_admin/', views.home_admin, name='home_admin'),
     path('usuarios/', views.lista_usuarios, name='lista_usuarios'),

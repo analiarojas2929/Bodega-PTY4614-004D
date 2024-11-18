@@ -152,15 +152,11 @@ TEMPLATES = [
 MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
 
 
-# Duración de la cookie en segundos
-SESSION_COOKIE_AGE = 1209600  # 2 semanas por defecto
-
-# Configurar la cookie como segura (solo en producción)
-SESSION_COOKIE_SECURE = False  # Cambiar a True en producción
-
-# Habilitar HttpOnly para mayor seguridad
-SESSION_COOKIE_HTTPONLY = True
-
+SESSION_COOKIE_AGE = 3600  # Tiempo de duración de la sesión en segundos
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # La sesión no expirará al cerrar el navegador
+SESSION_COOKIE_SECURE = False  # En producción, deberías configurar esto como True si usas HTTPS
+CSRF_COOKIE_SECURE = False  # En producción, deberías configurar esto como True si usas HTTPS
+SESSION_COOKIE_SAMESITE = 'Lax'  # Ajuste para que las cookies sean compatibles
 
 
 WSGI_APPLICATION = 'inventario.wsgi.application'
