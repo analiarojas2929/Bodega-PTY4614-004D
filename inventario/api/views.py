@@ -48,6 +48,11 @@ class MaterialViewSet(viewsets.ModelViewSet):
 def add_material_view(request):
     json_file_path = os.path.join(BASE_DIR, 'api', 'materiales_data.json')
 
+    if not os.path.exists(json_file_path):
+        # Crear el archivo JSON si no existe
+        with open(json_file_path, 'w', encoding='utf-8') as file:
+            json.dump([], file, ensure_ascii=False, indent=4)
+
     if request.method == 'POST':
         form = MaterialForm(request.POST)
         if form.is_valid():
@@ -65,12 +70,12 @@ def add_material_view(request):
                         "activo": nuevo_material.activo
                     }
 
-                    materiales_json = []
-                    if os.path.exists(json_file_path):
-                        with open(json_file_path, 'r', encoding='utf-8') as file:
-                            materiales_json = json.load(file)
+                    # Leer y actualizar el archivo JSON
+                    with open(json_file_path, 'r', encoding='utf-8') as file:
+                        materiales_json = json.load(file)
 
                     materiales_json.append(material_data)
+
                     with open(json_file_path, 'w', encoding='utf-8') as file:
                         json.dump(materiales_json, file, ensure_ascii=False, indent=4)
 
@@ -81,12 +86,12 @@ def add_material_view(request):
     else:
         form = MaterialForm()
 
-    return render(request, 'Modulo_usuario/InventoryView/agregar_material.html', {'form': form})
+    return render(request, 'Modulo_usuario/InventoryView/agregar.html', {'form': form})
 
 
 ### 3. Vista para buscar materiales en archivo JSON mediante AJAX
 def buscar_material_ajax(request):
-    query = request.GET.get('q', '').lower()
+    query = request.GET.get('q', '').strip().lower()
     json_file_path = os.path.join(BASE_DIR, 'api', 'materiales_data.json')
 
     if not os.path.exists(json_file_path):
@@ -99,7 +104,13 @@ def buscar_material_ajax(request):
         return JsonResponse({'error': 'Error al decodificar el archivo JSON'}, status=500)
 
     materiales_filtrados = [
-        material for material in materiales_json if query in material['nombre'].lower()
+        {
+            'id': material['id'],
+            'nombre': material['nombre'],
+            'unidad_medida': material['unidad_medida'],
+            'cantidad_disponible': material['cantidad_disponible']
+        }
+        for material in materiales_json if query in material['nombre'].lower()
     ] if query else []
 
     return JsonResponse({'materiales': materiales_filtrados})
@@ -127,9 +138,14 @@ def sync_materiales(request):
 
     elif request.method == 'POST':
         data = request.data
+        errores = []
         try:
             with transaction.atomic():
                 for material_data in data:
+                    if not all(key in material_data for key in ['id', 'nombre', 'unidad_medida', 'cantidad_disponible', 'stock', 'activo']):
+                        errores.append(f"Datos incompletos para material: {material_data.get('nombre', 'Desconocido')}")
+                        continue
+
                     unidad_medida, _ = UnidadMedida.objects.get_or_create(
                         descripcion=material_data['unidad_medida']
                     )
@@ -144,6 +160,8 @@ def sync_materiales(request):
                             'activo': material_data['activo']
                         }
                     )
+            if errores:
+                return Response({"message": "Sincronización parcial", "errores": errores}, status=status.HTTP_206_PARTIAL_CONTENT)
             return Response({"message": "Sincronización completada"}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)

@@ -4,7 +4,6 @@ from . import views
 from django.contrib.auth import views as auth_views
 from .views import QuestionViewSet, ChoiceViewSet
 
-
 from api.views import buscar_material_ajax
 from . import views
 router = DefaultRouter()

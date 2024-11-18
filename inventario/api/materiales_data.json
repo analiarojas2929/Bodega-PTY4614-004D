@@ -898,5 +898,14 @@
         "cantidad_disponible": 100,
         "stock": 20,
         "activo": true
+    },
+    {
+        "id": 124,
+        "nombre": "madera",
+        "descripcion": "mader",
+        "unidad_medida": "UN",
+        "cantidad_disponible": 43,
+        "stock": 56,
+        "activo": true
     }
 ]

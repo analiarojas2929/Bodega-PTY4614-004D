@@ -2,6 +2,12 @@ from datetime import datetime
 import os
 import requests
 import json
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+
+from .models import Material
+from .serializers import MaterialSerializer
 import openpyxl
 from .utils import format_date
 from openpyxl.styles import Font, Alignment, PatternFill
@@ -36,6 +42,8 @@ from rest_framework import viewsets
 from django.contrib.auth.forms import AuthenticationForm
 
 API_BASE_URL = "http://127.0.0.1:8000/api"
+JSON_FILE_PATH = os.path.join(settings.BASE_DIR, 'api', 'materiales_data.json')
+
 
 def has_role_id(user, role_id):
     return user.roles.filter(id=role_id).exists()
@@ -169,22 +177,26 @@ def restore_material_view(request, id):
 
 
 # Agregar material (solo accesible por Jefe de Bodega)
-@login_required
-@user_passes_test(lambda u: has_role_id(u, JEFE_BODEGA), login_url='/access_denied/')
+
+
 def add_material_view(request):
     """
-    Vista para agregar un nuevo material.
-    Se guarda en la base de datos, en la API y en el archivo JSON.
+    Vista para agregar un material y guardar en la base de datos y JSON.
     """
+    if not os.path.exists(JSON_FILE_PATH):
+        # Crear el archivo JSON si no existe
+        with open(JSON_FILE_PATH, 'w', encoding='utf-8') as file:
+            json.dump([], file, ensure_ascii=False, indent=4)
+
     if request.method == 'POST':
         form = MaterialForm(request.POST)
         if form.is_valid():
             try:
                 with transaction.atomic():
-                    # Guardar en la base de datos
+                    # Guardar el material en la base de datos
                     nuevo_material = form.save()
 
-                    # Estructura de datos para el nuevo material
+                    # Crear la estructura de datos para JSON
                     material_data = {
                         "id": nuevo_material.id,
                         "nombre": nuevo_material.nombre,
@@ -195,35 +207,27 @@ def add_material_view(request):
                         "activo": nuevo_material.activo
                     }
 
-                    # Guardar en la API
-                    api_url = f"{settings.API_BASE_URL}/materiales/"
-                    headers = {'Content-Type': 'application/json'}
-                    response = requests.post(api_url, json=material_data, headers=headers)
+                    # Leer el archivo JSON existente
+                    with open(JSON_FILE_PATH, 'r', encoding='utf-8') as file:
+                        materiales_json = json.load(file)
 
-                    if response.status_code == 201:  # Material creado exitosamente en la API
-                        # Actualizar el archivo JSON
-                        if os.path.exists(JSON_FILE_PATH):
-                            with open(JSON_FILE_PATH, 'r', encoding='utf-8') as file:
-                                materiales_json = json.load(file)
-                        else:
-                            materiales_json = []
+                    # Agregar el nuevo material
+                    materiales_json.append(material_data)
 
-                        materiales_json.append(material_data)
-                        with open(JSON_FILE_PATH, 'w', encoding='utf-8') as file:
-                            json.dump(materiales_json, file, ensure_ascii=False, indent=4)
+                    # Escribir los datos actualizados al archivo JSON
+                    with open(JSON_FILE_PATH, 'w', encoding='utf-8') as file:
+                        json.dump(materiales_json, file, ensure_ascii=False, indent=4)
 
-                        messages.success(request, "Material agregado correctamente.")
-                    else:
-                        messages.error(request, "Error al guardar el material en la API.")
-
+                messages.success(request, "Material agregado correctamente y guardado en JSON.")
                 return redirect('lista_view')
 
             except Exception as e:
-                form.add_error(None, f"Error al guardar el material: {e}")
+                form.add_error(None, f"Error al guardar el material: {str(e)}")
     else:
         form = MaterialForm()
 
     return render(request, 'Modulo_usuario/InventoryView/agregar.html', {'form': form})
+    
 def actualizar_stock(material_id, nueva_cantidad):
     url = f"{settings.API_BASE_URL}/materiales/{material_id}/"
     data = {'cantidad_disponible': nueva_cantidad}
@@ -232,9 +236,6 @@ def actualizar_stock(material_id, nueva_cantidad):
 
 # Actualizar material (solo accesible por Jefe de Bodega)
 # Ruta al archivo JSON
-JSON_FILE_PATH = os.path.join(settings.BASE_DIR, 'api', 'materiales_data.json')
-
-
 @login_required
 @user_passes_test(lambda u: has_role_id(u, JEFE_BODEGA), login_url='/access_denied/')
 def editar_material(request, material_id):
