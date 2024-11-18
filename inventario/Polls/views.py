@@ -350,26 +350,23 @@ def crear_ticket(request):
                 messages.error(request, 'No se han seleccionado materiales.')
                 return JsonResponse({'success': False}, status=400)
 
-            # Crear un ticket por cada material seleccionado
             for material_data in materiales_data:
                 nombre_material = material_data.get('nombre')
                 cantidad = int(material_data.get('cantidad'))
                 estado = material_data.get('estado')
 
                 # Validar que el material existe en la base de datos
-                materiales = Material.objects.filter(nombre=nombre_material)
-                if not materiales.exists():
+                material = Material.objects.filter(nombre=nombre_material).first()
+                if not material:
                     messages.error(request, f'El material "{nombre_material}" no existe.')
                     continue
-
-                material = materiales.first()
 
                 # Validar si hay suficiente stock disponible
                 if material.cantidad_disponible < cantidad and estado == 'cobrado':
                     messages.error(request, f'No hay suficiente stock para "{nombre_material}".')
                     continue
 
-                # Crear el ticket con el estado correspondiente
+                # Crear el ticket
                 Ticket.objects.create(
                     usuario=usuario,
                     material_solicitado=material,
@@ -377,22 +374,21 @@ def crear_ticket(request):
                     estado=estado
                 )
 
-                # Descontar stock solo si el estado es "cobrado"
+                # Descontar stock y actualizar JSON si es necesario
                 if estado == 'cobrado':
                     material.cantidad_disponible -= cantidad
                     material.save()
+                    actualizar_json_material(material)  # Actualizar el archivo JSON
 
             messages.success(request, 'Ticket creado exitosamente.')
             return JsonResponse({'success': True})
 
-        except json.JSONDecodeError:
-            messages.error(request, 'Error al procesar los datos del formulario.')
-            return JsonResponse({'success': False}, status=400)
         except Exception as e:
             messages.error(request, f'Error al crear el ticket: {str(e)}')
             return JsonResponse({'success': False}, status=500)
 
     return render(request, 'Modulo_usuario/tickets/crear.html', {'materiales': materiales_json})
+
 
 # Lista de tickets (solo accesible por Jefe de Obra o Jefe de Bodega)
 def has_any_role(user, roles):
@@ -417,28 +413,26 @@ def es_ajax(request):
 @login_required
 @user_passes_test(lambda u: has_role_id(u, JEFE_OBRA) or has_role_id(u, JEFE_BODEGA), login_url='/access_denied/')
 def cobrar_ticket(request, ticket_id):
-    # Obtener el ticket y el material asociado
     ticket = get_object_or_404(Ticket, id=ticket_id)
     material = ticket.material_solicitado
 
-    # Verificar si el ticket ya fue cobrado
     if ticket.estado == 'cobrado':
         messages.warning(request, "El ticket ya ha sido cobrado anteriormente.")
         return redirect('lista_tickets')
 
-    # Verificar si hay suficiente stock disponible antes de descontar
     if material.cantidad_disponible < ticket.cantidad:
         messages.error(request, 'No hay suficiente stock disponible para cobrar este ticket.')
         return redirect('lista_tickets')
 
     try:
         with transaction.atomic():
-            # Descontar el stock y cambiar el estado del ticket a 'cobrado'
             material.cantidad_disponible -= ticket.cantidad
             material.save()
-
             ticket.estado = 'cobrado'
             ticket.save(update_fields=['estado'])
+
+            # Actualizar el archivo JSON
+            actualizar_json_material(material)
 
         messages.success(request, "Ticket cobrado y stock actualizado correctamente.")
     
@@ -446,6 +440,7 @@ def cobrar_ticket(request, ticket_id):
         messages.error(request, f"Error al cobrar el ticket: {str(e)}")
 
     return redirect('lista_tickets')
+
 
 def actualizar_json_material(material):
     try:
