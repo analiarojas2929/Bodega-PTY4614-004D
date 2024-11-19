@@ -22,7 +22,7 @@
         "nombre": "MALLA ACMA C-139",
         "descripcion": "Malla para refuerzo estructural.",
         "unidad_medida": "UN",
-        "cantidad_disponible": 100,
+        "cantidad_disponible": 95,
         "stock": 20,
         "activo": true
     },
@@ -589,7 +589,7 @@
         "nombre": "VIGA MADERA 2X8 IMPREGNADA (3,20MT)",
         "descripcion": "Viga madera 2x8.",
         "unidad_medida": "UN",
-        "cantidad_disponible": 96,
+        "cantidad_disponible": 90,
         "stock": 20,
         "activo": true
     },

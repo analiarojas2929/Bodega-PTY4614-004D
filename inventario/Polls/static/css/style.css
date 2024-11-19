@@ -1467,7 +1467,7 @@ ul li {
   border-radius: 10px;
   width: 30%;
   text-align: center;
-  background-color: #3498db;
+  background-color: #c8c8c8;
   color: white;
   transition: transform 0.3s, box-shadow 0.3s;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
@@ -1530,7 +1530,6 @@ ul li {
 
 .alert-item i {
   margin-right: 8px;
-  color: #ba1c2c;
 }
 
 .report-buttons {

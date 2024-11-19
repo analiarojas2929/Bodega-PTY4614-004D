@@ -1026,10 +1026,10 @@ def movimientos_view(request):
     end_date = request.GET.get('endDate')
 
     if start_date:
-        start_date = make_aware(datetime.strptime(start_date, '%Y-%m-%d'))
+        start_date = make_aware(datetime.strptime(start_date, '%d-%m-%Y'))
         movimientos = movimientos.filter(fecha_creacion__gte=start_date)
     if end_date:
-        end_date = make_aware(datetime.strptime(end_date, '%Y-%m-%d'))
+        end_date = make_aware(datetime.strptime(end_date, '%d-%m-%Y'))
         movimientos = movimientos.filter(fecha_creacion__lte=end_date)
 
     context = {
