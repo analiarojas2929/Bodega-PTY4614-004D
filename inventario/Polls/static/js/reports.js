@@ -127,7 +127,7 @@ function renderChart(data, reportType) {
     clearChart(); // Limpiar el gráfico anterior si existe
 
     myChart = new Chart(ctx, {
-        type: reportType === 'Movimientos de stock' ? 'line' : 'bar',
+        type: reportType === 'Movimientos de stock' ? 'bar' : 'bar',
         data: {
             labels: labels,
             datasets: [{

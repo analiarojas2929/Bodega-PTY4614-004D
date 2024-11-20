@@ -916,5 +916,23 @@
         "cantidad_disponible": 15,
         "stock": 200,
         "activo": true
+    },
+    {
+        "id": 125,
+        "nombre": "cable de luz",
+        "descripcion": "cable",
+        "unidad_medida": "M2",
+        "cantidad_disponible": 32,
+        "stock": 54,
+        "activo": true
+    },
+    {
+        "id": 126,
+        "nombre": "cemento",
+        "descripcion": "cemento",
+        "unidad_medida": "UN",
+        "cantidad_disponible": 56,
+        "stock": 32,
+        "activo": true
     }
 ]

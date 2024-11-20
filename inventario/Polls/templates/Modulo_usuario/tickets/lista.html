@@ -3,12 +3,12 @@
 {% block content %}
 <div class="container my-5">
     <h2 class="text-center mb-4">Lista de Tickets</h2>
-    
+    {% if can_access_ticket %}
     <!-- Botón para crear un nuevo ticket -->
     <div class="d-flex justify-content-end mb-3">
         <a href="{% url 'crear_ticket' %}" class="btn btn-success">Crear Ticket</a>
     </div>
-    
+    {% endif %}
     <!-- Tabla para mostrar la lista de tickets -->
     <table class="table table-hover table-bordered">
         <thead class="table-dark">
