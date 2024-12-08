@@ -706,12 +706,16 @@ def inactivar_usuario(request, user_id):
 
 @login_required
 def editar_usuario(request, user_id):
-    user = get_object_or_404(CustomUser, pk=user_id)
+    user = CustomUser.objects.get(id=user_id)
     if request.method == 'POST':
         form = CustomUserForm(request.POST, instance=user)
         if form.is_valid():
-            form.save()
+            user = form.save(commit=False)  # Guarda el usuario sin comprometer el commit todavía
+            user.save()  # Guarda el usuario
+            form.save_m2m()  # Guarda los roles ManyToMany
             return redirect('lista_usuarios')
+        else:
+            print(form.errors)  # Imprime errores del formulario si hay alguno
     else:
         form = CustomUserForm(instance=user)
     return render(request, 'Modulo_administrador/menu_administrador/editar_user.html', {'form': form})

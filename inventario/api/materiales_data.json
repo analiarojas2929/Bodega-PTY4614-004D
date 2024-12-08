@@ -373,7 +373,7 @@
         "nombre": "ABRAZADERA PPR 25mm",
         "descripcion": "Abrazadera PPR de 25mm.",
         "unidad_medida": "UN",
-        "cantidad_disponible": 100,
+        "cantidad_disponible": 96,
         "stock": 20,
         "activo": true
     },
@@ -409,7 +409,7 @@
         "nombre": "MONTANTE 90 VIGA (6ML)",
         "descripcion": "Montante viga de 90mm (6 metros).",
         "unidad_medida": "UN",
-        "cantidad_disponible": 100,
+        "cantidad_disponible": 70,
         "stock": 20,
         "activo": true
     },
@@ -490,7 +490,7 @@
         "nombre": "ANGULO TENSOR",
         "descripcion": "Ángulo tensor.",
         "unidad_medida": "UN",
-        "cantidad_disponible": 100,
+        "cantidad_disponible": 94,
         "stock": 20,
         "activo": true
     },
@@ -841,7 +841,7 @@
         "nombre": "TORNILLO 10 - 12 x 1 1/2 CON GOLILLA DE GOMA PF",
         "descripcion": "Tornillo con golilla de goma.",
         "unidad_medida": "UN",
-        "cantidad_disponible": 100,
+        "cantidad_disponible": 90,
         "stock": 20,
         "activo": true
     },

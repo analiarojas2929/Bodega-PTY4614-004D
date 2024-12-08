@@ -4,7 +4,7 @@ from django.contrib.auth.hashers import make_password
 from .models import CustomUser, Role, Material, Ticket, UnidadMedida
 
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm,UserChangeForm
 from django.contrib.auth.hashers import make_password
 from .models import CustomUser, Role, Material, Ticket, UnidadMedida
 from django import forms
@@ -12,7 +12,7 @@ from django.core.exceptions import ValidationError
 from .models import CustomUser
 from django import forms
 
-class CustomUserForm(UserCreationForm):
+class CustomUserForm(UserChangeForm):  # Cambiar a UserChangeForm si no estás creando un nuevo usuario
     email = forms.EmailField(
         required=True,
         label="Correo Electrónico",
@@ -25,32 +25,24 @@ class CustomUserForm(UserCreationForm):
     )
     roles = forms.ModelMultipleChoiceField(
         queryset=Role.objects.all(),
-        widget=forms.CheckboxSelectMultiple,
+        widget=forms.SelectMultiple(attrs={'class': 'form-control select-multiple'}),
         label="Roles del Usuario",
         required=True
+    )
+    password1 = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        required=False,  # No requerido si no se quiere cambiar la contraseña
+        label="Nueva Contraseña"
+    )
+    password2 = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        required=False,  # No requerido si no se quiere cambiar la contraseña
+        label="Confirmar Contraseña"
     )
 
     class Meta:
         model = CustomUser
-        fields = ['username', 'email', 'password1', 'password2', 'roles']
-
-    def clean_email(self):
-        email = self.cleaned_data.get('email')
-        if CustomUser.objects.filter(email=email).exists():
-            raise ValidationError("Este correo electrónico ya está registrado.")
-        return email
-
-    def clean_username(self):
-        username = self.cleaned_data.get('username')
-        if CustomUser.objects.filter(username=username).exists():
-            raise ValidationError("Este nombre de usuario ya está en uso.")
-        return username
-
-    def clean_roles(self):
-        roles = self.cleaned_data.get('roles')
-        if not roles:
-            raise ValidationError("Debe asignarse al menos un rol al usuario.")
-        return roles
+        fields = ['username', 'email', 'roles', 'password1', 'password2']
 
 # Formulario para la creación y edición de materiales
 class MaterialForm(forms.ModelForm):

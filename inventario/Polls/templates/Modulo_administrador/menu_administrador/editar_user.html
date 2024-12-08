@@ -25,6 +25,7 @@
             <label class="form-label">Selecciona uno o más roles:</label>
             {{ form.roles|add_class:"form-control form-control-sm select-multiple" }}
         </div>
+        
 
         <!-- Campo de estado del usuario -->
         <div class="form-check mb-3">
@@ -57,11 +58,11 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
     $(document).ready(function() {
-        $('.select-multiple').select2({
-            placeholder: "Selecciona uno o más roles",
-            allowClear: true,
-            width: '100%'
-        });
+    $('.select-multiple').select2({
+        placeholder: "Selecciona uno o más roles",
+        allowClear: true,
+        width: '100%'
     });
+});
 </script>
 {% endblock %}
