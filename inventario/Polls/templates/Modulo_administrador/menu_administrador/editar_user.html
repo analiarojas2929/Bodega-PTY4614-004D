@@ -33,17 +33,15 @@
             <label class="form-check-label ms-2" for="id_is_active">Usuario Activo</label>
         </div>
 
-        <!-- Campo de nueva contraseña -->
         <div class="form-group mb-3">
-            <label for="id_new_password" class="form-label">Nueva Contraseña:</label>
-            {{ form.new_password|add_class:"form-control form-control-sm" }}
+            <label for="id_password1" class="form-label">Nueva Contraseña:</label>
+            {{ form.password1|add_class:"form-control form-control-sm" }}
             <small class="form-text text-muted">Déjalo en blanco si no deseas cambiar la contraseña.</small>
         </div>
-
-        <!-- Campo de confirmación de contraseña -->
+        
         <div class="form-group mb-3">
-            <label for="id_confirm_password" class="form-label">Confirmar Contraseña:</label>
-            {{ form.confirm_password|add_class:"form-control form-control-sm" }}
+            <label for="id_password2" class="form-label">Confirmar Contraseña:</label>
+            {{ form.password2|add_class:"form-control form-control-sm" }}
         </div>
 
         <!-- Botones de acción -->

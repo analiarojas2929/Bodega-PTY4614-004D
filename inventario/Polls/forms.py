@@ -12,11 +12,11 @@ from django.core.exceptions import ValidationError
 from .models import CustomUser
 from django import forms
 
-class CustomUserForm(UserChangeForm):  # Cambiar a UserChangeForm si no estás creando un nuevo usuario
+class CustomUserForm(UserChangeForm):
     email = forms.EmailField(
         required=True,
         label="Correo Electrónico",
-        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Ingresa tu correo'})
+        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Ingresa el correo electrónico'})
     )
     username = forms.CharField(
         required=True,
@@ -31,19 +31,39 @@ class CustomUserForm(UserChangeForm):  # Cambiar a UserChangeForm si no estás c
     )
     password1 = forms.CharField(
         widget=forms.PasswordInput(attrs={'class': 'form-control'}),
-        required=False,  # No requerido si no se quiere cambiar la contraseña
+        required=False,  # Contraseña opcional
         label="Nueva Contraseña"
     )
     password2 = forms.CharField(
         widget=forms.PasswordInput(attrs={'class': 'form-control'}),
-        required=False,  # No requerido si no se quiere cambiar la contraseña
+        required=False,  # Confirmación opcional
         label="Confirmar Contraseña"
     )
 
     class Meta:
         model = CustomUser
-        fields = ['username', 'email', 'roles', 'password1', 'password2']
+        fields = ['username', 'email', 'roles', 'is_active']  # Incluye campos adicionales según el modelo
 
+    def clean(self):
+        cleaned_data = super().clean()
+        password1 = cleaned_data.get("password1")
+        password2 = cleaned_data.get("password2")
+
+        # Validar si las contraseñas coinciden (si están presentes)
+        if password1 or password2:
+            if password1 != password2:
+                raise ValidationError("Las contraseñas no coinciden.")
+        return cleaned_data
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        password1 = self.cleaned_data.get("password1")
+        if password1:  # Si se proporcionó una nueva contraseña, actualízala
+            user.set_password(password1)
+        if commit:
+            user.save()
+            self.save_m2m()  # Guardar relaciones ManyToMany (roles)
+        return user
 # Formulario para la creación y edición de materiales
 class MaterialForm(forms.ModelForm):
     unidad_medida = forms.ModelChoiceField(
