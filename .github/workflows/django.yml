@@ -24,4 +24,4 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs  # Cambia a la carpeta que contiene los archivos generados para tu sitio
+          publish_dir: ./root  # Cambia a la carpeta que contiene los archivos generados para tu sitio
