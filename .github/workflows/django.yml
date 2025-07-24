@@ -13,15 +13,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Si necesitas instalar dependencias, agrega aquí los comandos de build (npm, yarn, etc.)
-      # - name: Install dependencies
-      #   run: npm install
-
-      # - name: Build project
-      #   run: npm run build
+      # Si necesitas generar documentación estática, agrega aquí los comandos (por ejemplo, Sphinx, MkDocs, etc.)
+      # - name: Build docs
+      #   run: |
+      #     cd docs
+      #     make html
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./root  # Cambia a la carpeta que contiene los archivos generados para tu sitio
+          publish_dir: ./docs  # Cambia esto a la carpeta que contiene tus archivos estáticos
