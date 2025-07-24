@@ -1,0 +1,27 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main  # Cambia 'main' por tu rama principal si es diferente
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Si necesitas instalar dependencias, agrega aquí los comandos de build (npm, yarn, etc.)
+      # - name: Install dependencies
+      #   run: npm install
+
+      # - name: Build project
+      #   run: npm run build
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./  # Cambia a la carpeta que contiene los archivos generados para tu sitio
